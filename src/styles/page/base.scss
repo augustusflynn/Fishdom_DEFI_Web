@@ -81,6 +81,8 @@ html {
 @media (min-width: 1200px) {
   .c2i-container {
     max-width: 1140px;
+    flex-direction: row!important;
+    justify-content: space-around;
   }
 }
 .over-hidden {

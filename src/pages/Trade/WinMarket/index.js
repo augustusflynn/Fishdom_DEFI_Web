@@ -25,15 +25,15 @@ function WinMarket() {
 		try {
 			if (location.hash) {
 				switch (location.hash) {
-					case "#dashboard":
-						setTab("#dashboard");
-						break;
+					// case "#dashboard":
+					// 	setTab("#dashboard");
+					// 	break;
 					case "#crown":
 						setTab("#crown");
 						break;
-					case "#scepter":
-						setTab("#scepter");
-						break;
+					// case "#scepter":
+					// 	setTab("#scepter");
+					// 	break;
 					default:
 						setTab("#dashboard");
 						break;
@@ -47,15 +47,15 @@ function WinMarket() {
 			<Container>
 				<div className="module-header text-center">Marketplace</div>
 				<Tabs type="card" activeKey={tabSelect} onChange={onChangeTab}>
-					<TabPane tab="Dashboard" key="#dashboard">
+					{/* <TabPane tab="Dashboard" key="#dashboard">
 						<Dashboard />
-					</TabPane>
+					</TabPane> */}
 					<TabPane tab="CROWN" key="#crown">
 						<CROWN />
 					</TabPane>
-					<TabPane tab="SCEPTER" key="#scepter">
+					{/* <TabPane tab="SCEPTER" key="#scepter">
 						<SCEPTER />
-					</TabPane>
+					</TabPane> */}
 				</Tabs>
 			</Container>
 		</section>

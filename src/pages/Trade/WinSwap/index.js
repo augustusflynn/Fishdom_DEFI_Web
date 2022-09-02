@@ -134,13 +134,14 @@ function WinSwap(props) {
 			)}
 			<div id="win-swap" data-aos="fade-up">
 				<div className="c2i-container">
+					<div style={{width: "35%"}}>
 					<div className="swap-head-container">
-						<h2 className="module-header">{`Win Swap`}</h2>
+						<h2 className="module-header">{`Deposit`}</h2>
 						<div className="current-sceptor-container">
 							<img src={IconWallet} style={{ marginRight: "8px" }}></img>
 							<p className="module-blur c2i-no-margin">{`${BaseHelper.numberWithRealDots(
 								currentSceptor
-							)} SCEPTER`}</p>
+							)} FDT`}</p>
 						</div>
 					</div>
 					<Space
@@ -151,7 +152,8 @@ function WinSwap(props) {
 						<Space size={24} className="swap-item ">
 							<p className="module-blur c2i-no-margin text-left">Pricing</p>
 							<p className="module-blur c2i-default c2i-no-margin text-left">
-								1 CROWN = {BaseHelper.numberWithRealDots(price)} SCEPTER
+								{/* 1 FISHDOM TOKEN = {BaseHelper.numberWithRealDots(price)} POINT */}
+								1 FDT = 1 POINT
 							</p>
 						</Space>
 						<Space direction="horizontal" size={8} align="start">
@@ -162,7 +164,7 @@ function WinSwap(props) {
 										min={1}
 										max={maxSupplyCrown}
 										ref={crownRef}
-										placeholder="1 CROWN"
+										placeholder="1 POINT"
 										disabled
 									/>
 								</div>
@@ -171,13 +173,13 @@ function WinSwap(props) {
 						<div className="module-line"></div>
 						<div className="btn-price-container">
 							<div className="price-container">
-								<p
+								{/* <p
 									className={`module-blur ${
 										currentSceptor >= price ? "c2i-active" : "c2i-error"
 									}`}
 								>
 									{BaseHelper.numberWithRealDots(price) + ` SCEPTOR`}
-								</p>
+								</p> */}
 								<p className="module-blur">Total</p>
 							</div>
 							<Button
@@ -194,7 +196,75 @@ function WinSwap(props) {
 								: "You haven’t enough SCEPTER for swapping!"}
 						</p>
 					</Space>
+
+					</div>
+
+					<div style={{width: "35%"}}>
+					<div className="swap-head-container">
+						<h2 className="module-header">{`Withdraw`}</h2>
+						<div className="current-sceptor-container">
+							<img src={IconWallet} style={{ marginRight: "8px" }}></img>
+							<p className="module-blur c2i-no-margin">{`${BaseHelper.numberWithRealDots(
+								currentSceptor
+							)} POINT`}</p>
+						</div>
+					</div>
+					<Space
+						direction="vertical"
+						size={24}
+						className="swap-content-container"
+					>
+						<Space size={24} className="swap-item ">
+							<p className="module-blur c2i-no-margin text-left">Pricing</p>
+							<p className="module-blur c2i-default c2i-no-margin text-left">
+								{/* 1 TOKEN = {BaseHelper.numberWithRealDots(price)} FISHDOM TOKEN */}
+								1 POINT  = 0.9 FDT
+							</p>
+						</Space>
+						<Space direction="horizontal" size={8} align="start">
+							<div className="c2i-form-group">
+								<div className="c2i-form-control">
+									<Input
+										type="number"
+										min={1}
+										max={maxSupplyCrown}
+										ref={crownRef}
+										placeholder="1 FDT"
+										disabled
+									/>
+								</div>
+							</div>
+						</Space>
+						<div className="module-line"></div>
+						<div className="btn-price-container">
+							<div className="price-container">
+								{/* <p
+									className={`module-blur ${
+										currentSceptor >= price ? "c2i-active" : "c2i-error"
+									}`}
+								>
+									{BaseHelper.numberWithRealDots(price) + ` SCEPTOR`}
+								</p> */}
+								<p className="module-blur">Total</p>
+							</div>
+							<Button
+								className="swap-confirm-btn module-blur"
+								onClick={showModal}
+								disabled={currentSceptor < 200000}
+							>
+								{"Swap now"}
+							</Button>
+						</div>
+						<p className="module-blur">
+							{currentSceptor >= price
+								? ""
+								: "You haven’t enough SCEPTER for swapping!"}
+						</p>
+					</Space>
+					</div>
 				</div>
+
+				
 			</div>
 		</>
 	);

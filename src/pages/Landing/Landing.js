@@ -29,6 +29,7 @@ import CrownAuction from "./content/CrownAuction/CrownAuction";
 import CrownLucky from "./content/CrownLucky/CrownLucky";
 import LuckyTicket from "./content/LuckyTicket/LuckyTicket";
 import MiningCrown from "./content/MiningCrown/MiningCrown";
+import WinMarket from "../Trade/WinMarket";
 
 var scroll = Scroll.animateScroll;
 let count = 0;
@@ -174,12 +175,14 @@ function Landing() {
     <Fragment>
       <div className="fade-dotted-left-pink-main"></div>
       <div className="fade-dotted-right-blue-main"></div>
-      <Banner />
+      {/* <Banner /> */}
       <section className="section" id="section-Staking-WDA">
         <FadeAnimationOdd />
         <Container>
-          <Row justify="space-between" gutter={[30, 80]}>
+          <WinMarket/>
+          {/* <Row justify="space-between" gutter={[30, 80]}>
             <Col xs={24} md={12}>
+              
               <Space direction="vertical" size={30}>
                 <div className="module-header-small" data-aos="zoom-in-left">
                   Staking WDA
@@ -223,14 +226,14 @@ function Landing() {
                 </Space>
               </div>
             </Col>
-          </Row>
+          </Row> */}
         </Container>
       </section>
-      <LuckyTicket
+      {/* <LuckyTicket
         ticketJoinedLucky={ticketJoinedLucky}
         _expiredTime={_expiredTime}
-      />
-      <section className="section" id="section-DAO-Treasury">
+      /> */}
+      {/* <section className="section" id="section-DAO-Treasury">
         <FadeAnimationOdd />
         <Container>
           <Row justify="space-between" gutter={[30, 80]}>
@@ -717,7 +720,7 @@ function Landing() {
             </Row>
           </ul>
         </Container>
-      </section>
+      </section> */}
     </Fragment>
   );
 }
