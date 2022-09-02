@@ -1,0 +1,168 @@
+.modal-menu {
+  position: absolute;
+  width: 100vw !important;
+  height: 100vh !important;
+  top: 0 !important;
+  max-width: unset !important;
+  left: 0 !important;
+  margin: unset !important;
+  padding: unset !important;
+}
+
+.modal-menu .btn-connect {
+  margin-top: 24px;
+}
+
+.modal-menu .btn-connect button {
+  margin-right: 20px;
+}
+
+.modal-menu .modal-menu.ant-modal {
+  max-width: 100vw !important;
+}
+
+.modal-menu .ant-modal-close-x span {
+  color: #f4f4f4 !important;
+  font-size: 24px !important;
+  padding-top: 30px !important;
+  margin-right: 62px !important;
+}
+
+.modal-menu .logo-mobile {
+  cursor: pointer;
+  float: left;
+  background-repeat: no-repeat;
+  width: 143px;
+  margin-left: 21px;
+  background-size: cover;
+  height: 48px;
+  background-image: url("../../assets/png/logo-header.svg");
+}
+
+.modal-menu .ant-modal-body {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+}
+
+.modal-menu .ant-modal-content {
+  position: absolute;
+  background: #221e2af5 !important;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+}
+
+.modal-menu .head {
+  padding: 0px 24px;
+  margin: 30px 0px;
+  text-align: center;
+}
+
+.modal-menu .head .wallet-button {
+  border: 1.5px solid #f4f4f4;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  padding: 12px;
+}
+
+.modal-menu .head .wallet-button img {
+  vertical-align: bottom;
+  width: 24px;
+  height: 24px;
+}
+
+.modal-menu .head .wallet-button span {
+  color: #ffffff !important;
+  font-family: "Circular Std";
+  font-size: 16px;
+  line-height: 24px;
+  text-align: right;
+}
+
+.modal-menu .content {
+  color: #ffffff;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.modal-menu .content .menu {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  width: 100%;
+  padding: 16px 24px;
+  font-family: "Circular Std";
+  font-size: 16px;
+  line-height: 24px;
+  color: #b8b8b8;
+  height: calc(70vh);
+  overflow: auto;
+}
+
+.modal-menu .content .menu .item-menu {
+  display: -webkit-inline-box;
+  -webkit-box-align: start;
+      -ms-flex-align: start;
+          align-items: flex-start;
+  margin-bottom: 16px;
+}
+
+.modal-menu .content .menu .item-menu .menu-title {
+  width: 50%;
+  color: #f4f4f4;
+}
+
+.modal-menu .content .menu .item-menu .item-select {
+  width: 50%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: start;
+      -ms-flex-align: start;
+          align-items: flex-start;
+}
+
+.modal-menu .content .menu .item-menu .item-select .item-name {
+  padding-bottom: 16px;
+  color: #b8b8bf;
+}
+
+.modal-menu .content .menu .item-menu .item-select .item-name:hover {
+  cursor: pointer;
+  color: #f4f4f4;
+}
+
+@media screen and (max-width: 765px) {
+  .modal-menu .content .menu {
+    line-height: 37px !important;
+  }
+  .modal-menu .content .menu .item-menu .item-select .item-name {
+    min-height: 50px !important;
+    min-height: -webkit-fill-available;
+    padding-bottom: 30px !important;
+  }
+}
+/*# sourceMappingURL=modalMenu.css.map */

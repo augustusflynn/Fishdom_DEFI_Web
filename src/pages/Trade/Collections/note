@@ -1,0 +1,33 @@
+									priceBNB >= 1
+										? priceBNB * 0.95 + " BNB"
+										: (priceBNB > 10 ** -18 && priceBNB < 1) ||
+										  parseFloat(priceBNB) == 0
+										? ethers.utils.formatEther(
+												parseInt(
+													priceBNB * quantity * 0.95 * 10 ** 18
+												).toString()
+										  ) + " BNB"
+										: priceBNB < 10 ** 18 - 1 + " BNB"
+										? parseFloat(priceBNB * quantity * 0.95).toString() + " BNB"
+										: "Invalid Value"
+
+
+										
+	// async function fetchData(skip) {
+	// 	try {
+	// 		setIsLoadingAllSite(true);
+	// 		const tableName =
+	// 			currentTabKey === "#marketItem" ? "MarketItem" : "CrownMinted";
+	// 		const keyExactor = currentTabKey === "#marketItem" ? "seller" : "minter";
+	// 		const query = makeQueryBuilder(tableName, page_size, skip);
+	// 		const address = await walletConnect.getAddress();
+	// 		query.equalTo(keyExactor, address.toLowerCase());
+	// 		const data = await query.find();
+	// 		const count = await query.count();
+	// 		setIsLoadingAllSite(false);
+	// 		await fulfillDataMarket(data, count, currentTabKey, skip);
+	// 	} catch (error) {
+	// 		console.log("errror", error);
+	// 		setIsLoadingAllSite(false);
+	// 	}
+	// }

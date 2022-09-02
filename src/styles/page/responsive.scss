@@ -1,0 +1,378 @@
+//resposive layout
+@media screen and (max-width: 1100px) {
+  #layout {
+    #header-layout {
+      #menu {
+        display: none;
+      }
+      .top-layout-mobile {
+        position: fixed;
+        left: 0;
+        padding: 20px 20px;
+        right: 0;
+        background-color: #221e2a;
+      }
+    }
+    #main-layout {
+      #section-DAO-Treasury {
+        .module-group-horizatol {
+          flex-direction: column;
+          & > div {
+            padding: unset !important;
+          }
+          .module-title {
+            margin-top: 24px;
+          }
+        }
+      }
+    }
+    .ant-btn-default {
+      padding: 12px 12px !important;
+    }
+    .module-border-right {
+      &::after {
+        display: none !important ;
+      }
+    }
+  }
+}
+@media screen and (max-width: 992px) and (min-width: 767px) {
+  #main-layout {
+    margin-top: 50px !important;
+    .section {
+      padding-top: 140px;
+    }
+    .module-header-small {
+      font-size: 35px !important;
+    }
+    #section-DAO-Treasury .module-blur a {
+      vertical-align: -webkit-baseline-middle;
+    }
+    .module-number {
+      font-size: 35px;
+    }
+
+    #section-vesting {
+      .module-header {
+        margin-bottom: -30px !important;
+        font-size: 36px !important;
+      }
+      .module-header-small {
+        font-size: 24px;
+      }
+      .d-inline-block {
+        padding-left: unset !important;
+        margin-top: 30px;
+      }
+    }
+    #section-first-NFT {
+      .module-header {
+        font-size: 50px;
+      }
+
+      .banner-first-NFT {
+        margin-top: 150px;
+        .border-banner-NFT {
+          img {
+            width: 734px !important;
+          }
+          &::after {
+            top: -50px;
+            width: 100%;
+            left: 50px;
+            z-index: -1;
+            border: 0.4em solid #f4f4f4 !important;
+            height: 100%;
+          }
+        }
+      }
+    }
+  }
+}
+@media screen and (max-width: 767px) {
+  #main-layout {
+    #section-DAO-Treasury .module-border-right {
+      &::after {
+        display: none;
+      }
+    }
+    .section {
+      padding-top: 68px;
+    }
+    #section-first-NFT {
+      .banner-first-NFT {
+        margin-top: 150px;
+        .border-banner-NFT {
+          img {
+            width: 534px !important;
+          }
+          &::after {
+            top: -50px;
+            width: 100%;
+            left: 50px;
+            z-index: -1;
+            border: 0.3em solid #f4f4f4 !important;
+            height: 100%;
+          }
+        }
+      }
+    }
+  }
+  #layout {
+    #main-layout {
+      .module-header {
+        font-size: 36px !important;
+      }
+      .module-title-res {
+        font-size: 16px !important;
+      }
+      #section-lucky-ticket {
+        .module-header-small {
+          font-size: 24px !important;
+        }
+
+        .module-header-small-number {
+          font-size: 36px !important;
+        }
+      }
+      #section-dao-proposal-detail .module-header-small {
+        font-size: 24px !important;
+      }
+      .section {
+        padding-top: 140px;
+      }
+      #section-first-NFT .module-header {
+        font-size: 48px !important;
+        max-width: 338px;
+      }
+      #section-vesting {
+        .module-header {
+          margin-bottom: -30px !important;
+          font-size: 36px;
+        }
+
+        .d-inline-block {
+          padding-left: unset !important;
+          margin-top: 30px;
+          display: block !important;
+        }
+        .module-border-right {
+          &::after {
+            display: none !important ;
+          }
+        }
+      }
+      #section-info-Treasury {
+        .module-title {
+          font-size: 16px;
+        }
+
+        .treasury-balance.ant-col,
+        .Investment-Funds.ant-col {
+          border-right: unset !important;
+          padding-right: 15px !important;
+          padding-left: 15px !important;
+        }
+      }
+      .module-header-small {
+        font-size: 24px;
+      }
+      #section-Staking-WDA .module-border-token-stake {
+        padding: 20px 25px !important;
+      }
+      #section-first-NFT {
+        .banner-first-NFT {
+          margin-top: 150px !important;
+          .border-banner-NFT {
+            img {
+              width: 534px !important;
+            }
+          }
+
+          .module-border-right {
+            &::after {
+              width: unset !important;
+            }
+          }
+
+          .module-header-small {
+            font-size: 24px !important;
+          }
+          .logo-pc {
+            display: none !important;
+          }
+          .logo {
+            margin-top: unset !important;
+          }
+
+          // font-size: 36px;
+
+          #section-tokenomic,
+          #section-Allocation,
+          #section-token-vesting {
+            .module-header {
+              font-size: 36px;
+            }
+            .module-content {
+              margin-top: 80px !important;
+              .content {
+              }
+              .title {
+              }
+            }
+
+            .module-border-bottom {
+            }
+          }
+
+          .module-header {
+            font-size: 55px;
+            max-width: 331px;
+            line-height: 64px;
+          }
+          #section-private-round,
+          #section-seed-round {
+            .module-header {
+              font-size: 36px;
+            }
+            .module-blur {
+              max-width: 269px;
+            }
+          }
+          #section-vesting {
+            .module-blur {
+              max-width: 267px;
+            }
+          }
+        }
+      }
+    }
+    #footer-layout {
+      padding: 24px 0px !important;
+      #section-footer {
+        .copy-right {
+          padding-top: 50px;
+          text-align: start;
+        }
+        .module-blur {
+          max-width: unset !important;
+        }
+        .border-bottom {
+          position: relative;
+          &::after {
+            content: "";
+            display: block;
+            width: 30px;
+            height: 2px;
+            background-color: #b8b8b8;
+          }
+        }
+        .list-contact {
+          padding-left: unset !important;
+          .ant-col {
+            padding: unset !important;
+          }
+        }
+      }
+    }
+    .fade-dotted-left-pink-main {
+      right: 110px;
+    }
+    .fade-dotted-right-blue-main {
+      right: -809px;
+    }
+    .btn-mobile-default {
+      padding: 10px 12px;
+    }
+    .fade-anmation-left-right {
+      div {
+        width: 1000px !important;
+      }
+    }
+  }
+}
+@media screen and (max-width: 576px) {
+  #layout {
+    #main-layout {
+      margin-top: 40px;
+      #section-private-round {
+        .module-blur {
+          max-width: 237px;
+        }
+      }
+
+      .fade-anmation {
+        .fade-dotted-left-pink {
+          margin-top: 400px;
+          margin-left: -50px;
+        }
+      }
+      #section-first-NFT {
+        .banner-first-NFT {
+          margin-top: 150px;
+          .border-banner-NFT {
+            img {
+              width: 350px !important;
+            }
+            &::after {
+              top: -40px;
+              width: 100%;
+              left: 50px;
+              z-index: -1;
+              border: 0.2em solid #f4f4f4 !important;
+              height: 100%;
+            }
+          }
+        }
+        #section-partner {
+          img {
+            width: 200px !important;
+            margin: auto;
+            display: block;
+          }
+        }
+      }
+      .fade-dotted-left-blue {
+        margin-top: 400px;
+
+        margin-left: -50px;
+      }
+      .fade-dotted-right-pink {
+        margin-right: -50px;
+      }
+      #section-partner {
+        .logo-partner {
+          text-align: center;
+          img {
+            width: 216px !important;
+          }
+        }
+      }
+      #section-first-NFT {
+        .banner-first-NFT {
+          margin-top: 150px;
+          .border-banner-NFT {
+            img {
+              width: 350px !important;
+            }
+            &::after {
+              top: -33px !important;
+              width: 100%;
+              left: 50px;
+              z-index: -1;
+              border: 0.2em solid #f4f4f4 !important;
+              height: 100%;
+            }
+          }
+        }
+        #section-partner {
+          img {
+            width: 200px !important;
+            margin: auto;
+            display: block;
+          }
+        }
+      }
+    }
+  }
+}

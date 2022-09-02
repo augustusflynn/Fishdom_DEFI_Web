@@ -1,0 +1,193 @@
+.ant-spin.ant-spin-spinning {
+  height: auto !important;
+}
+.c2i-wrap {
+  flex-wrap: wrap;
+}
+.c2i-justify-between {
+  justify-content: space-between;
+}
+.c2i-justify-center {
+  justify-content: center;
+}
+.c2i-flex {
+  display: flex;
+}
+.c2i-align-center {
+  align-items: center;
+}
+.c2i-align-between {
+  align-items: space-between;
+}
+.c2i-overlay {
+  overflow: overlay;
+}
+.c2i-pointer {
+  cursor: pointer;
+}
+#section-stake-Wda {
+  .ant-spin.ant-spin-spinning {
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, -51%);
+    top: 50% !important;
+    width: 100%;
+    height: 10%;
+    .ant-spin-dot.ant-spin-dot-spin {
+      font-size: 62px !important;
+      .ant-spin-dot-item {
+        width: 30px;
+        background-color: #41718c;
+        height: 30px;
+      }
+    }
+  }
+  .wallet-button {
+    border: 1.5px solid #f4f4f4;
+    box-sizing: border-box;
+    display: inline-block;
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+    transition: all 0.5s ease-in-out;
+    padding: 12px 24px;
+    background-color: transparent;
+    @include color-title;
+    cursor: pointer;
+    img {
+      transition: all 1s ease-in-out;
+      width: 24px;
+      height: 24px;
+      content: url("../../assets/png/topbar/icon-wallet-white.svg");
+    }
+    span {
+      font-size: 16px;
+      line-height: 24px;
+      text-align: right;
+      margin-left: 4px;
+    }
+
+    &:hover {
+      background: #f4f4f4;
+      color: #221e2a;
+      img {
+        content: url("../../assets/png/topbar/icon-wallet-black.svg");
+      }
+    }
+  }
+  .module-content {
+    margin-top: 48px;
+    p {
+      margin: 24px 0px !important;
+    }
+
+    .choose,
+    .icon-close {
+      &:hover {
+        cursor: pointer;
+        color: #f4f4f4;
+      }
+    }
+  }
+}
+
+#section-stake-history {
+  .wallet-button {
+    border: 1.5px solid #f4f4f4;
+    box-sizing: border-box;
+    display: inline-block;
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+    transition: all 0.5s ease-in-out;
+    padding: 12px 24px;
+    background-color: transparent;
+    @include color-title;
+    cursor: pointer;
+    img {
+      transition: all 1s ease-in-out;
+      width: 24px;
+      height: 24px;
+      content: url("../../assets/png/topbar/icon-wallet-white.svg");
+    }
+    span {
+      font-size: 16px;
+      line-height: 24px;
+      text-align: right;
+      margin-left: 4px;
+    }
+
+    &:hover {
+      background: #f4f4f4;
+      color: #221e2a;
+      img {
+        content: url("../../assets/png/topbar/icon-wallet-black.svg");
+      }
+    }
+  }
+  .module-content {
+    margin-top: 48px;
+    .item {
+      border: 1.5px solid #f4f4f4;
+      padding: 15px;
+    }
+    p {
+      margin: 24px 0px !important;
+    }
+  }
+  .ant-image {
+    margin-right: 8px;
+    .icon-avatar {
+      vertical-align: middle;
+      border: 1.5px solid #f4f4f4;
+      border-radius: 50%;
+    }
+  }
+
+  .point {
+    position: relative;
+    &::after {
+      position: absolute;
+      content: "";
+      height: 8px;
+      width: 8px;
+      left: -12px;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      background-color: #72de99;
+      display: block;
+    }
+  }
+  .ant-spin.ant-spin-spinning {
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, -51%);
+    top: 130%;
+    width: 100%;
+    height: 100%;
+    .ant-spin-dot.ant-spin-dot-spin {
+      font-size: 62px !important;
+      .ant-spin-dot-item {
+        width: 30px;
+        background-color: #41718c;
+        height: 30px;
+      }
+    }
+  }
+}
+
+.ant-modal-wrap {
+  .choose {
+    transition: all 0.5s ease !important;
+    color: #b8b8b8;
+    background-color: #221e2a;
+    &:hover {
+      background: #f4f4f4;
+      color: #221e2a;
+    }
+  }
+}
+
+#section-stake-history .havest-mining .point::after {
+  left: 5px;
+}

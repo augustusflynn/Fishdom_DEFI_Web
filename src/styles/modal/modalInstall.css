@@ -1,0 +1,64 @@
+.modal-install {
+  background-color: #fafbfc !important;
+  color: black;
+  border-radius: 5px;
+}
+
+.modal-install .ant-modal-content {
+  background-color: transparent !important;
+}
+
+.modal-install .modal-left {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.modal-install .modal-left .text-title {
+  text-align: center;
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 28px;
+  color: #000;
+  margin-bottom: 5px;
+}
+
+.modal-install .modal-left .btn-install {
+  border-radius: 8px;
+  background-color: #1652f0;
+  color: #fff;
+  width: 76%;
+  padding: 10px;
+  border: none !important;
+  min-width: -moz-fit-content;
+  font-size: 16px;
+  cursor: pointer;
+  font-weight: 500;
+  text-align: center;
+}
+
+.modal-install .item-right {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+}
+
+.modal-install .item-right .anticon {
+  width: 24px;
+  height: 24px;
+  margin-right: 10px;
+}
+/*# sourceMappingURL=modalInstall.css.map */

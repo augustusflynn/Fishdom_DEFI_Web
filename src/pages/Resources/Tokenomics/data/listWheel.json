@@ -1,0 +1,66 @@
+[
+  {
+    "name": "Foundation & Team",
+    "background": "#BF2559",
+    "percent": 10,
+    "vesting": "Lock for 24 months, linear vesting for 34 months"
+  },
+  {
+    "name": "Marketing",
+    "background": "#C54A53",
+    "percent": 5,
+    "vesting": "16% at TGE, linear vesting for 12 month"
+  },
+  {
+    "name": "Seed",
+    "background": "##E3754F",
+    "percent": 2,
+    "vesting": "10% at TGE, lock for 6 months , linear vesting for 9 months"
+  },
+
+  {
+    "name": "Private",
+    "background": "#F1B16E",
+    "percent": 8,
+    "vesting": "20% at TGE, Lock for 1 month and vesting 10% , 10% vesting cycle every 2 months"
+  },
+  {
+    "name": "Presale",
+    "background": "#F9E196",
+    "percent": 15,
+    "vesting": "50% at TGE , 10% vesting cycle every 2 months"
+  },
+  {
+    "name": "Advisor",
+    "background": "#E9F4A3",
+    "percent": 1.2,
+    "vesting": "Lock for 24 months, linear vesting for 24 months"
+  },
+
+  {
+    "name": "Liquidity",
+    "background": "#B5DCA8",
+    "percent": 8.8,
+    "vesting": ""
+  },
+
+  {
+    "name": "DAO Treasury",
+    "background": "#7DC0A5",
+    "percent": 10,
+    "vesting": ""
+  },
+  {
+    "name": "Ecosystem Rewards",
+    "background": "#4B85B8",
+    "percent": 15,
+    "vesting": ""
+  },
+
+  {
+    "name": "Staking Rewards",
+    "background": "#5B509D",
+    "percent": 25,
+    "vesting": ""
+  }
+]

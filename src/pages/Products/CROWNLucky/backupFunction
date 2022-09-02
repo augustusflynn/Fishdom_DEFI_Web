@@ -1,0 +1,29 @@
+	async function handleFindNFTBonus(date) {
+		if (date.format("DD/MM/YYYY") != moment.utc().format("DD/MM/YYYY")) {
+			let query = MoralisQuery.makeQueryBuilder("CrownTicketWin", 1);
+			query.greaterThan("createdAt", date.startOf("day").toDate());
+			query.lessThan("createdAt", date.endOf("day").toDate());
+			const res = await query.find();
+			if (res?.length > 0 && res[0]?.attributes?.nftId) {
+				const nftId = res[0].attributes.nftId;
+				handleGetTraitsNFT(nftId);
+			} else {
+				message.error("No CROWN bonus in " + date.format("ll"));
+			}
+		} else {
+			const crownLuckyContract = new ethers.Contract(
+				crownLuckyAddress,
+				crownLuckyAbi,
+				walletConnect
+			);
+			if (!crownLuckyContract) {
+				message.error("No CROWN bonus in " + date.format("ll"));
+				return;
+			}
+			Promise.all([await crownLuckyContract.todayTokenId()]).then(
+				async (res) => {
+					handleGetTraitsNFT(res["0"].toString());
+				}
+			);
+		}
+	}

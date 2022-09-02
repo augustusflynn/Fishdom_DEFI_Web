@@ -1,0 +1,63 @@
+.pagination {
+  margin-top: 3em;
+}
+
+.pagination .ant-pagination {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+}
+
+.pagination .ant-pagination .ant-pagination-prev {
+  display: none;
+}
+
+.pagination .ant-pagination .ant-pagination-next {
+  display: none;
+}
+
+.pagination .ant-pagination .ant-pagination-item {
+  background-color: transparent;
+  border-color: #a0a0a0;
+  height: auto;
+  padding: 12px 24px;
+  margin: 8px;
+}
+
+.pagination .ant-pagination .ant-pagination-item a {
+  color: #a0a0a0;
+}
+
+.pagination .ant-pagination .ant-pagination-jump-next {
+  display: none;
+}
+
+.pagination .ant-pagination .ant-pagination-jump-prev {
+  display: none;
+}
+
+.pagination .ant-pagination .ant-pagination-item-active {
+  border-color: #FE84CF;
+}
+
+.pagination .ant-pagination .ant-pagination-item-active a {
+  color: #FE84CF;
+}
+
+.pagination .ant-pagination .ant-pagination-options {
+  display: none;
+}
+
+.pagination .ant-pagination .ant-pagination-jump-next.ant-pagination-jump-next-custom-icon .ant-pagination-item-ellipsis, .pagination .ant-pagination .ant-pagination-jump-prev.ant-pagination-jump-prev-custom-icon .ant-pagination-item-ellipsis {
+  color: #a0a0a0;
+}
+
+.pagination .ant-pagination .ant-pagination-jump-next.ant-pagination-jump-next-custom-icon .anticon.ant-pagination-item-link-icon, .pagination .ant-pagination .ant-pagination-jump-prev.ant-pagination-jump-prev-custom-icon .anticon.ant-pagination-item-link-icon {
+  color: #a0a0a0;
+}
+/*# sourceMappingURL=pagination.css.map */

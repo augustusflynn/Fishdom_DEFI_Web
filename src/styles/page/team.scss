@@ -1,0 +1,30 @@
+  #section-core-team,
+  #section-Advisors,
+  #section-partner {
+    .module-content {
+      margin-top: 80px;
+    }
+    .module-blur {
+      margin-top: 13px;
+    }
+    .role {
+      @include color-title;
+    }
+    .name-advisor {
+      color: #fbcb4e;
+      @include font-special;
+      font-size: 24px;
+      line-height: 36px;
+    }
+    .name-member {
+      @include font-special;
+      font-size: 24px;
+      color: #fe84cf;
+      line-height: 36px;
+    }
+  }
+  #section-partner {
+    img {
+      width: 100%;
+    }
+  }

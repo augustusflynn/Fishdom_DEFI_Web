@@ -1,0 +1,65 @@
+$MOBILE: 800px;
+$DESKTOP: 1100px;
+// media queries
+@mixin Responsive($canvas) {
+  @if $canvas == MOBILE {
+    @media only screen and (max-width: $MOBILE) {
+      @content;
+    }
+  }
+  @if $canvas == DESKTOP {
+    @media only screen and (min-width: $DESKTOP) {
+      @content;
+    }
+  }
+}
+$color-title: #f4f4f4;
+$color-sub: #b8b8b8;
+@mixin font-default {
+  font-family: "Circular Std" !important;
+}
+@mixin font-special {
+  font-family: "BelfastGrotesk-SemiBold" !important;
+}
+@mixin color-title {
+  color: $color-title;
+}
+@mixin color-sub {
+  color: $color-sub;
+}
+@import "./page/animationCommon.scss";
+@import "./page/tradeWin.scss";
+@import "./page/CROWNLucky.scss";
+
+@import "./page/luckyTicket.scss";
+@import "./page/date_picker.scss";
+@import "./page/base.scss";
+@import "./layout/default.scss";
+@import "./antd/menu.scss";
+@import "./layout/topbar.scss";
+@import "./layout/modalwallet.scss";
+@import "./page/claim.scss";
+@import "./layout/modalMenu.scss";
+@import "./page/landing.scss";
+@import "./page/layout.scss";
+@import "./page/seed&PrivateRound.scss";
+@import "./page/team.scss";
+@import "./page/tokenomic.scss";
+@import "./page/vesting.scss";
+@import "./modal/modalInstall.scss";
+@import "./page/CROWNAuction.scss";
+@import "./page/date_picker.scss";
+@import "./antd/pagination.scss";
+@import "./page/NFTProfile.scss";
+@import "./page/proposal.scss";
+@import "./page/stakeWDA.scss";
+@import "./page/responsive.scss";
+@import "./page/CROWNLucky.scss";
+@import "./page/date_picker.scss";
+@import "./antd/pagination.scss";
+@import "./page/NFTProfile.scss";
+@import "./page/miningCROWN.scss";
+@import "./page/winMarket.scss";
+@import "./page/detailNft.scss";
+@import "./page/collection.scss";
+@import "./antd/notification.css";

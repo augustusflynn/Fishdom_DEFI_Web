@@ -1,0 +1,93 @@
+//anmation header text landing
+#section-first-NFT {
+  .module-header {
+    animation: focus-in-expand 2s cubic-bezier(0.25, 0.46, 0.45, 0.94) 1.2s
+      backwards;
+  }
+  .module-blur {
+    animation: text-focus-in 1s cubic-bezier(0.55, 0.085, 0.68, 0.53) both;
+    animation-delay: 2.5s;
+  }
+}
+@keyframes focus-in-expand {
+  0% {
+    transform: translateX(-100%);
+    letter-spacing: -0.1em;
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0%);
+    opacity: 1;
+  }
+}
+@keyframes text-focus-in {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+/////animation fade
+.fade-animation {
+  height: 70%;
+  width: 70%;
+  z-index: -1;
+  background-size: contain;
+  background-repeat: no-repeat;
+  animation: fade_in_out 3.5s infinite alternate;
+  position: absolute;
+}
+.fade-dotted-right-pink {
+  background-image: url("./../../assets/images/fade-pink.png");
+  top: 0%;
+  right: 30%;
+  float: right;
+}
+.fade-dotted-left-blue {
+  top: 0%;
+  right: -50%;
+  background-image: url("./../../assets/images/fade-blue.png");
+}
+.fade-dotted-right-blue {
+  top: 0%;
+  right: 30%;
+  background-image: url("./../../assets/images/fade-blue.png");
+}
+.fade-dotted-left-pink {
+  top: 0%;
+  right: -50%;
+  background-image: url("./../../assets/images/fade-pink.png");
+}
+
+.fade-dotted-left-pink-main {
+  background-image: url("./../../assets/images/fade-pink.png");
+  position: absolute;
+  top: 180px;
+  right: 170px;
+  animation: fade_in_out 3.5s infinite alternate;
+  background-size: cover;
+  height: 1300px;
+  width: 1300px;
+  bottom: 650px;
+}
+.fade-dotted-right-blue-main {
+  background-image: url("./../../assets/images/fade-blue.png");
+  position: absolute;
+  top: 100px;
+  right: -469px;
+  animation: fade_in_out 3.5s infinite alternate;
+  background-size: cover;
+  height: 1300px;
+  width: 1300px;
+  bottom: 650px;
+}
+@keyframes fade_in_out {
+  0% {
+    opacity: 0.1;
+  }
+  100% {
+    opacity: 0.8;
+  }
+}

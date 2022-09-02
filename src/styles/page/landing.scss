@@ -1,0 +1,150 @@
+#section-first-NFT {
+  .module-header {
+    margin-bottom: 10px;
+  }
+  .module-blur {
+    max-width: 300px;
+  }
+  .banner-first-NFT {
+    margin-top: 70px;
+    .border-banner-NFT {
+      position: relative;
+      font-size: 16px;
+      img {
+        width: 965px;
+      }
+      &::after {
+        position: absolute;
+        content: "";
+        display: block;
+        top: -50px;
+        width: 100%;
+        left: 50px;
+        z-index: -1;
+        border: 0.5em solid #f4f4f4;
+        height: 100%;
+      }
+    }
+  }
+}
+#section-Staking-WDA {
+  .module-blur {
+    max-width: 300px;
+  }
+  .module-border-token-stake {
+    border: 2px solid #b8b8b8;
+    padding: 32px 40px;
+  }
+  .module-title {
+    font-size: 16px;
+    @include color-title;
+    @include font-default;
+  }
+}
+#section-DAO-Treasury {
+  .module-group-horizatol {
+    & > div {
+      padding-right: 30px;
+      & + div {
+        padding-left: 30px;
+      }
+    }
+    display: flex;
+  }
+  .module-border-right {
+    position: relative;
+    &::after {
+      position: absolute;
+      content: "";
+      display: block;
+      width: 1px;
+      right: 0%;
+      height: 20px;
+      background-color: white;
+      top: 50%;
+      transform: translate(-50%, -50%);
+    }
+  }
+  .module-blur {
+    max-width: 355px;
+    a {
+      @include color-sub;
+    }
+  }
+}
+
+#section-info-Treasury {
+  position: relative;
+  .ant-btn-default {
+    width: 100%;
+  }
+  .module-title {
+    @include font-special;
+    line-height: 24px;
+    @include color-title;
+  }
+  .name-token {
+    @include font-special;
+    font-size: 16px;
+    line-height: 24px;
+    @include color-title;
+    margin-bottom: 12px;
+  }
+  .treasury-balance,
+  .Investment-Funds {
+    .module-blur-title {
+      font-size: 24px;
+    }
+    .module-progress {
+      width: 100%;
+      height: 7px;
+      background: #f4f4f4;
+      border-radius: 4px;
+      .progress-active {
+        height: 7px;
+        border-radius: 4px;
+      }
+    }
+  }
+  .treasury-balance {
+    padding-right: 50px !important;
+    border-right: 2px solid #b8b8b8;
+    .progress-active {
+      background: #fe84cf;
+    }
+  }
+  .Investment-Funds {
+    padding-left: 50px !important;
+    .progress-active {
+      background: #fe84cf;
+    }
+  }
+}
+#section-our-useCases {
+  .item-case {
+    @include color-sub;
+    text-align: center;
+  }
+  .module-blur {
+    max-width: 325px;
+  }
+  .module-content {
+    padding: unset;
+    margin-top: 60px;
+  }
+}
+#section-audits {
+  .module-audit {
+    width: 100%;
+    background-color: white;
+    height: 170px;
+    margin-bottom: 30px;
+  }
+  .module-blur {
+    max-width: 300px;
+  }
+  .module-content {
+    padding: unset;
+    margin-top: 60px;
+  }
+}

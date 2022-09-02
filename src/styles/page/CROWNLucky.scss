@@ -1,0 +1,242 @@
+.section {
+  .w-100 {
+    width: 100% !important;
+    .wallet-button-default {
+      width: 100% !important;
+    }
+  }
+  .bottom-section-lucky {
+    .ant-progress-bg {
+      background-color: #fe84cf !important;
+    }
+
+    .quantity {
+      text-align: left;
+      color: #fff;
+      font-size: 16px;
+      line-height: 24px;
+
+      span {
+        color: #a0a0a0;
+      }
+    }
+
+    .form_get_quantity {
+      height: 48px;
+      margin-top: 16px;
+      display: flex;
+      justify-content: space-between;
+      .ant-input-number {
+        width: 80%;
+        background-color: transparent;
+        color: white;
+
+        .ant-input-number-handler-wrap {
+          display: none;
+        }
+
+        &:hover {
+          background-color: transparent;
+        }
+      }
+      .ant-input-status-error {
+        background-color: transparent;
+        border: 1.5px solid #999999;
+        &:hover {
+          background-color: transparent;
+        }
+      }
+      .ant-input-status-error {
+        background-color: transparent;
+        border: 1.5px solid #999999;
+        &:hover {
+          background-color: transparent;
+        }
+      }
+      *,
+      .ant-btn .ant-btn-default {
+        height: 100% !important;
+      }
+    }
+
+    .join_button {
+      margin-top: 1em;
+      width: 100%;
+      button {
+        width: 100%;
+      }
+    }
+
+    .crown_name {
+      color: #f4f4f4;
+      font-size: 36px;
+      line-height: 48px;
+      margin-bottom: 14px;
+      text-align: left;
+    }
+
+    .crown_tag {
+      display: flex;
+      justify-content: flex-start;
+      margin-bottom: 36px;
+      .ant-tag {
+        background-color: transparent !important;
+        font-weight: 400;
+        &:nth-child(1) {
+          border: 1px solid #72de99;
+          color: #72de99;
+        }
+
+        &:nth-child(2) {
+          border: 1px solid #f4f4f4;
+          color: #f4f4f4;
+        }
+      }
+    }
+  }
+
+  .claim_nft_container {
+    width: 100%;
+    margin-top: 54px !important;
+
+    .module-card {
+      background-color: #fe84cf !important;
+      background-image: unset !important;
+      border: none !important;
+
+      &::after {
+        top: 8% !important;
+        left: 1.5% !important;
+        border-color: #fe84cf !important;
+      }
+    }
+  }
+
+  .crown_win_container {
+    width: 100%;
+    &__title {
+      text-align: center;
+      font-size: 72px;
+      font-weight: 400;
+      line-height: 80px;
+      letter-spacing: 0em;
+      color: #f4f4f4;
+      margin-top: 118px;
+      margin-bottom: 56px;
+    }
+
+    &__body {
+      gap: 24px;
+    }
+  }
+  // button.ant-btn:disabled:hover {
+  //   background-color: unset !important;
+  //   color: #7a7a7a !important;
+  //   span {
+  //     color: unset !important;
+  //   }
+  // }
+  @media (max-width: 1024.5px) {
+    .claim_nft_container {
+      padding: 0;
+    }
+  }
+
+  .w-100 {
+    width: 100%;
+  }
+
+  .timer {
+    margin: 26px 0;
+  }
+}
+.crown_lucky_loading {
+  transform: translateY(50%) !important;
+}
+
+@media (min-width: 767.6px) {
+  .section {
+    .crown_win_container {
+      &__body {
+        .ant-col-md-12 {
+          flex: 0 0 calc(50% - 12px);
+          max-width: calc(50% - 12px);
+        }
+      }
+    }
+  }
+}
+
+@media (min-width: 1023.5px) {
+  .section {
+    .crown_win_container {
+      &__body {
+        .ant-col-xxl-8 {
+          flex: 0 0 calc(33.33333333% - 17px);
+          max-width: calc(33.33333333% - 17px);
+        }
+      }
+    }
+  }
+
+  .pl-xl-3 {
+    padding-left: 3rem !important;
+  }
+}
+
+@media (max-width: 992px) {
+  .claim_nft_container {
+    .module-card-body {
+      .module-card-wda {
+        font-size: 21px !important;
+      }
+    }
+  }
+}
+
+@media (max-width: 768.6px) {
+  .crown_win_container__title {
+    font-size: 35px !important;
+  }
+}
+
+@media (max-width: 350px) {
+  .claim_nft_container {
+    .module-card {
+      padding: 15px 15px 15px !important;
+    }
+
+    .module-card-body {
+      .module-card-wda {
+        font-size: 19px !important;
+        text-align: center;
+      }
+    }
+
+    .module-card-button {
+      width: 100%;
+      button {
+        width: 100%;
+      }
+    }
+  }
+}
+
+
+
+.claim-crown {
+  width: 100%;
+  margin-top: 120px;
+  .title {
+    font-family: "BelfastGrotesk-SemiBold" !important;
+    font-size: 42px;
+    line-height: 80px;
+    color: #f4f4f4;
+    margin-bottom: 35px;
+  }
+
+  .reduce {
+   color: #fff;
+   text-align: center;
+  }
+}

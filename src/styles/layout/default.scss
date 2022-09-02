@@ -1,0 +1,120 @@
+.color-text-default {
+    color: #b8b8b8 !important;
+}
+.layout {
+    color: #f4f4f4;
+    @include font-default;
+}
+
+.flex-center {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+.btn-mobile-default {
+    border: 1.5px solid #f4f4f4 !important;
+    box-sizing: border-box !important;
+    text-align: center;
+    background: transparent;
+    padding: 12px 24px;
+    span {
+        color: #f4f4f4 !important;
+    }
+}
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Firefox */
+input[type='number'] {
+    -moz-appearance: textfield;
+}
+
+.btn-default {
+    border: 1.5px solid #f4f4f4 !important;
+    box-sizing: border-box !important;
+    text-align: center;
+    background: transparent;
+    padding: 12px 24px;
+    width: 100%;
+    cursor: pointer;
+    span {
+        color: #f4f4f4 !important;
+    }
+
+    &.disabled {
+        &:hover {
+            border: 1.5px solid #b8b8b8 !important;
+            cursor: auto;
+            background: transparent;
+            span {
+                color: #b8b8b8 !important;
+            }
+        }
+        // border-color: #b8b8b8 !important;
+        border: 1.5px solid #b8b8b8 !important;
+        cursor: auto;
+        span {
+            color: #b8b8b8 !important;
+        }
+    }
+
+    &:hover {
+        background: #f4f4f4;
+        span {
+            color: #000000 !important;
+        }
+    }
+}
+
+.learn-more {
+    border-bottom: 1.5px solid !important;
+    cursor: pointer !important;
+}
+
+.wallet-button-default {
+    border: 1.5px solid #f4f4f4;
+    box-sizing: border-box;
+    display: inline-block;
+    position: relative;
+    // left: 50%;
+    // transform: translateX(-50%);
+    transition: all 0.5s ease-in-out;
+    padding: 12px 24px;
+    background-color: transparent;
+    @include color-title;
+    cursor: pointer;
+    img {
+        transition: all 1s ease-in-out;
+        width: 24px;
+        height: 24px;
+        content: url('../../assets/png/topbar/icon-wallet-white.svg');
+    }
+    span {
+        font-size: 16px;
+        line-height: 24px;
+        text-align: right;
+        margin-left: 4px;
+    }
+
+    &:hover {
+        background: #f4f4f4;
+        color: #221e2a;
+        img {
+            content: url('../../assets/png/topbar/icon-wallet-black.svg');
+        }
+    }
+}
+
+.w100 {
+    width: 100%;
+}
+
+.mh100 {
+    min-height: 100vh;
+}

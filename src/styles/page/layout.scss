@@ -1,0 +1,92 @@
+:root {
+  --text-color: #f4f4f4;
+  --mgin-top: 24px;
+}
+#layout {
+  background: url("../../assets/png/noise.png"), #19171e !important;
+  overflow: hidden;
+  span {
+    font-family: "Circular Std" !important;
+    font-size: 16px !important;
+    line-height: 24px !important;
+  }
+  .color-text-default {
+    color: #b8b8b8 !important;
+  }
+  img {
+    vertical-align: sub;
+  }
+  #header-layout {
+    line-height: 50px !important;
+    z-index: 10;
+    position: fixed;
+    left: 0;
+    right: 0;
+    &.scrolled {
+      background-color: #221e2a !important;
+    }
+    height: 78px;
+    #menu {
+      padding: 13px 0px;
+      background-color: transparent;
+    }
+    .connect-wallet {
+      padding-left: 30px;
+      @include font-default;
+      font-size: 16px !important;
+      color: #f4f4f4;
+      .inner-wallet {
+        border: 1.5px solid #f4f4f4;
+        padding: 0px 20px;
+        color: #f4f4f4;
+        transition: all 0.4s ease;
+        background-color: transparent;
+      }
+    }
+  }
+  #main-layout {
+    margin-top: 100px;
+    #commingsoon {
+      color: white;
+      font-size: 50px;
+      display: flex;
+      justify-content: center;
+      margin-top: 40vh;
+    }
+  }
+  #footer-layout {
+    margin-top: 100px;
+    background: unset;
+    span.module-blur:hover {
+      cursor: pointer;
+      color: #f4f4f4;
+    }
+    #section-footer {
+      a:hover {
+        color: #f4f4f4;
+      }
+      margin-top: 60px;
+      .module-blur {
+        max-width: 258px;
+      }
+      .list-contact {
+        line-height: 40px;
+        a {
+          color: #b8b8b8;
+          transition: all 0.5s ease-in-out;
+          &:hover {
+            color: #f4f4f4;
+          }
+        }
+      }
+      .copy-right {
+        font-family: "Circular Std";
+        font-size: 12px;
+        padding-top: 150px;
+        line-height: 16px;
+        text-align: center;
+        color: #b8b8b8;
+      }
+    }
+  }
+}

@@ -1,0 +1,8 @@
+.ant-message-notice-content {
+  border: 1px solid #f9f9f9;
+  background-color: rgba(0,0,0,.85);
+}
+
+.ant-message-notice-content .ant-message-custom-content {
+  color: #fff;
+}

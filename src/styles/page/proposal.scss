@@ -1,0 +1,180 @@
+#section-dao-proposal {
+  .ant-tabs-content-holder {
+    margin-top: 20px;
+  }
+
+  .wallet-button {
+    border: 1.5px solid #f4f4f4;
+    box-sizing: border-box;
+    display: inline-block;
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+    transition: all 0.5s ease-in-out;
+    padding: 12px 24px;
+    background-color: transparent;
+    @include color-title;
+    cursor: pointer;
+    img {
+      transition: all 1s ease-in-out;
+      width: 24px;
+      height: 24px;
+      content: url("../../assets/png/topbar/icon-wallet-white.svg");
+    }
+    span {
+      font-size: 16px;
+      line-height: 24px;
+      text-align: right;
+      margin-left: 4px;
+    }
+
+    &:hover {
+      background: #f4f4f4;
+      color: #221e2a;
+      img {
+        content: url("../../assets/png/topbar/icon-wallet-black.svg");
+      }
+    }
+  }
+  .propsal-content {
+    margin-top: 70px;
+    .ant-btn.ant-btn-default {
+      margin: unset;
+    }
+    img:hover {
+      cursor: pointer;
+    }
+    .module-line {
+      margin: unset;
+    }
+  }
+  .ant-btn.ant-btn-default {
+    display: block;
+    margin: auto;
+  }
+  .module-border-bottom {
+    border-bottom: 1.5px solid #b8b8b8;
+  }
+  .ant-spin.ant-spin-spinning {
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, -51%);
+    top: 170%;
+    width: 100%;
+    height: 100%;
+    .ant-spin-dot.ant-spin-dot-spin {
+      font-size: 62px !important;
+      .ant-spin-dot-item {
+        width: 30px;
+        background-color: #41718c;
+        height: 30px;
+      }
+    }
+  }
+}
+
+#section-dao-proposal-detail {
+  .ant-spin.ant-spin-spinning {
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, -51%);
+    top: 200%;
+    width: 100%;
+    height: 100%;
+    .ant-spin-dot.ant-spin-dot-spin {
+      font-size: 62px !important;
+      .ant-spin-dot-item {
+        width: 30px;
+        background-color: #41718c;
+        height: 30px;
+      }
+    }
+  }
+
+  .module-header-small {
+    // font-size: 36px !important;
+    // line-height: unset !important;
+    font-size: 16px !important;
+    text-align: center;
+  }
+  .ant-tag {
+    margin-top: 15px !important;
+  }
+  .module-content {
+    position: relative;
+    padding: 20px;
+    border: 2px solid #b8b8b8;
+    margin-top: 56px;
+    .module-line {
+      margin: 0px 10px !important;
+    }
+    .no-vote {
+      position: absolute;
+      top: 47%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 39px;
+    }
+    .ant-image {
+      img {
+        vertical-align: middle !important;
+      }
+    }
+    .amount-vote {
+      @include font-special;
+      font-size: 24px;
+      line-height: 36px;
+      color: #fe84cf;
+    }
+  }
+}
+
+#section-dao-proposal-description {
+  .ant-spin.ant-spin-spinning {
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, -51%);
+    top: 250%;
+    width: 100%;
+    height: 100%;
+    .ant-spin-dot.ant-spin-dot-spin {
+      font-size: 62px !important;
+      .ant-spin-dot-item {
+        width: 30px;
+        background-color: #41718c;
+        height: 30px;
+      }
+    }
+  }
+
+  .c2i-form-group .c2i-form-control .ant-input {
+    border: 1.5px solid transparent;
+    &:focus {
+      outline: none;
+    }
+  }
+  .list-description-proposals {
+    margin-top: 21px;
+  }
+  .description {
+    span svg {
+      font-size: 20px !important;
+    }
+  }
+  p {
+    margin: 24px 0px !important;
+  }
+}
+.ant-form-item-label > label {
+  @include font-special;
+  @include color-title;
+}
+.delegate {
+  padding: 8px 12px;
+  transition: all 0.5s ease;
+  &:hover {
+    background-color: #f4f4f4 !important;
+    color: #221e2a !important;
+    cursor: pointer;
+  }
+}
