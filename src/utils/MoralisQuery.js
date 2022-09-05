@@ -1,4 +1,4 @@
-import Moralis from "moralis";
+// import Moralis from "moralis";
 
 /**
  *
@@ -11,28 +11,28 @@ import Moralis from "moralis";
 
 // cơ bản query cần có ....
 function makeQueryBuilder(tableName, limit, skip, order) {
-  const Object = Moralis.Object.extend(tableName);
-  let queryBuilder = new Moralis.Query(Object);
+  // const Object = Moralis.Object.extend(tableName);
+  // let queryBuilder = new Moralis.Query(Object);
 
-  if (limit) {
-    queryBuilder.limit(limit);
-  }
+  // if (limit) {
+  //   queryBuilder.limit(limit);
+  // }
 
-  if (skip) {
-    queryBuilder.skip(skip);
-  }
+  // if (skip) {
+  //   queryBuilder.skip(skip);
+  // }
 
-  if (order && order.key !== "" && order.value !== "") {
-    if (order.key === "desc") {
-      queryBuilder.descending(order.value);
-    } else {
-      queryBuilder.ascending(order.value);
-    }
-  } else {
-    queryBuilder.descending("createdAt");
-  }
+  // if (order && order.key !== "" && order.value !== "") {
+  //   if (order.key === "desc") {
+  //     queryBuilder.descending(order.value);
+  //   } else {
+  //     queryBuilder.ascending(order.value);
+  //   }
+  // } else {
+  //   queryBuilder.descending("createdAt");
+  // }
 
-  return queryBuilder;
+  // return queryBuilder;
 }
 
 // đếm toàn bộ row có trong table để chia trang
@@ -58,9 +58,9 @@ async function find(tableName, limit, skip, order) {
   return await query.find();
 }
 async function subscription(tableName) {
-  let query = new Moralis.Query(tableName);
-  let sub = await query.subscribe();
-  return sub;
+  // let query = new Moralis.Query(tableName);
+  // let sub = await query.subscribe();
+  // return sub;
 }
 
 async function dashboardFind(tableName, limit, skip) {

@@ -14,7 +14,7 @@ import TextArea from "antd/lib/input/TextArea";
 import axios from "axios";
 import { ethers } from "ethers";
 import { Fragment, useEffect, useState } from "react";
-import { useMoralisCloudFunction } from "react-moralis";
+// import { useMoralisCloudFunction } from "react-moralis";
 import { useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
 import { chanId } from "src/constants";
@@ -81,9 +81,9 @@ function ProposalDetail() {
    * *INITIALIZATION
    */
 
-  const { fetch } = useMoralisCloudFunction("getAddressesVote", {
-    proposalId,
-  });
+  // const { fetch } = useMoralisCloudFunction("getAddressesVote", {
+  //   proposalId,
+  // });
 
   const getVoter = async () => {
     await fetch({

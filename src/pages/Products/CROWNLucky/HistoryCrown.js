@@ -1,6 +1,6 @@
 import { Col, Empty, Pagination, Row, Space, Spin } from "antd";
 import React, { useEffect, useState } from "react";
-import { useMoralisSubscription } from "react-moralis";
+// import { useMoralisSubscription } from "react-moralis";
 import NFTProfile from "src/layout/grid/NFTProfile";
 import BaseHelper from "src/utils/BaseHelper";
 import * as MoralisQuery from "src/utils/MoralisQuery";
@@ -51,33 +51,33 @@ function HistoryWinner() {
 		
 	}
 	}, [skip]);
-	useEffect(() => {
-	try {
-		if (Object.keys(dataHistory.data).length > 0 && dataHistory.data) {
-			setListCrownTicketWon(BaseHelper.formatDataMoralis(dataHistory.data));
-		} else {
-			setListCrownTicketWon([]);
-		}
-	} catch (error) {
+	// useEffect(() => {
+	// try {
+	// 	if (Object.keys(dataHistory.data).length > 0 && dataHistory.data) {
+	// 		setListCrownTicketWon(BaseHelper.formatDataMoralis(dataHistory.data));
+	// 	} else {
+	// 		setListCrownTicketWon([]);
+	// 	}
+	// } catch (error) {
 		
-	}
-	}, [dataHistory]);
-	useMoralisSubscription(
-		"CrownTicketWin",
-		(query) => query.descending("createdAt").limit(1),
-		[],
-		{
-			live: true,
-			onUpdate: (dataListen) => {
-				if (!BaseHelper.checkHasItemInArrayMoralis(dataHistory, dataListen)) {
-					setDataHistory({
-						count: dataHistory.count++,
-						data: [dataListen, ...dataHistory],
-					});
-				}
-			},
-		}
-	);
+	// }
+	// }, [dataHistory]);
+	// useMoralisSubscription(
+	// 	"CrownTicketWin",
+	// 	(query) => query.descending("createdAt").limit(1),
+	// 	[],
+	// 	{
+	// 		live: true,
+	// 		onUpdate: (dataListen) => {
+	// 			if (!BaseHelper.checkHasItemInArrayMoralis(dataHistory, dataListen)) {
+	// 				setDataHistory({
+	// 					count: dataHistory.count++,
+	// 					data: [dataListen, ...dataHistory],
+	// 				});
+	// 			}
+	// 		},
+	// 	}
+	// );
 
 	return (
 		<section className="section">

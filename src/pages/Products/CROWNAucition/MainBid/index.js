@@ -2,7 +2,7 @@ import { message } from "antd";
 import { ethers } from "ethers";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
-import { useMoralisSubscription } from "react-moralis";
+// import { useMoralisSubscription } from "react-moralis";
 import { useSelector } from "react-redux";
 import {
 	auctionAbi,
@@ -58,118 +58,118 @@ const MainBid = (props) => {
 			}
 		}
 	}, [expiredTime]);
-	useEffect(() => {
-		let run = true;
-		run &&
-			(async () => {
-				try {
-					setMetaLoading(true);
-					setDataLoading(true);
-					await moralisCheckClosed();
-					await moralisInit().then(async (res) => {
-						setDataLoading(false);
-						let provider = new ethers.getDefaultProvider("kovan");
-						let crownContract = new ethers.Contract(
-							crownNFTAdress,
-							crownNFTAbi,
-							provider
-						);
-						if (walletConnect) {
-							// get auction again because of setAuctionData is waiting time
-							crownContract = new ethers.Contract(
-								crownNFTAdress,
-								crownNFTAbi,
-								walletConnect
-							);
-						}
-						const totalSupply = await crownContract.totalSupply();
-						const maxSupply = await crownContract.maxSupply();
-						if (parseInt(maxSupply) < parseInt(totalSupply)) {
-							setIsEnd(true);
-						}
+	// useEffect(() => {
+	// 	let run = true;
+	// 	run &&
+	// 		(async () => {
+	// 			try {
+	// 				setMetaLoading(true);
+	// 				setDataLoading(true);
+	// 				await moralisCheckClosed();
+	// 				await moralisInit().then(async (res) => {
+	// 					setDataLoading(false);
+	// 					let provider = new ethers.getDefaultProvider("kovan");
+	// 					let crownContract = new ethers.Contract(
+	// 						crownNFTAdress,
+	// 						crownNFTAbi,
+	// 						provider
+	// 					);
+	// 					if (walletConnect) {
+	// 						// get auction again because of setAuctionData is waiting time
+	// 						crownContract = new ethers.Contract(
+	// 							crownNFTAdress,
+	// 							crownNFTAbi,
+	// 							walletConnect
+	// 						);
+	// 					}
+	// 					const totalSupply = await crownContract.totalSupply();
+	// 					const maxSupply = await crownContract.maxSupply();
+	// 					if (parseInt(maxSupply) < parseInt(totalSupply)) {
+	// 						setIsEnd(true);
+	// 					}
 
-						const uri = await crownContract.tokenURI(
-							res.auction[0]?.attributes.nftId
-						);
+	// 					const uri = await crownContract.tokenURI(
+	// 						res.auction[0]?.attributes.nftId
+	// 					);
 
-						await apiService("get", uri).then((res) => {
-							if (res?.status == 200) {
-								setMetaData(res.data);
-								setMetaLoading(false);
-							}
-						});
-					});
-				} catch (err) {}
-			})();
-		return () => {
-			run = false;
-		};
-	}, [walletConnect]);
-	// SUBSCRIPTION MORALIS HOOK
-	useMoralisSubscription(
-		"AuctionPlaceBid",
-		(query) =>
-			query.descending("block_number").descending("createdAt").limit(1),
-		[],
-		{
-			live: true,
-			onUpdate: (data) => {
-				if (!BaseHelper.checkHasItemInArrayMoralis(historyBidData, data)) {
-					setHistoryBidData([data, ...historyBidData]);
-				}
-			},
-		}
-	);
-	useMoralisSubscription(
-		"AuctionClose",
-		(query) =>
-			query.descending("block_number").descending("createdAt").limit(1),
-		[],
-		{
-			live: true,
-			onUpdate: async () => {
-				// Because real-time of moralis have some stupid things it will listen 2 times
-				await moralisCheckClosed();
-			},
-		}
-	);
-	useMoralisSubscription(
-		"AuctionOpened",
-		(query) =>
-			query.descending("block_number").descending("createdAt").limit(1),
-		[],
-		{
-			live: true,
-			onUpdate: async (data) => {
-				// Update all data from scratch
-				setMetaLoading(true);
-				const expiredTime = parseInt(`${data?.attributes.closingTime}000`);
-				setExpiredTime(expiredTime);
-				setHistoryBidData([]);
-				setAuctionData([data]);
-				setSuccess(false);
-				setDataLoading(false);
-				setNotHaveAuction(false);
-				crownContract = new ethers.Contract(
-					crownNFTAdress,
-					crownNFTAbi,
-					walletConnect
-				);
-				const totalSupply = await crownContract.totalSupply();
-				const maxSupply = await crownContract.maxSupply();
-				if (parseInt(maxSupply) < parseInt(totalSupply)) {
-					setIsEnd(true);
-				}
-				const uri = await crownContract.tokenURI(data?.attributes.nftId);
-				await apiService("get", uri).then((res) => {
-					if (res?.status == 200) {
-						setMetaData(res.data);
-						setMetaLoading(false);
-					}
-				});
-			},
-		}
-	);
+	// 					await apiService("get", uri).then((res) => {
+	// 						if (res?.status == 200) {
+	// 							setMetaData(res.data);
+	// 							setMetaLoading(false);
+	// 						}
+	// 					});
+	// 				});
+	// 			} catch (err) {}
+	// 		})();
+	// 	return () => {
+	// 		run = false;
+	// 	};
+	// }, [walletConnect]);
+	// // SUBSCRIPTION MORALIS HOOK
+	// useMoralisSubscription(
+	// 	"AuctionPlaceBid",
+	// 	(query) =>
+	// 		query.descending("block_number").descending("createdAt").limit(1),
+	// 	[],
+	// 	{
+	// 		live: true,
+	// 		onUpdate: (data) => {
+	// 			if (!BaseHelper.checkHasItemInArrayMoralis(historyBidData, data)) {
+	// 				setHistoryBidData([data, ...historyBidData]);
+	// 			}
+	// 		},
+	// 	}
+	// );
+	// useMoralisSubscription(
+	// 	"AuctionClose",
+	// 	(query) =>
+	// 		query.descending("block_number").descending("createdAt").limit(1),
+	// 	[],
+	// 	{
+	// 		live: true,
+	// 		onUpdate: async () => {
+	// 			// Because real-time of moralis have some stupid things it will listen 2 times
+	// 			await moralisCheckClosed();
+	// 		},
+	// 	}
+	// );
+	// useMoralisSubscription(
+	// 	"AuctionOpened",
+	// 	(query) =>
+	// 		query.descending("block_number").descending("createdAt").limit(1),
+	// 	[],
+	// 	{
+	// 		live: true,
+	// 		onUpdate: async (data) => {
+	// 			// Update all data from scratch
+	// 			setMetaLoading(true);
+	// 			const expiredTime = parseInt(`${data?.attributes.closingTime}000`);
+	// 			setExpiredTime(expiredTime);
+	// 			setHistoryBidData([]);
+	// 			setAuctionData([data]);
+	// 			setSuccess(false);
+	// 			setDataLoading(false);
+	// 			setNotHaveAuction(false);
+	// 			crownContract = new ethers.Contract(
+	// 				crownNFTAdress,
+	// 				crownNFTAbi,
+	// 				walletConnect
+	// 			);
+	// 			const totalSupply = await crownContract.totalSupply();
+	// 			const maxSupply = await crownContract.maxSupply();
+	// 			if (parseInt(maxSupply) < parseInt(totalSupply)) {
+	// 				setIsEnd(true);
+	// 			}
+	// 			const uri = await crownContract.tokenURI(data?.attributes.nftId);
+	// 			await apiService("get", uri).then((res) => {
+	// 				if (res?.status == 200) {
+	// 					setMetaData(res.data);
+	// 					setMetaLoading(false);
+	// 				}
+	// 			});
+	// 		},
+	// 	}
+	// );
 
 	// FUNCTIONS
 	const moralisCheckClosed = async () => {

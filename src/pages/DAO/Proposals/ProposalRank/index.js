@@ -12,7 +12,7 @@ import {
 } from "antd";
 import _ from "lodash";
 import React, { Fragment, useEffect, useState } from "react";
-import { useMoralisCloudFunction } from "react-moralis";
+// import { useMoralisCloudFunction } from "react-moralis";
 import { useNavigate } from "react-router-dom";
 import BaseHelper from "src/utils/BaseHelper";
 import * as MoralisQuery from "src/utils/MoralisQuery";
@@ -38,13 +38,13 @@ function ProposalIdea(props) {
    * *EXTEND FROM PARENT
    */
 
-  const { fetch } = useMoralisCloudFunction(
-    "resetVoteCast",
-    {
-      proposalId,
-    }
-    // { autoFetch: false }
-  );
+  // const { fetch } = useMoralisCloudFunction(
+  //   "resetVoteCast",
+  //   {
+  //     proposalId,
+  //   }
+  //   // { autoFetch: false }
+  // );
 
   const clearVote = async () => {
     await fetch({

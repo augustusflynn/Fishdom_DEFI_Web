@@ -13,7 +13,7 @@ import axios from "axios";
 import { ethers } from "ethers";
 import moment from "moment";
 import React, { Fragment, useEffect, useState } from "react";
-import { useMoralisSubscription } from "react-moralis";
+// import { useMoralisSubscription } from "react-moralis";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import ConnectWallet from "src/component/button/ConnectWallet";
@@ -94,64 +94,64 @@ function CROWNLucky() {
 			? dailyExpiredTime.add(1, "day")
 			: dailyExpiredTime;
 	//initialize
-	useEffect(() => {
-		try {
-			if (!walletConnect) {
-				return;
-			}
-			if (
-				ownerTicketHeld >= USER_MAX_ALLOW ||
-				ticketSold >= maxTicketProvidePerDay
-			) {
-				setDisableJoinNow(true);
-			} else {
-				setDisableJoinNow(false);
-			}
-		} catch (error) {}
-	}, [ownerTicketHeld, ticketSold, walletConnect]);
-	useEffect(() => {
-		let run = true;
-		try {
-			run &&
-				(async () => {
-					window.scrollTo(0, 0);
-					setTicketAmount(0);
-					await init();
-				})();
-		} catch (error) {}
-		return () => {
-			run = false;
-		};
-	}, [walletConnect]); // tung dat depend vao ownerTicketHold
-	useMoralisSubscription(
-		"CrownTicketWin",
-		(query) => query.descending("createdAt").limit(1),
-		[],
-		{
-			live: true,
-			onUpdate: async (data) => {
-				if (!BaseHelper.checkHasItemInArrayMoralis(dataListener, data)) {
-					setDataListener([...dataListener, data]);
-					setTicketAmount(0);
-					setDisableJoinNow(true);
-				}
-			},
-		}
-	);
-	useMoralisSubscription(
-		"CrownMint",
-		(query) => query.descending("createdAt").limit(1),
-		[],
-		{
-			live: true,
-			onUpdate: async (data) => {
-				try {
-					await init();
-					setDisableJoinNow(false);
-				} catch (error) {}
-			},
-		}
-	);
+	// useEffect(() => {
+	// 	try {
+	// 		if (!walletConnect) {
+	// 			return;
+	// 		}
+	// 		if (
+	// 			ownerTicketHeld >= USER_MAX_ALLOW ||
+	// 			ticketSold >= maxTicketProvidePerDay
+	// 		) {
+	// 			setDisableJoinNow(true);
+	// 		} else {
+	// 			setDisableJoinNow(false);
+	// 		}
+	// 	} catch (error) {}
+	// }, [ownerTicketHeld, ticketSold, walletConnect]);
+	// useEffect(() => {
+	// 	let run = true;
+	// 	try {
+	// 		run &&
+	// 			(async () => {
+	// 				window.scrollTo(0, 0);
+	// 				setTicketAmount(0);
+	// 				await init();
+	// 			})();
+	// 	} catch (error) {}
+	// 	return () => {
+	// 		run = false;
+	// 	};
+	// }, [walletConnect]); // tung dat depend vao ownerTicketHold
+	// useMoralisSubscription(
+	// 	"CrownTicketWin",
+	// 	(query) => query.descending("createdAt").limit(1),
+	// 	[],
+	// 	{
+	// 		live: true,
+	// 		onUpdate: async (data) => {
+	// 			if (!BaseHelper.checkHasItemInArrayMoralis(dataListener, data)) {
+	// 				setDataListener([...dataListener, data]);
+	// 				setTicketAmount(0);
+	// 				setDisableJoinNow(true);
+	// 			}
+	// 		},
+	// 	}
+	// );
+	// useMoralisSubscription(
+	// 	"CrownMint",
+	// 	(query) => query.descending("createdAt").limit(1),
+	// 	[],
+	// 	{
+	// 		live: true,
+	// 		onUpdate: async (data) => {
+	// 			try {
+	// 				await init();
+	// 				setDisableJoinNow(false);
+	// 			} catch (error) {}
+	// 		},
+	// 	}
+	// );
 	async function init() {
 		let provider;
 		if (walletConnect) {

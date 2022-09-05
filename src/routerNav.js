@@ -111,12 +111,12 @@ export const navigations = [
         path: "about-team",
         hash: "section-partner",
       },
-      {
-        type: "Item",
-        title: "Audits",
-        path: "/",
-        hash: "section-audits",
-      },
+      // {
+      //   type: "Item",
+      //   title: "Audits",
+      //   path: "/",
+      //   hash: "section-audits",
+      // },
     ],
   },
 ];
