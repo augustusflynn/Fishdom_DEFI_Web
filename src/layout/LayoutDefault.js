@@ -59,7 +59,7 @@ function LayoutDefault() {
 	//   }
 	// };
 	useEffect(() => {
-		if (chainId && chainId != 42) {
+		if (chainId && chainId != 97) {
 			setIsWrongNetWork(true);
 			localStorage.setItem(METAMASK_CONNECT, "");
 			localStorage.setItem(WALLET_CONNECT, "");
@@ -67,7 +67,7 @@ function LayoutDefault() {
 			dispatch(wallet.walletSetData(null));
 			connector.deactivate();
 			message.error("Wrong network");
-		} else if (chainId == 42) {
+		} else if (chainId == 97) {
 			setIsWrongNetWork(false);
 		}
 	}, [chainId, chainIdW]);
@@ -98,7 +98,7 @@ function LayoutDefault() {
 		const getSigner = async () => {
 			try {
 				if (provider || providerW) {
-					if (provider && chainId === 42) {
+					if (provider && chainId === 97) {
 						// console.log("Provider", provider);
 						if (provider) {
 							await provider
@@ -127,7 +127,7 @@ function LayoutDefault() {
 						return;
 					}
 
-					if (providerW && chainIdW === 42) {
+					if (providerW && chainIdW === 97) {
 						// if (providerW) {
 
 						await providerW.send("eth_requestAccounts", []);
