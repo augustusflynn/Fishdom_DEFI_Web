@@ -23,10 +23,10 @@ const SwapModal = (props) => {
 					Are you sure to Convert
 					<br />
 					<span className="c2i-active">
-						{`${BaseHelper.numberWithDots(price)}`} SCEPTER
+						{`${BaseHelper.numberWithDots(price)}`} FDT
 					</span>{" "}
 					to 1<br />
-					CROWN?
+					POINT?
 				</h2>
 				<div className="btn-container">
 					<Button

@@ -22,6 +22,7 @@ function WinSwap(props) {
 	const [currentSceptor, setCurrentSceptor] = useState(0);
 	const [maxSupplyCrown, setMaxSupplyCrown] = useState(0);
 	const [currentSupply, setCurrentSupply] = useState(0);
+	const [disable,setDisable] = useState(false);
 	const crownRef = useRef();
 	const [loading, setLoading] = useState(false);
 	const [contactUseEffect, setContactUseEffect] = useState(false);
@@ -33,6 +34,7 @@ function WinSwap(props) {
 	});
 	useEffect(async () => {
 		if (!walletConnect) {
+			setDisable(true)
 		} else {
 			const swapContract = new ethers.Contract(
 				swapSceptorAddress,
@@ -72,6 +74,7 @@ function WinSwap(props) {
 	const swapHandler = async () => {
 		if (!walletConnect) {
 			message.error("Please connect wallet!");
+			setDisable(true)
 		} else {
 			if (currentSupply >= maxSupplyCrown) {
 				message.error("Run out of CROWN NFT!");
@@ -165,7 +168,7 @@ function WinSwap(props) {
 										max={maxSupplyCrown}
 										ref={crownRef}
 										placeholder="1 POINT"
-										disabled
+										disabled={disable}
 									/>
 								</div>
 							</div>
@@ -185,7 +188,6 @@ function WinSwap(props) {
 							<Button
 								className="swap-confirm-btn module-blur"
 								onClick={showModal}
-								disabled={currentSceptor < 200000}
 							>
 								{"Swap now"}
 							</Button>
@@ -230,7 +232,7 @@ function WinSwap(props) {
 										max={maxSupplyCrown}
 										ref={crownRef}
 										placeholder="1 FDT"
-										disabled
+										disabled = {disable}
 									/>
 								</div>
 							</div>
@@ -250,7 +252,6 @@ function WinSwap(props) {
 							<Button
 								className="swap-confirm-btn module-blur"
 								onClick={showModal}
-								disabled={currentSceptor < 200000}
 							>
 								{"Swap now"}
 							</Button>
