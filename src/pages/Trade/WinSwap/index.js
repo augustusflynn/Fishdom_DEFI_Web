@@ -36,6 +36,7 @@ function WinSwap(props) {
 		if (!walletConnect) {
 			setDisable(true)
 		} else {
+			setDisable(false)
 			const swapContract = new ethers.Contract(
 				swapSceptorAddress,
 				swapSceptorAbi,
