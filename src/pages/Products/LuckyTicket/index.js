@@ -2,7 +2,7 @@ import { message } from "antd";
 import { ethers } from "ethers";
 import moment from "moment";
 import React, { Fragment, useEffect, useState } from "react";
-import { useMoralisQuery } from "react-moralis";
+// import { useMoralisQuery } from "react-moralis";
 import { useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
 import LuckyTicketHelper from "src/constants/lucky";
@@ -48,58 +48,58 @@ function LuckyTicket(props) {
 	);
 	const [contractState, setContractState] = useState();
 	//new Date(`${moment().utc().format("YYYY-MM-DD")} 00:00 AM`)
-	const {
-		data: historyData,
-		error,
-		isLoading: historyLoading,
-	} = useMoralisQuery(
-		"WDATicketWin",
-		(query) => {
-			if (timeData) {
-				query = query
-					.greaterThanOrEqualTo("createdAt", timeData)
-					.lessThan("createdAt", moment(timeData).add(1, "day").toDate());
-			}
-			return query
-				.ascending("amount")
-				.limit(LuckyTicketHelper.historyLimit)
-				.skip((currentPage - 1) * LuckyTicketHelper.historyLimit);
-		},
-		[timeData, currentPage],
-		{ live: true }
-	);
+	// const {
+	// 	data: historyData,
+	// 	error,
+	// 	isLoading: historyLoading,
+	// } = useMoralisQuery(
+	// 	"WDATicketWin",
+	// 	(query) => {
+	// 		if (timeData) {
+	// 			query = query
+	// 				.greaterThanOrEqualTo("createdAt", timeData)
+	// 				.lessThan("createdAt", moment(timeData).add(1, "day").toDate());
+	// 		}
+	// 		return query
+	// 			.ascending("amount")
+	// 			.limit(LuckyTicketHelper.historyLimit)
+	// 			.skip((currentPage - 1) * LuckyTicketHelper.historyLimit);
+	// 	},
+	// 	[timeData, currentPage],
+	// 	{ live: true }
+	// );
 	// useEffect(() => {
 	// 	console.log(timeData, moment(timeData).add(1, "day").toDate());
 	// }, [timeData]);
-	const {
-		data: lastTimeRandom,
-		error: randomError,
-		isLoading: randomLoading,
-	} = useMoralisQuery(
-		"RandomLuckyTicket",
-		(query) => {
-			return query.descending("createdAt").limit(1);
-		},
-		[],
-		{
-			live: true,
-			onLiveCreate: async (entity, all) => {
-				await initData();
-				return [entity, ...all];
-			},
-			onLiveUpdate: async (entity, all) => {
-				await initData();
-				return [entity, ...all];
-			},
-		}
-	);
-	useEffect(() => {
-		if (lastTimeRandom && Object.keys(lastTimeRandom).length > 0) {
-			setEndOnTime(
-				parseInt(lastTimeRandom[0]?.attributes?.timestamp?.toString() + "000")
-			);
-		}
-	}, [lastTimeRandom]);
+	// const {
+	// 	data: lastTimeRandom,
+	// 	error: randomError,
+	// 	isLoading: randomLoading,
+	// } = useMoralisQuery(
+	// 	"RandomLuckyTicket",
+	// 	(query) => {
+	// 		return query.descending("createdAt").limit(1);
+	// 	},
+	// 	[],
+	// 	{
+	// 		live: true,
+	// 		onLiveCreate: async (entity, all) => {
+	// 			await initData();
+	// 			return [entity, ...all];
+	// 		},
+	// 		onLiveUpdate: async (entity, all) => {
+	// 			await initData();
+	// 			return [entity, ...all];
+	// 		},
+	// 	}
+	// );
+	// useEffect(() => {
+	// 	if (lastTimeRandom && Object.keys(lastTimeRandom).length > 0) {
+	// 		setEndOnTime(
+	// 			parseInt(lastTimeRandom[0]?.attributes?.timestamp?.toString() + "000")
+	// 		);
+	// 	}
+	// }, [lastTimeRandom]);
 	// CONTRACT
 	const walletConnect = useSelector(wallet$);
 	const [showWalletState, setShowWalletState] = useState(false);
@@ -359,7 +359,7 @@ function LuckyTicket(props) {
 						loadData={loadData}
 						contractState={contractState}
 					/>
-					<HistoryLucky
+					{/* <HistoryLucky
 						luckyTicketCount={luckyTicketCount}
 						jackpotTicketCount={jackpotTicketCount}
 						claimTicket={claimTicket}
@@ -372,7 +372,7 @@ function LuckyTicket(props) {
 							currentPage,
 							setCurrentPage,
 						}}
-					/>
+					/> */}
 				</Fragment>
 			</>
 		</>

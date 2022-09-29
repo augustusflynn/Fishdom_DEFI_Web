@@ -2,7 +2,7 @@ import "antd/dist/antd.min.css";
 import "./assets/font/font.scss";
 import "./styles/index.scss";
 import ReactDOM from "react-dom";
-import { MoralisProvider } from "react-moralis";
+// import { MoralisProvider } from "react-moralis";
 import { Provider } from "react-redux";
 import { applyMiddleware, compose, createStore } from "redux";
 import createSagaMiddleware from "redux-saga";
@@ -19,14 +19,14 @@ const store = createStore(
 );
 sagaMiddleware.run(mySaga);
 ReactDOM.render(
-  <MoralisProvider
-    appId={process.env.REACT_APP_MORALIS_APP_ID}
-    serverUrl={process.env.REACT_APP_MORALIS_URL}
-  >
+  // <MoralisProvider
+  //   appId={process.env.REACT_APP_MORALIS_APP_ID}
+  //   serverUrl={process.env.REACT_APP_MORALIS_URL}
+  // >
     <Provider store={store}>
       <App />
-    </Provider>
-  </MoralisProvider>,
+    </Provider>,
+  // </MoralisProvider>,
   document.getElementById("root")
 );
 reportWebVitals();

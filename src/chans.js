@@ -1,13 +1,3 @@
-const ETH = {
-	name: "Ether",
-	symbol: "ETH",
-	decimals: 18,
-};
-const MATIC = {
-	name: "Matic",
-	symbol: "MATIC",
-	decimals: 18,
-};
 function isExtendedChainInformation(chainInformation) {
 	return !!chainInformation.nativeCurrency;
 }

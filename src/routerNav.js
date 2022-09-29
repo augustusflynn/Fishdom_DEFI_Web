@@ -7,67 +7,67 @@ export const navigations = [
     childrent: [
       {
         type: "Item",
-        title: "Stake WDA",
-        path: "stake-wda",
+        title: "Staking",
+        path: "stake",
       },
-      {
-        type: "Item",
-        title: "Mining CROWN",
-        path: "stake-mining-crown",
-      },
-      {
-        type: "Item",
-        title: "Claim",
-        path: "claim",
-      },
+      // {
+      //   type: "Item",
+      //   title: "Mining CROWN",
+      //   path: "stake-mining-crown",
+      // },
+      // {
+      //   type: "Item",
+      //   title: "Claim",
+      //   path: "claim",
+      // },
     ],
   },
-  {
-    type: "SubMenu",
-    title: "Products",
-    childrent: [
-      {
-        type: "Item",
-        title: "CROWN Lucky",
-        path: "products-crown-lucky",
-      },
-      {
-        type: "Item",
-        title: "CROWN Auction",
-        path: "products-crown-auction",
-      },
-      {
-        type: "Item",
-        title: "Lucky Ticket",
-        path: "products-lucky-ticket",
-      },
-    ],
-  },
-  {
-    type: "SubMenu",
-    title: "DAO",
-    childrent: [
-      {
-        type: "Item",
-        title: "Proposals",
-        path: "dao-proposals",
-      },
-    ],
-  },
+  // {
+  //   type: "SubMenu",
+  //   title: "Products",
+  //   childrent: [
+  //     {
+  //       type: "Item",
+  //       title: "CROWN Lucky",
+  //       path: "products-crown-lucky",
+  //     },
+  //     {
+  //       type: "Item",
+  //       title: "CROWN Auction",
+  //       path: "products-crown-auction",
+  //     },
+  //     {
+  //       type: "Item",
+  //       title: "Lucky Ticket",
+  //       path: "products-lucky-ticket",
+  //     },
+  //   ],
+  // },
+  // {
+  //   type: "SubMenu",
+  //   title: "DAO",
+  //   childrent: [
+  //     {
+  //       type: "Item",
+  //       title: "Proposals",
+  //       path: "dao-proposals",
+  //     },
+  //   ],
+  // },
   {
     type: "SubMenu",
     title: "Trade",
     childrent: [
       {
         type: "Item",
-        title: "WinSwap",
-        path: "trade-win-swap",
+        title: "Swap",
+        path: "trade-swap",
       },
-      {
-        type: "Item",
-        title: "WinMarket",
-        path: "trade-win-market",
-      },
+      // {
+      //   type: "Item",
+      //   title: "WinMarket",
+      //   path: "trade-win-market",
+      // },
       {
         type: "Item",
         title: "Your collection",
@@ -75,27 +75,27 @@ export const navigations = [
       },
     ],
   },
-  {
-    type: "SubMenu",
-    title: "Resources",
-    childrent: [
-      {
-        type: "Item",
-        title: "Documents",
-        redirect: "https://docs.windao.fi/",
-      },
-      {
-        type: "Item",
-        title: "Tokenomics",
-        path: "resources-tokenomics",
-      },
-      {
-        type: "Item",
-        title: "FAQ",
-        redirect: "https://docs.windao.fi/faq",
-      },
-    ],
-  },
+  // {
+  //   type: "SubMenu",
+  //   title: "Resources",
+  //   childrent: [
+  //     {
+  //       type: "Item",
+  //       title: "Documents",
+  //       redirect: "https://docs.windao.fi/",
+  //     },
+  //     {
+  //       type: "Item",
+  //       title: "Tokenomics",
+  //       path: "resources-tokenomics",
+  //     },
+  //     {
+  //       type: "Item",
+  //       title: "FAQ",
+  //       redirect: "https://docs.windao.fi/faq",
+  //     },
+  //   ],
+  // },
   {
     type: "SubMenu",
     title: "About",
@@ -111,12 +111,12 @@ export const navigations = [
         path: "about-team",
         hash: "section-partner",
       },
-      {
-        type: "Item",
-        title: "Audits",
-        path: "/",
-        hash: "section-audits",
-      },
+      // {
+      //   type: "Item",
+      //   title: "Audits",
+      //   path: "/",
+      //   hash: "section-audits",
+      // },
     ],
   },
 ];

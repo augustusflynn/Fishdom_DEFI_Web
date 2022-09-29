@@ -2,9 +2,9 @@ import { DownOutlined } from "@ant-design/icons";
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 // import { Routes } from "react-router-dom";
-import Scroll from "react-scroll";
+// import Scroll from "react-scroll";
 import { navigations } from "../../routerNav";
-var scroll = Scroll.animateScroll;
+// var scroll = Scroll.animateScroll;
 function MenuTop() {
 	const navigate = useNavigate();
 	const location = useLocation();
