@@ -1,10 +1,10 @@
-import { Button, Col, Image, Input, message, Row, Select, Spin } from "antd";
+import { Button, Col, Input, message, Row, Select, Spin } from "antd";
 import { ethers } from "ethers";
 import React, { Fragment, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import ModalWallet from "src/layout/Topbar/ModalWallet";
-import { wallet$, walletFake$ } from "src/redux/selectors";
-import IconWallet from "../../../assets/png/topbar/icon-wallet-white.svg";
+import { wallet$ } from "src/redux/selectors";
+// import IconWallet from "../../../assets/png/topbar/icon-wallet-white.svg";
 import * as MoralisQuery from "src/utils/MoralisQuery";
 
 import BaseHelper from "./../../../utils/BaseHelper";
@@ -18,28 +18,25 @@ import {
 } from "../../../constants/constants";
 import FadeAnimationOdd from "../../../layout/fadeAnimation/FadeAnimationOdd";
 import Container from "../../../layout/grid/Container";
-import iconNFT from "./../../../assets/images/staking/iconNFT.svg";
-import iconClose from "./../../../assets/images/iconClose.svg";
-import iconNFTGreen from "./../../../assets/images/staking/iconNFTGreen.svg";
+// import iconNFT from "./../../../assets/images/staking/iconNFT.svg";
+// import iconClose from "./../../../assets/images/iconClose.svg";
+// import iconNFTGreen from "./../../../assets/images/staking/iconNFTGreen.svg";
 import History from "./History";
-import ModalStaking from "./ModalStaking";
-import { providerFake } from "src/constants/apiContants";
-import { Navigate, useNavigate } from "react-router-dom";
+// import ModalStaking from "./ModalStaking";
+// import { providerFake } from "src/constants/apiContants";
+// import { Navigate, useNavigate } from "react-router-dom";
 const { Option } = Select;
-/**
- * @author hungc2i
- */
 var stakingContract;
 var wdaContract;
 var nftContract;
 var CrownContract;
-let count = 0;
+// let count = 0;
 function StakeWDA() {
 	//hook util\
-	const navigate = useNavigate();
+	// const navigate = useNavigate();
 	const history = React.useRef(null);
 	const walletConnect = useSelector(wallet$);
-	const walletConnectFake = useSelector(walletFake$);
+	// const walletConnectFake = useSelector(walletFake$);
 	const [listSelect, setListSelect] = useState([]);
 	const [stakingData, setStakingData] = useState([
 		{
@@ -47,8 +44,8 @@ function StakeWDA() {
 			label: "Select Staking Days",
 		},
 	]);
-	const listDuration = [0, 1, 3, 6];
-	const [showModalChooseNFT, setShowModalChooseNFT] = useState(false);
+	// const listDuration = [0, 1, 3, 6];
+	// const [showModalChooseNFT, setShowModalChooseNFT] = useState(false);
 	const [ShowPopupWallet, setShowPopupWallet] = useState(false);
 	const [loading, setLoading] = useState(true);
 	const [disable, setDisbale] = useState(false);
@@ -346,14 +343,14 @@ function StakeWDA() {
 			setDisbale(false);
 		}
 	}
-	//function util
-	const handleShowModal = () => {
-		if (!walletConnect) {
-			setShowPopupWallet(true);
-			return;
-		}
-		setShowModalChooseNFT(true);
-	};
+	// //function util
+	// const handleShowModal = () => {
+	// 	if (!walletConnect) {
+	// 		setShowPopupWallet(true);
+	// 		return;
+	// 	}
+	// 	setShowModalChooseNFT(true);
+	// };
 	const showWallet = () => {
 		setShowPopupWallet(true);
 	};
@@ -369,14 +366,14 @@ function StakeWDA() {
 			{ShowPopupWallet && (
 				<ModalWallet isModalVisible={ShowPopupWallet} hideWallet={hideWallet} />
 			)}
-			{showModalChooseNFT && (
+			{/* {showModalChooseNFT && (
 				<ModalStaking
 					CrownContract={CrownContract}
 					isShowModal={showModalChooseNFT}
 					setShowModal={setShowModalChooseNFT}
 					setValueSelectNFT={setValueSelectNFT}
 				/>
-			)}
+			)} */}
 			<section className="section" id="section-stake-Wda" data-aos="fade-up">
 				<FadeAnimationOdd />
 				<Container>
@@ -445,7 +442,7 @@ function StakeWDA() {
 													</div>
 												</div>
 											</div>
-											{valueSelectStakingDay != 4 && (
+											{/* {valueSelectStakingDay != 4 && (
 												<div style={{ margin: "24px 0px" }}>
 													{" "}
 													<div className="module-blur c2i-color-title c2i-font-special c2i-no-margin">
@@ -496,7 +493,7 @@ function StakeWDA() {
 														</div>
 													</Row>
 												</div>
-											)}
+											)} */}
 
 											<p className="module-line"></p>
 											<div style={{ margin: "24px 0px" }}>

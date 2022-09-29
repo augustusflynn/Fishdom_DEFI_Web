@@ -7,8 +7,8 @@ export const navigations = [
     childrent: [
       {
         type: "Item",
-        title: "Stake WDA",
-        path: "stake-wda",
+        title: "Staking",
+        path: "stake",
       },
       // {
       //   type: "Item",
@@ -60,8 +60,8 @@ export const navigations = [
     childrent: [
       {
         type: "Item",
-        title: "WinSwap",
-        path: "trade-win-swap",
+        title: "Swap",
+        path: "trade-swap",
       },
       // {
       //   type: "Item",

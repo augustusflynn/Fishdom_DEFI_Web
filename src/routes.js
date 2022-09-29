@@ -5,48 +5,51 @@ import PartnersAndInvestors from "./pages/About/PartnersAndInvestors";
 //About
 import Teams from "./pages/About/Teams";
 //stake
-import Claim from "./pages/Claim";
+// import Claim from "./pages/Claim";
 import ComingSoon from "./pages/ComingSoon";
-import Proposals from "./pages/DAO/Proposals";
-import CreateProposal from "./pages/DAO/Proposals/CreateProposal";
-import ProposalDetail from "./pages/DAO/Proposals/ProposalDetail";
-//Trade
-import Landing from "./pages/Landing/Landing";
-import PrivateRound from "./pages/PrivateRound";
-//products
-import CROWNAucition from "./pages/Products/CROWNAucition";
-import CROWNLucky from "./pages/Products/CROWNLucky";
-import LuckyTicket from "./pages/Products/LuckyTicket";
-import SCEPTER from "./pages/Products/SCEPTER";
+// import Proposals from "./pages/DAO/Proposals";
+// import CreateProposal from "./pages/DAO/Proposals/CreateProposal";
+// import ProposalDetail from "./pages/DAO/Proposals/ProposalDetail";
+// //Trade
+// import Landing from "./pages/Landing/Landing";
+// import PrivateRound from "./pages/PrivateRound";
+// //products
+// import CROWNAucition from "./pages/Products/CROWNAucition";
+// import CROWNLucky from "./pages/Products/CROWNLucky";
+// import LuckyTicket from "./pages/Products/LuckyTicket";
+// import SCEPTER from "./pages/Products/SCEPTER";
 import Documents from "./pages/Resources/Documents";
 import FAQ from "./pages/Resources/FAQ";
 //Resources
-import Tokenomics from "./pages/Resources/Tokenomics";
-import SeedRound from "./pages/SeedRound";
-import MiningCROWN from "./pages/Stake/MiningCROWN";
+// import Tokenomics from "./pages/Resources/Tokenomics";
+// import SeedRound from "./pages/SeedRound";
+// import MiningCROWN from "./pages/Stake/MiningCROWN";
 import StakeWDA from "./pages/Stake/StakeWDA";
 import Collection from "./pages/Trade/Collections";
 import WinMarket from "./pages/Trade/WinMarket";
 import DetailMarketItem from "./pages/Trade/WinMarket/DetailMarketItem";
 import WinSwap from "./pages/Trade/WinSwap";
-import Vesting from "./pages/Vesting";
+// import Vesting from "./pages/Vesting";
 
 const listRoute = [
 	{
 		path: "/",
 		element: <LayoutDefault />,
 		childrent: [
+			/*
 			{
 				path: "",
 				element: <Landing />,
 				childrent: [],
 			},
 			// stake
+			*/
 			{
-				path: "stake-wda",
+				path: "stake",
 				element: <StakeWDA />,
 				childrent: [],
 			},
+			/*
 			{
 				path: "stake-mining-crown",
 				element: <MiningCROWN />,
@@ -102,7 +105,7 @@ const listRoute = [
 					},
 				],
 			},
-
+			*/
 			////////// Trade
 			{
 				path: "trade-win-market",
@@ -115,7 +118,7 @@ const listRoute = [
 				childrent: [],
 			},
 			{
-				path: "trade-win-swap",
+				path: "trade-swap",
 				element: <WinSwap />,
 				childrent: [],
 			},
@@ -126,12 +129,13 @@ const listRoute = [
 			},
 
 			//Resources
-
+			/*
 			{
 				path: "resources-tokenomics",
 				element: <Tokenomics />,
 				childrent: [],
 			},
+			*/
 			{
 				path: "resources-documents",
 				element: <Documents />,
@@ -161,7 +165,7 @@ const listRoute = [
 				childrent: [],
 			},
 			////
-
+			/*
 			{
 				path: "private-round",
 				element: <PrivateRound />,
@@ -178,7 +182,7 @@ const listRoute = [
 				element: <Vesting />,
 				childrent: [],
 			},
-
+			*/
 			{
 				path: "*",
 				element: <ComingSoon />,
