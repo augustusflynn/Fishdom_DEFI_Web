@@ -34,7 +34,7 @@ function Topbar() {
   }, [walletConnect]);
 
   const goHome = () => {
-    navigate("/");
+    navigate("/trade-win-market");
   };
 
   const showWallet = () => {

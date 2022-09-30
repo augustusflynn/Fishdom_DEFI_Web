@@ -202,7 +202,6 @@ function WinSwap() {
 								</Button>
 							</div>
 						</Space>
-
 					</div>
 
 					<div style={{ width: "35%" }}>
@@ -255,8 +254,6 @@ function WinSwap() {
 						</Space>
 					</div>
 				</div>
-
-
 			</div>
 		</>
 	);
