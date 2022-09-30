@@ -7,9 +7,8 @@ class BaseHelper {
     let first = nString.split(".")[0];
     let se = nString.split(".")[1];
     if (!se) se = 0;
-    return `${first.toString().replace(/\B(?=(\d{3})+(?!\d))/g, style)}${
-      se === "0" ? "" : "," + se
-    }`;
+    return `${first.toString().replace(/\B(?=(\d{3})+(?!\d))/g, style)}${se === "0" ? "" : "," + se
+      }`;
   }
 
   dateFormatVesting(date) {
@@ -22,12 +21,12 @@ class BaseHelper {
     return price * quantity >= 1
       ? price * quantity
       : (price > 10 ** -18 && price < 1) || parseFloat(price) == 0
-      ? ethers.utils.formatEther(
+        ? ethers.utils.formatEther(
           parseInt(price * quantity * 10 ** 18).toString()
         )
-      : price < 10 ** 18 - 1
-      ? parseFloat(price * quantity).toString()
-      : "0";
+        : price < 10 ** 18 - 1
+          ? parseFloat(price * quantity).toString()
+          : "0";
   }
   shortTextAdress(address) {
     if (!address) return "no connect";
@@ -43,13 +42,12 @@ class BaseHelper {
     let first = nString.split(".")[0];
     let se = nString.split(".")[1];
     if (!se) se = 0;
-    return `${first.toString().replace(/\B(?=(\d{3})+(?!\d))/g, style)}${
-      se === "0" ? "" : "," + se
-    }`;
+    return `${first.toString().replace(/\B(?=(\d{3})+(?!\d))/g, style)}${se === "0" ? "" : "," + se
+      }`;
   }
 
   numberWithRealDots(x) {
-    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   }
 
   addDays(date, days) {

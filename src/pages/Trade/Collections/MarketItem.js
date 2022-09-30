@@ -1,7 +1,5 @@
 import { Button, message, Space } from "antd";
-import { ethers } from "ethers";
 import React from "react";
-import { InputWaiting } from "src/component/skeleton/Skeleton";
 
 function MarketItem({
 	infoItem,
@@ -14,66 +12,33 @@ function MarketItem({
 	if (infoItem) {
 		return (
 			<Space size={16} direction="vertical" className="market-item">
-				{infoItem.image ? (
-					<div>
-						<img src={infoItem.image} alt="crown" className="market-img" />
-					</div>
-				) : (
-					<InputWaiting className="waiting-img" />
-				)}
+				<div>
+					<img
+						src={`${process.env.REACT_APP_API_URL}/api/games/idle/${infoItem.tokenId}.json`}
+						alt="crown" className="market-img" />
+				</div>
 				<Space direction="vertical" size={8}>
-					<div className="name-name c2i-no-margin">
-						<label className="module-title">{infoItem.name}</label>
-					</div>
-					<>
-						{infoItem?.apr && infoItem?.reduce ? (
-							<>
-								<Space direction="horizontal" className="text-center">
-									<div className="apr">
-										<p style={{ whiteSpace: "nowrap" }}> {infoItem.apr}% APR</p>
-									</div>
-									<div className="reduce">
-										<p style={{ whiteSpace: "nowrap" }}>
-											{infoItem.reduce}% Reduce
-										</p>
-									</div>
-								</Space>
-								{currentTabKey == "#marketItem" ? (
-									<p className="c2i-no-margin">
-										Total price:&nbsp;
-										{`${
-											infoItem?.quantity && infoItem?.price
-												? ethers.utils.formatEther(infoItem?.price)
-												: 0
-										}`}
-									</p>
-								) : (
-									<></>
-								)}
-							</>
-						) : (
-							<>
-								<p
-									className="c2i-no-margin"
-									style={{ overflow: "hidden", lineHeight: "32px" }}
-								>
-									Amount:&nbsp;{infoItem?.quantity}
-								</p>
-								{currentTabKey == "#marketItem" ? (
-									<p className="c2i-no-margin">
-										Total price:&nbsp;
-										{`${
-											infoItem?.quantity && infoItem?.price
-												? ethers.utils.formatEther(infoItem?.price)
-												: 0
-										}`}
-									</p>
-								) : (
-									<></>
-								)}
-							</>
-						)}
-					</>
+					{(currentTabKey === "#marketItem" || !currentTabKey) ? (
+						<>
+							<div>
+								<label className="module-title">{infoItem.name}</label>
+							</div>
+							<div>
+								ID:{" "}{infoItem.tokenId}
+							</div>
+							<div style={{ overflow: 'hidden' }}>
+								<a href={`https://testnet.bscscan.com/tx/${infoItem.txHash}`} target="_blank">
+									Tx Hash:{" "}{infoItem.txHash}
+								</a>
+							</div>
+							<div className="price">
+								Price: {" "}
+								{infoItem.price}{" "}FdT
+							</div>
+						</>
+					) : (
+						<></>
+					)}
 				</Space>
 				<Button
 					className="button c2i-no-margin"
@@ -81,7 +46,7 @@ function MarketItem({
 						isLoading ||
 						infoItem.staked ||
 						parseInt(infoItem?.lockDeadline || 0) - parseInt(blocknumber || 0) >
-							0
+						0
 					}
 					onClick={() => {
 						if (infoItem.staked) {
@@ -94,13 +59,12 @@ function MarketItem({
 					{infoItem.staked
 						? "Staked"
 						: parseInt(infoItem?.lockDeadline || 0) -
-								parseInt(blocknumber || 0) >
-						  0
-						? `Locked ${
-								parseInt(infoItem?.lockDeadline || 0) -
-								parseInt(blocknumber || 0)
-						  } blocks`
-						: title}
+							parseInt(blocknumber || 0) >
+							0
+							? `Locked ${parseInt(infoItem?.lockDeadline || 0) -
+							parseInt(blocknumber || 0)
+							} blocks`
+							: title}
 				</Button>
 			</Space>
 		);

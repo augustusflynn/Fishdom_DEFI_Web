@@ -160,9 +160,7 @@ function WinSwap() {
 							<h2 className="module-header">{`Deposit`}</h2>
 							<div className="current-sceptor-container">
 								<img src={IconWallet} style={{ marginRight: "8px" }}></img>
-								<p className="module-blur c2i-no-margin">{`${BaseHelper.numberWithRealDots(
-									balanceFdT
-								)} FDT`}</p>
+								<p className="module-blur c2i-no-margin">{`${balanceFdT} FDT`}</p>
 							</div>
 						</div>
 						<Space

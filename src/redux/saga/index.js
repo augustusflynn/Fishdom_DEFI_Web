@@ -1,12 +1,3 @@
-import { notification } from "antd";
-
-function openNotification(type, titel, message) {
-	notification[type]({
-		message: `${titel}`,
-		description: `${message}`,
-	});
-}
-
 function* mySaga() {
 	// In the future, we may want to interfere when call an actions
 	// For example: Handle call api when call actions

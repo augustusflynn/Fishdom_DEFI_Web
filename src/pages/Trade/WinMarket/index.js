@@ -11,7 +11,7 @@ import CROWN from "./CROWN";
 // const { TabPane } = Tabs;
 
 function WinMarket() {
-	let location = useLocation();
+	// let location = useLocation();
 	// const walletConnect = useSelector(wallet$);
 	// const [tabSelect, setTab] = useState("#dashboard");
 
@@ -41,7 +41,7 @@ function WinMarket() {
 	// 		}
 	// 	} catch (err) {}
 	// }, [location]);
- 
+
 	return (
 		<section className="section" id="section-win-market">
 			<Container>

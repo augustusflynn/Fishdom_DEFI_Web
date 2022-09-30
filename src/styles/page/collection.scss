@@ -14,6 +14,9 @@
   }
   .market-img {
     object-fit: cover;
+    @media(max-width: 1024px) {
+      object-fit: contain;
+    }
   }
   .flex {
     display: flex;

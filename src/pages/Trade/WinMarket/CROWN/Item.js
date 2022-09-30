@@ -31,12 +31,13 @@ function Item(props) {
 				FishdomMarketAbi.networks['97'].address,
 				ethers.utils.parseEther(infoItem.price)
 			);
+			message.loading('Waiting approve FdT', 1)
 			await approveTx.wait(1);
 
 			const buyTx = await FishdomMarket.buyMarketItem(
 				infoItem.itemId
 			);
-			message.warning("Please wait for transaction finised...");
+			message.loading("Please wait for transaction finised...", 1);
 			await buyTx.wait();
 			await axios.post(
 				process.env.REACT_APP_API_URL + '/api/markets/buy',
@@ -73,8 +74,6 @@ function Item(props) {
 					<div>
 						<label className="module-title">{infoItem.name}</label>
 					</div>
-					<div className="flex">
-					</div>
 					<div>
 						ID:{" "}{infoItem.tokenId}
 					</div>
@@ -85,10 +84,14 @@ function Item(props) {
 					</div>
 					<div className="price">
 						Price: {" "}
-						{BaseHelper.numberToCurrencyStyle(infoItem.price)}{" "}FdT
+						{infoItem.price}{" "}FdT
 					</div>
 
-					<Button onClick={buyHandler} className="w-100">Buy</Button>
+					<Button
+						onClick={buyHandler}
+						className="w-100"
+						disabled={infoItem.seller.toLowerCase() === walletConnect._address.toLowerCase()}
+					>Buy</Button>
 				</Space>
 			</Space>
 		);

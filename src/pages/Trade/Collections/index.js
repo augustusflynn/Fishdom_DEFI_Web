@@ -1,10 +1,10 @@
 import { Button, Col, Empty, message, Pagination, Row, Spin, Tabs } from "antd";
 import { ethers } from "ethers";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import ModalWallet from "src/layout/Topbar/ModalWallet";
 import { market } from "src/redux/actions";
-import { market$, wallet$ } from "src/redux/selectors";
+import { market$, user$, wallet$ } from "src/redux/selectors";
 import { apiService } from "src/utils/api";
 import { makeQueryBuilder } from "src/utils/MoralisQuery";
 import Scepter from "../../../assets/images/Scepter.jpg";
@@ -16,13 +16,12 @@ import Container from "../../../layout/grid/Container";
 import MarketItem from "./MarketItem";
 import ModalConfirm from "./ModalConfirm";
 import crownImgFake from "src/assets/crown/crown.svg";
+import axios from "axios";
 
 const Collection = () => {
-	const sellData = useSelector(market$).sell;
-	const withdrawData = useSelector(market$).withdraw;
+	const userData = useSelector(user$)
 	const walletConnect = useSelector(wallet$);
 	const dispatch = useDispatch();
-	const [blockNumber, setBlockNumber] = useState(0);
 	const [listMarket, setListMarket] = useState({
 		data: [],
 		count: 0,
@@ -45,341 +44,141 @@ const Collection = () => {
 
 	const [listIdNFT, setListIdNFT] = useState([]);
 	const [showPopupWallet, setShowPopupWallet] = useState(false);
+
 	useEffect(() => {
 		window.scrollTo(0, 0);
+		handleChangeKey(currentTabKey)
 	}, [currentTabKey]);
-	useEffect(() => {
-		if (Object.keys(sellData).length > 0) {
-			sessionStorage.setItem("sell", JSON.stringify(sellData));
-		}
-	}, [sellData]);
-
-	useEffect(() => {
-		if (Object.keys(withdrawData).length > 0) {
-			sessionStorage.setItem("withdraw", JSON.stringify(withdrawData));
-		}
-	}, [withdrawData]);
-	useEffect(() => {
-		let run = true;
-		run &&
-			(async () => {
-				if (walletConnect) {
-					if (walletConnect?.provider) {
-						const blocknumber = await walletConnect.provider.getBlock();
-						// console.log("Block number", blocknumber.number);
-						setBlockNumber(blocknumber.number);
-					}
-					dispatch(market.withdrawData([]));
-					dispatch(market.sellData([]));
-					sessionStorage.setItem("sell", JSON.stringify([]));
-					sessionStorage.setItem("withdraw", JSON.stringify([]));
-					setIsLoadingAllSiteA(true);
-					setIsLoadingAllSiteB(true);
-					setListMarket({
-						data: [],
-						count: 0,
-					});
-					setListCollection({
-						data: [],
-						count: 0,
-					});
-					await handleChangeKey("#marketItem");
-				}
-			})();
-		return () => {
-			run = false;
-		};
-	}, [walletConnect]);
-
-	async function fulfillDataMarket(data, count) {
-		const CrownContract = new ethers.Contract(
-			crownNFTAdress,
-			crownNFTAbi,
-			walletConnect
-		);
-		if (!CrownContract) {
-			setIsLoadingAllSiteA(false);
-			return;
-		}
-		new Promise(async (resolve) => {
-			let result = [];
-			for (let i = 0; i < data.length; i++) {
-				const itemDetail = data[i].attributes;
-				let itemAttr = {
-					tokenId: itemDetail.tokenId,
-					price: itemDetail.price,
-					quantity: itemDetail.quantity,
-				};
-				if (itemDetail.quantity && itemDetail.quantity !== "1") {
-					itemAttr.name = "SCEPTER";
-					itemAttr.quantity = itemDetail.quantity;
-					itemAttr.image = Scepter;
-				} else {
-					const uri = await CrownContract.tokenURI(itemDetail.tokenId);
-					const traits = await CrownContract.getTraits(itemDetail.tokenId);
-					console.log("Im traits", traits);
-					const metadata = await apiService("get", uri)
-						.then((res) => {
-							if (res?.status === 200) {
-								return res.data;
-							} else {
-								return null;
-							}
-						})
-						.catch((err) => {
-							console.log("err", err);
-						});
-
-					if (metadata) {
-						itemAttr.image = metadata.image;
-						itemAttr.name = metadata.name;
-					} else {
-						itemAttr.image = crownImgFake;
-						itemAttr.name = "NFT Crown";
-					}
-					itemAttr.apr = traits.aprBonus.toString();
-					itemAttr.reduce = traits["0"].toString();
-					itemAttr.lockDeadline = traits.lockDeadline.toString();
-				}
-				itemAttr.itemMarketId = itemDetail.itemId;
-				result.push(itemAttr);
-			}
-			resolve(result);
-		})
-			.then(async (res) => {
-				setListMarket({
-					data: res,
-					count: count,
-				});
-			})
-			.catch(() => {
-				setIsLoadingAllSiteA(false);
-			})
-			.finally(() => {
-				setIsLoadingAllSiteA(false);
-			});
-	}
-
-	async function fulfillDataCollection(crownId) {
-		try {
-			const CrownContract = new ethers.Contract(
-				crownNFTAdress,
-				crownNFTAbi,
-				walletConnect
-			);
-			if (!CrownContract) {
-				setIsLoadingAllSiteB(false);
-
-				return;
-			} else {
-				const traits = await CrownContract.getTraits(crownId);
-				const uri = await CrownContract.tokenURI(crownId);
-				const detailCrown = await apiService("GET", uri)
-					.then((res) => {
-						if (res.status === 200) {
-							return res.data;
-						} else {
-							return {};
-						}
-					})
-					.catch((err) => {
-						console.log("get detail crown err", err);
-					});
-
-				return {
-					image: detailCrown?.image || crownImgFake,
-					name: detailCrown?.name || "NFT Crown",
-					apr: traits.aprBonus.toString(),
-					tokenId: crownId,
-					reduce: traits["0"].toString(),
-					staked: traits.staked,
-					lockDeadline: traits.lockDeadline.toString(),
-				};
-			}
-		} catch (error) {
-			console.log("get detail crown err", error);
-		}
-	}
 
 	async function handleFetchDataMarket(nextSkip) {
 		try {
 			setIsLoadingAllSiteA(true);
-			const tableName = "MarketItem";
-			const keyExactor = "seller";
-			const query = makeQueryBuilder(tableName, page_size, nextSkip).equalTo(
-				"confirmed",
-				true
-			);
-			// const address = await walletConnect.getAddress();
-			query.equalTo(
-				keyExactor,
-				walletConnect?.provider?.provider?.selectedAddress
-					? walletConnect?.provider?.provider?.selectedAddress
-							?.toString()
-							?.toLowerCase()
-					: ""
-			);
-			const data = await query.find();
-			const count = await query.count();
-			let filteredData = data;
-			let countWdraw = 0;
-			let dataWithdraw = sessionStorage.getItem("withdraw")
-				? JSON.parse(sessionStorage.getItem("withdraw"))
-				: [];
-			if (
-				Object.keys(filteredData).length > 0 &&
-				Object.keys(dataWithdraw).length > 0
-			) {
-				filteredData = data.filter((item) => {
-					if (dataWithdraw.indexOf(item?.attributes?.itemId) != -1) {
-						if (item?.tokenId == 0 && item?.quantity != 0) {
-							return true;
-						}
-						countWdraw++;
-						return false;
+			axios.post(
+				process.env.REACT_APP_API_URL + "/api/markets/get",
+				{
+					walletAddress: walletConnect._address,
+					skip: nextSkip,
+					limit: page_size
+				},
+				{
+					headers: {
+						Authorization: `Bearer ${userData.token}`
 					}
-					return true;
-				});
-				if (countWdraw == 0) {
-					dispatch(market.withdrawData([]));
-					sessionStorage.setItem("withdraw", JSON.stringify([]));
 				}
-			}
-			await fulfillDataMarket(filteredData, count, "#marketItem");
+			).then(res => {
+				setListMarket(res.data.data)
+				setIsLoadingAllSiteA(false);
+			})
 		} catch (error) {
 			setIsLoadingAllSiteA(false);
 		}
 	}
 
-	async function fetchOwnerNFT() {
-		try {
-			setIsLoadingAllSiteB(true);
-			const CrownContract = new ethers.Contract(
-				crownNFTAdress,
-				crownNFTAbi,
-				walletConnect
-			);
-			let arrayToken = await CrownContract.ownerToTokenArray(
-				await walletConnect.getAddress()
-			);
-
-			if (arrayToken?.length > 0) {
-				setListIdNFT(arrayToken);
-				await handleFetchDataCollection(0, arrayToken);
-			} else {
-				setListIdNFT([]);
-				setIsLoadingAllSiteB(false);
-			}
-		} catch (error) {
-			console.log("err", error);
-		}
-	}
-
 	async function handleFetchDataCollection(skip, data = listIdNFT) {
-		try {
-			console.log("Collection", data.toString());
-			setIsLoadingAllSiteB(true);
+		// try {
+		// 	console.log("Collection", data.toString());
+		// 	setIsLoadingAllSiteB(true);
 
-			console.log("Start handle collection");
-			const CrownContract = new ethers.Contract(
-				crownNFTAdress,
-				crownNFTAbi,
-				walletConnect
-			);
-			if (!CrownContract) {
-				setIsLoadingAllSiteB(false);
-				return;
-			} else {
-				if (Object.keys(data)?.length > 0) {
-					new Promise(async (resolve) => {
-						let result = [];
-						for (let i = skip; i < skip + page_size; i++) {
-							const id = data[i]?.toString();
-							if (id) {
-								result.push(await fulfillDataCollection(id));
-							} else {
-								break;
-							}
-						}
-						resolve(result);
-					})
-						.then(async (res) => {
-							const ScepterContract = new ethers.Contract(
-								ScepterAbi.scepterAddress,
-								ScepterAbi.scepterAbi,
-								walletConnect
-							);
-							if (ScepterContract && skip === 0) {
-								const scepterAmount = await ScepterContract.balanceOf(
-									await walletConnect.getAddress(),
-									0
-								);
-								console.log(await walletConnect.getAddress());
-								if (scepterAmount != "0") {
-									res = [
-										...res,
-										{
-											name: "SCEPTER",
-											tokenId: 0,
-											quantity: scepterAmount.toString(),
-											image: Scepter,
-										},
-									];
-								}
-							}
-							let newData = res;
-							let sellData = sessionStorage.getItem("sell")
-								? JSON.parse(sessionStorage.getItem("sell"))
-								: [];
-							let countSell = 0;
-							if (
-								Object.keys(newData).length > 0 &&
-								Object.keys(sellData).length > 0
-							) {
-								newData = res.filter((item) => {
-									if (sellData.indexOf(item?.tokenId) != -1) {
-										if (item?.tokenId == 0 && item?.quantity != 0) {
-											return true;
-										}
-										countSell++;
-										return false;
-									}
+		// 	console.log("Start handle collection");
+		// 	const CrownContract = new ethers.Contract(
+		// 		crownNFTAdress,
+		// 		crownNFTAbi,
+		// 		walletConnect
+		// 	);
+		// 	if (!CrownContract) {
+		// 		setIsLoadingAllSiteB(false);
+		// 		return;
+		// 	} else {
+		// 		if (Object.keys(data)?.length > 0) {
+		// 			new Promise(async (resolve) => {
+		// 				let result = [];
+		// 				for (let i = skip; i < skip + page_size; i++) {
+		// 					const id = data[i]?.toString();
+		// 					if (id) {
+		// 						result.push(await fulfillDataCollection(id));
+		// 					} else {
+		// 						break;
+		// 					}
+		// 				}
+		// 				resolve(result);
+		// 			})
+		// 				.then(async (res) => {
+		// 					const ScepterContract = new ethers.Contract(
+		// 						ScepterAbi.scepterAddress,
+		// 						ScepterAbi.scepterAbi,
+		// 						walletConnect
+		// 					);
+		// 					if (ScepterContract && skip === 0) {
+		// 						const scepterAmount = await ScepterContract.balanceOf(
+		// 							await walletConnect.getAddress(),
+		// 							0
+		// 						);
+		// 						console.log(await walletConnect.getAddress());
+		// 						if (scepterAmount != "0") {
+		// 							res = [
+		// 								...res,
+		// 								{
+		// 									name: "SCEPTER",
+		// 									tokenId: 0,
+		// 									quantity: scepterAmount.toString(),
+		// 									image: Scepter,
+		// 								},
+		// 							];
+		// 						}
+		// 					}
+		// 					let newData = res;
+		// 					let sellData = sessionStorage.getItem("sell")
+		// 						? JSON.parse(sessionStorage.getItem("sell"))
+		// 						: [];
+		// 					let countSell = 0;
+		// 					if (
+		// 						Object.keys(newData).length > 0 &&
+		// 						Object.keys(sellData).length > 0
+		// 					) {
+		// 						newData = res.filter((item) => {
+		// 							if (sellData.indexOf(item?.tokenId) != -1) {
+		// 								if (item?.tokenId == 0 && item?.quantity != 0) {
+		// 									return true;
+		// 								}
+		// 								countSell++;
+		// 								return false;
+		// 							}
 
-									return true;
-								});
-								if (countSell == 0) {
-									dispatch(market.sellData([]));
-									sessionStorage.setItem("sell", JSON.stringify([]));
-								}
-							}
-							setListCollection({
-								data: newData,
-								count: data.length - countSell,
-							});
-						})
-						.finally(() => {
-							console.log("Run final");
-							setIsLoadingAllSiteB(false);
-						});
-				} else {
-					setIsLoadingAllSiteB(false);
-				}
-			}
-		} catch (error) {
-			setIsLoadingAllSiteB(false);
-		}
+		// 							return true;
+		// 						});
+		// 						if (countSell == 0) {
+		// 							dispatch(market.sellData([]));
+		// 							sessionStorage.setItem("sell", JSON.stringify([]));
+		// 						}
+		// 					}
+		// 					setListCollection({
+		// 						data: newData,
+		// 						count: data.length - countSell,
+		// 					});
+		// 				})
+		// 				.finally(() => {
+		// 					console.log("Run final");
+		// 					setIsLoadingAllSiteB(false);
+		// 				});
+		// 		} else {
+		// 			setIsLoadingAllSiteB(false);
+		// 		}
+		// 	}
+		// } catch (error) {
+		// 	setIsLoadingAllSiteB(false);
+		// }
 	}
 
-	async function handleChangeKey(key) {
+	const handleChangeKey = useCallback(async (key) => {
 		setCurrentPage(1);
 		setSkip(1);
 		if (key === "#marketItem") {
 			await handleFetchDataMarket(0);
 		} else {
-			fetchOwnerNFT();
+			await handleFetchDataCollection();
 		}
 		currentTabKey !== key && setCurrentTabKey(key);
-	}
+	}, [currentTabKey])
 
 	async function handleSellItem(values) {
 		try {
@@ -569,7 +368,7 @@ const Collection = () => {
 							>
 								<Tabs.TabPane tab="Market Item" key="#marketItem">
 									{(isLoadingAllSiteA && currentTabKey == "#marketItem") ||
-									(isLoadingAllSiteB && currentTabKey == "#collectionItem") ? (
+										(isLoadingAllSiteB && currentTabKey == "#collectionItem") ? (
 										<div className="flex justify-center">
 											<Spin />
 										</div>
@@ -589,7 +388,6 @@ const Collection = () => {
 															<MarketItem
 																infoItem={item}
 																// key={item.tokenId}
-																blocknumber={blockNumber}
 																currentTabKey={currentTabKey}
 																isLoading={withdrawLoading}
 																title="Withdraw"
@@ -610,7 +408,7 @@ const Collection = () => {
 								</Tabs.TabPane>
 								<Tabs.TabPane tab="In Stock" key="#collectionItem">
 									{(isLoadingAllSiteA && currentTabKey == "#marketItem") ||
-									(isLoadingAllSiteB && currentTabKey == "#collectionItem") ? (
+										(isLoadingAllSiteB && currentTabKey == "#collectionItem") ? (
 										<div className="flex justify-center">
 											<Spin />
 										</div>
@@ -629,8 +427,6 @@ const Collection = () => {
 														>
 															<MarketItem
 																infoItem={item}
-																// key={item?.tokenId}
-																blocknumber={blockNumber}
 																title="Sell"
 																onClick={(data) => {
 																	setIsShowModal(true);
@@ -649,29 +445,33 @@ const Collection = () => {
 									)}
 								</Tabs.TabPane>
 							</Tabs>
-							<div className="pagination">
-								<Pagination
-									total={
-										currentTabKey === "#collectionItem"
-											? listCollection.count
-											: listMarket.count
-									}
-									pageSize={page_size}
-									current={currentPage}
-									onChange={(num) => {
-										window.scrollTo(0, 0);
-										setCurrentPage(num);
-										let pageSize = page_size;
-										const nextSkip = (num - 1) * pageSize;
-										setSkip(nextSkip);
-										if (currentTabKey !== "#collectionItem") {
-											handleFetchDataMarket(nextSkip);
-										} else {
-											handleFetchDataCollection(nextSkip);
-										}
-									}}
-								/>
-							</div>
+							{
+								listCollection.count && listMarket.count ? (
+									<div className="pagination">
+										<Pagination
+											total={
+												currentTabKey === "#collectionItem"
+													? listCollection.count
+													: listMarket.count
+											}
+											pageSize={page_size}
+											current={currentPage}
+											onChange={(num) => {
+												window.scrollTo(0, 0);
+												setCurrentPage(num);
+												let pageSize = page_size;
+												const nextSkip = (num - 1) * pageSize;
+												setSkip(nextSkip);
+												if (currentTabKey !== "#collectionItem") {
+													handleFetchDataMarket(nextSkip);
+												} else {
+													handleFetchDataCollection(nextSkip);
+												}
+											}}
+										/>
+									</div>
+								) : (<></>)
+							}
 						</>
 					)}
 				</Container>

@@ -1,13 +1,13 @@
-import { Col, message, Pagination, Row, Select, Space, Spin } from "antd";
+import { Col, Pagination, Row, Select, Space, Spin } from "antd";
 import axios from "axios";
-import { ethers } from "ethers";
+// import { ethers } from "ethers";
 import React, { useCallback, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 // import { providerFake } from "src/constants/apiContants";
-import { apiService } from "src/utils/api";
-import BaseHelper from "src/utils/BaseHelper";
-import * as MoralisQuery from "src/utils/MoralisQuery";
-import { crownNFTAbi, crownNFTAdress } from "../../../../constants/constants";
+// import { apiService } from "src/utils/api";
+// import BaseHelper from "src/utils/BaseHelper";
+// import * as MoralisQuery from "src/utils/MoralisQuery";
+// import { crownNFTAbi, crownNFTAdress } from "../../../../constants/constants";
 import { user$, wallet$ } from "../../../../redux/selectors";
 import Item from "./Item";
 
@@ -24,15 +24,13 @@ const listSortBy = [
 	{
 		label: "Lowest Price",
 		value: {
-			key: "price",
-			value: "asc",
+			"price": 1,
 		},
 	},
 	{
 		label: "Highest Price",
 		value: {
-			key: "price",
-			value: "desc",
+			"price": -1,
 		},
 	},
 ];
@@ -44,24 +42,27 @@ function CROWN() {
 		count: 0,
 	});
 	const [sortValue, setSortValue] = useState(
-		'{"key":"price","value":"asc"}'
+		'{"price":1}'
 	);
 	const pageSize = 8;
 	const [loading, setLoading] = useState(true);
+	const [skip, setSkip] = useState(0)
 	const userData = useSelector(user$)
 
 	const handleChangeSort = (value) => {
 		setSortValue(value);
+		handleFetchData(skip, value)
 	};
 
-	const handleFetchData = useCallback(async (skip) => {
+	const handleFetchData = useCallback(async (skip, sort = sortValue) => {
 		try {
 			if (walletConnect && userData && userData.token) {
 				await axios.post(
 					`${process.env.REACT_APP_API_URL}/api/markets/get`,
 					{
 						"limit": pageSize,
-						"skip": skip
+						"skip": skip,
+						"order": sort
 					},
 					{
 						headers: {
@@ -148,6 +149,7 @@ function CROWN() {
 						onChange={(num) => {
 							const nextSkip = (parseInt(num) - 1) * pageSize;
 							handleFetchData(nextSkip);
+							setSkip(nextSkip)
 						}}
 					/>
 				</Space>
