@@ -1,25 +1,26 @@
-import { Col, Pagination, Row, Select, Space, Spin } from "antd";
+import { Col, message, Pagination, Row, Select, Space, Spin } from "antd";
+import axios from "axios";
 import { ethers } from "ethers";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { providerFake } from "src/constants/apiContants";
+// import { providerFake } from "src/constants/apiContants";
 import { apiService } from "src/utils/api";
 import BaseHelper from "src/utils/BaseHelper";
 import * as MoralisQuery from "src/utils/MoralisQuery";
 import { crownNFTAbi, crownNFTAdress } from "../../../../constants/constants";
-import { wallet$ } from "../../../../redux/selectors";
+import { user$, wallet$ } from "../../../../redux/selectors";
 import Item from "./Item";
 
 const { Option } = Select;
 
 const listSortBy = [
-	{
-		label: "Recenlty Listed",
-		value: {
-			key: "createdAt",
-			value: "asc",
-		},
-	},
+	// {
+	// 	label: "Recenlty Listed",
+	// 	value: {
+	// 		key: "createdAt",
+	// 		value: "asc",
+	// 	},
+	// },
 	{
 		label: "Lowest Price",
 		value: {
@@ -38,128 +39,50 @@ const listSortBy = [
 
 function CROWN() {
 	const walletConnect = useSelector(wallet$);
-	const [blockNumber, setBlockNumber] = useState(0);
 	const [listDefault, setListDefault] = useState({
 		data: [],
 		count: 0,
 	});
 	const [sortValue, setSortValue] = useState(
-		'{"key":"createdAt","value":"asc"}'
+		'{"key":"price","value":"asc"}'
 	);
-	const pageSize = 20;
-	const [skip, setSkip] = useState(0);
+	const pageSize = 8;
 	const [loading, setLoading] = useState(true);
+	const userData = useSelector(user$)
 
 	const handleChangeSort = (value) => {
 		setSortValue(value);
 	};
 
-	const handleFetchData = async (skip) => {
+	const handleFetchData = useCallback(async (skip) => {
 		try {
-			let countBought = 0;
-			let dataBought = sessionStorage.getItem("market")
-				? JSON.parse(sessionStorage.getItem("market"))
-				: [];
-			setLoading(true);
-			const query = await MoralisQuery.makeQueryBuilder(
-				"MarketItem",
-				pageSize,
-				skip
-			);
-			query.equalTo("quantity", "1").equalTo("confirmed", true);
-			const listItem = await query.find("MarketItem", pageSize, skip);
-			let listFilteredItem = listItem;
-			if (
-				Object.keys(dataBought).length > 0 &&
-				Object.keys(listItem).length > 0
-			) {
-				listFilteredItem = listItem.filter((item) => {
-					if (dataBought.indexOf(item?.attributes?.itemId) != -1) {
-						countBought++;
-						return false;
-					}
-					return true;
-				});
-			}
-			const count = await query.count();
-			if (count == 0) {
-				setLoading(false);
-			} else {
-				let signer = new ethers.getDefaultProvider("kovan");
-				if (walletConnect) {
-					signer = walletConnect;
-				}
-				const CrownContract = new ethers.Contract(
-					crownNFTAdress,
-					crownNFTAbi,
-					signer
-				);
-				if (!CrownContract) return;
-				new Promise(async (resolve) => {
-					let listTg = [];
-					for (const item of listFilteredItem) {
-						const itemDetail = item.attributes;
-						const tokenId = itemDetail.tokenId;
-						const itemTg = {
-							time: BaseHelper.dashboardFormatDay(itemDetail.block_timestamp),
-							quantity: itemDetail.quantity,
-							status: 1,
-							name: `CROWN`,
-							apr: 0,
-							reduce: 0,
-							price: ethers.utils.formatEther(itemDetail.price),
-							marketId: itemDetail.itemId,
-							tokenId: tokenId,
-							createdAt: itemDetail.createdAt.getTime() || 0,
-						};
-						const url = await CrownContract.tokenURI(tokenId);
-						const _dataTraits = await CrownContract.getTraits(tokenId);
-						itemTg.apr = _dataTraits?.aprBonus?.toString() || "0";
-						itemTg.lockDeadline = _dataTraits?.lockDeadline?.toString() || "0";
-						itemTg.reduce = _dataTraits?.["0"]?.toString() || "0";
-						const infoNft = await apiService("get", url);
-						if (infoNft.status === 200) {
-							itemTg.image = infoNft.data.image;
-							itemTg.name = infoNft.data.name;
+			if (walletConnect && userData && userData.token) {
+				await axios.post(
+					`${process.env.REACT_APP_API_URL}/api/markets/get`,
+					{
+						"limit": pageSize,
+						"skip": skip
+					},
+					{
+						headers: {
+							Authorization: `Bearer ${userData.token}`
 						}
-						listTg.push(itemTg);
 					}
-					resolve(listTg);
+				).then(res => {
+					setListDefault(res.data.data)
 				})
-					.then(async (res) => {
-						setListDefault({
-							data: res,
-							count: count - countBought,
-						});
-						setLoading(false);
-					})
-					.catch((err) => {
-						setLoading(false);
-						setListDefault({
-							data: [],
-							count: 0,
-						});
-					});
 			}
-		} catch (error) {
-			setLoading(false);
-			console.log("fetch data market error: ", error);
+		} catch {
+			console.log('fetch data market error')
+		} finally {
+			setLoading(false)
 		}
-	};
+	}, [walletConnect, userData]);
 
 	useEffect(() => {
-		const getSigner = async () => {
-			await handleFetchData(0);
-		};
-		getSigner();
-	}, [walletConnect]);
-	useEffect(() => {
-		(async () => {
-			let provider = new ethers.getDefaultProvider("kovan");
-			let blocknumber = await provider.getBlockNumber();
-			setBlockNumber(blocknumber.toString());
-		})();
-	}, []);
+		handleFetchData(0);
+	}, [handleFetchData]);
+
 	return loading ? (
 		<div className="flex justify-center">
 			<Spin />
@@ -208,7 +131,7 @@ function CROWN() {
 						.map((item, index) => {
 							return (
 								<Col xl={6} lg={8} md={12} sm={24} xs={24} key={index}>
-									<Item key={index} infoItem={item} blocknumber={blockNumber} />
+									<Item key={index} infoItem={item} />
 								</Col>
 							);
 						})}
@@ -225,7 +148,6 @@ function CROWN() {
 						onChange={(num) => {
 							const nextSkip = (parseInt(num) - 1) * pageSize;
 							handleFetchData(nextSkip);
-							setSkip(nextSkip);
 						}}
 					/>
 				</Space>

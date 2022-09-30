@@ -108,7 +108,7 @@ const listRoute = [
 			*/
 			////////// Trade
 			{
-				path: "trade-win-market",
+				path: "",
 				element: <WinMarket />,
 				childrent: [],
 			},

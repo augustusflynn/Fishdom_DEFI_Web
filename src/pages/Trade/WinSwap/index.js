@@ -1,33 +1,26 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Input, Space, Button, Modal, message } from "antd";
+import { Input, Space, Button, message } from "antd";
 import { ethers } from "ethers";
-import {
-	swapSceptorAddress,
-	swapSceptorAbi,
-	sceptorAbi,
-	sceptorAddress,
-	crownNFTAbi,
-	crownNFTAdress,
-} from "src/constants/constants";
-import { useSelector } from "react-redux";
-import { wallet$ } from "src/redux/selectors";
+import { useDispatch, useSelector } from "react-redux";
+import { user$, wallet$ } from "src/redux/selectors";
 import BaseHelper from "src/utils/BaseHelper";
 import SwapModal from "./Modal";
 import IconWallet from "src/assets/png/topbar/icon-wallet-white.svg";
-import contractCrownLucky from "./../../../constants/abiCrownLucky.json";
-function WinSwap(props) {
+import FdTAbi from '../../../constants/contracts/token/FishdomToken.sol/FishdomToken.json';
+import axios from "axios";
+import { user } from "src/redux/actions";
+
+function WinSwap() {
 	const walletConnect = useSelector(wallet$);
-	const [isShowModal, setShowModal] = useState(false);
-	const [price, setPrice] = useState(0);
-	const [currentSceptor, setCurrentSceptor] = useState(0);
-	const [maxSupplyCrown, setMaxSupplyCrown] = useState(0);
-	const [currentSupply, setCurrentSupply] = useState(0);
-	const [disable,setDisable] = useState(false);
-	const crownRef = useRef();
+	const [isShowModalSwapFdTToPoint, setIsShowModalSwapFdTToPoint] = useState(false);
+	const [isShowModalSwapPointToFdT, setIsShowModalSwapPointToFdT] = useState(false);
+	const [disable, setDisable] = useState(false);
+	const pointRef = useRef();
+	const FdTRef = useRef();
 	const [loading, setLoading] = useState(false);
-	const [contactUseEffect, setContactUseEffect] = useState(false);
-	const [ownerCrown, setOwnerCrown] = useState(); //so crown da trung thuong tu crown lucky
-	const { crownLuckyAddress, crownLuckyAbi } = contractCrownLucky;
+	const [balanceFdT, setBalanceFdT] = useState(0)
+	const userData = useSelector(user$)
+	const dispatch = useDispatch()
 	//--------------HOOKS---------------//
 	useEffect(() => {
 		window.scrollTo(0, 0);
@@ -37,236 +30,230 @@ function WinSwap(props) {
 			setDisable(true)
 		} else {
 			setDisable(false)
-			const swapContract = new ethers.Contract(
-				swapSceptorAddress,
-				swapSceptorAbi,
+			const FdTContract = new ethers.Contract(
+				FdTAbi.networks['97'].address,
+				FdTAbi.abi,
 				walletConnect
 			);
-			const sceptorContract = new ethers.Contract(
-				sceptorAddress,
-				sceptorAbi,
-				walletConnect
-			);
-			const crownContract = new ethers.Contract(
-				crownNFTAdress,
-				crownNFTAbi,
-				walletConnect
-			);
-			const luckyCrownContract = new ethers.Contract(
-				crownLuckyAddress,
-				crownLuckyAbi,
-				walletConnect
-			);
-			// setMaxSupplyCrown(parseInt(await crownContract.maxSupply()));
-			let ownerCrown = await luckyCrownContract.getOwnerCrownNFT();
-			let address = await walletConnect.getAddress();
-			let maxSceptor = await sceptorContract.balanceOf(address, 0);
-			let currentSup = await swapContract.currentSupply();
-			let getRatio = await swapContract.PRICE();
-			let maxSup = await swapContract.MAX_SUPPLY();
-			setOwnerCrown(ownerCrown.toString());
-			setMaxSupplyCrown(parseInt(maxSup.toString()));
-			setPrice(parseInt(getRatio));
-			setCurrentSupply(parseInt(currentSup));
-			setCurrentSceptor(parseInt(maxSceptor));
+
+			const balanceOf = await FdTContract.balanceOf(walletConnect._address)
+			setBalanceFdT(ethers.utils.formatEther(balanceOf))
 		}
 	}, [walletConnect]);
-	//--------------FUNC---------------//
-	const swapHandler = async () => {
+
+	async function handleDeposit() {
 		if (!walletConnect) {
 			message.error("Please connect wallet!");
 			setDisable(true)
-		} else {
-			if (currentSupply >= maxSupplyCrown) {
-				message.error("Run out of CROWN NFT!");
-				return;
-			}
-			setLoading(true);
-			try {
-				const sceptorContract = new ethers.Contract(
-					sceptorAddress,
-					sceptorAbi,
-					walletConnect
-				);
-				const sceptorTx = await sceptorContract.setApprovalForAll(
-					swapSceptorAddress,
-					true
-				);
-				message.warning("Please wait for transaction finised...");
-				await sceptorTx.wait();
-				const swapContract = new ethers.Contract(
-					swapSceptorAddress,
-					swapSceptorAbi,
-					walletConnect
-				);
-				await swapContract.swapCrown();
-				setLoading(false);
-				setShowModal(false);
-				// setContactUseEffect(!contactUseEffect);
-				setCurrentSceptor(currentSceptor - price);
-				message.success("Swap scepter to crown successfully!");
-			} catch (err) {
-				setLoading(false);
-				if (err.code == 4001) {
-					message.error("Transaction cancelled!");
-				} else {
-					message.error("Transaction error!");
-				}
-				console.log(err);
-			}
+			return
 		}
-	};
+		setLoading(true);
+		try {
+			const FdTContract = new ethers.Contract(
+				FdTAbi.networks['97'].address,
+				FdTAbi.abi,
+				walletConnect
+			);
+			const transferTx = await FdTContract.transfer(
+				process.env.REACT_APP_MASTER_ADDRESS,
+				ethers.utils.parseEther(FdTRef.current.input.value)
+			);
+			message.warning("Please wait for transaction finised...");
 
-	const showModal = () => {
-		if (currentSceptor >= price) {
-			setShowModal(true);
-		} else {
-			message.error("Not enough sceptor to swap!");
+			await transferTx.wait();
+			await axios.post(
+				process.env.REACT_APP_API_URL + '/api/users/deposit',
+				{
+					txHash: transferTx.hash
+				},
+				{
+					headers: {
+						Authorization: `Bearer ${userData.token}`
+					}
+				}
+			)
+			setLoading(false);
+			message.success("Swap successfully!");
+			setIsShowModalSwapFdTToPoint(false);
+			dispatch(user.setUser({ ...userData, balance: parseFloat(userData.balance) + parseFloat(FdTRef.current.input.value) }))
+
+		} catch (err) {
+			setLoading(false);
+			if (err.code == 4001) {
+				message.error("Transaction cancelled!");
+			} else {
+				message.error("Transaction error!");
+			}
+			console.log(err);
 		}
-	};
+	}
+
+	async function handleWithdraw() {
+		if (!walletConnect) {
+			message.error("Please connect wallet!");
+			setDisable(true)
+			return
+		}
+		setLoading(true);
+		await axios.post(
+			process.env.REACT_APP_API_URL + '/api/users/withdraw',
+			{
+				amount: pointRef.current.input.value
+			},
+			{
+				headers: {
+					Authorization: `Bearer ${userData.token}`
+				}
+			}
+		).then(res => {
+			window.open(`https://testnet.bscscan.com/tx/${res.data.tx.hash}`, '_blank')
+			setLoading(false);
+			message.success("Swap successfully!");
+			setIsShowModalSwapPointToFdT(false);
+			dispatch(user.setUser({ ...userData, balance: parseFloat(userData.balance) - parseFloat(pointRef.current.input.value) }))
+		}).catch(err => {
+			message.error("Transaction error!");
+			console.log('withdraw error', err);
+		});
+	}
 
 	return (
 		<>
-			{isShowModal && (
+			{isShowModalSwapFdTToPoint && (
 				<SwapModal
-					isShowModal={isShowModal}
-					swapHandler={swapHandler}
+					isShowModal={isShowModalSwapFdTToPoint}
+					swapHandler={handleDeposit}
 					loading={loading}
-					setShowModal={setShowModal}
-					price={price}
+					setShowModal={setIsShowModalSwapFdTToPoint}
+					child={
+						<>
+							<span className="c2i-active">
+								{`${BaseHelper.numberWithDots(FdTRef.current.input.value)}`} FDT
+							</span>{" "}
+							to {FdTRef.current.input.value}<br />
+							POINT?
+						</>
+					}
+				/>
+			)}
+			{isShowModalSwapPointToFdT && (
+				<SwapModal
+					isShowModal={isShowModalSwapPointToFdT}
+					swapHandler={handleWithdraw}
+					loading={loading}
+					setShowModal={setIsShowModalSwapPointToFdT}
+					child={
+						<>
+							<span className="c2i-active">
+								{`${BaseHelper.numberWithDots(pointRef.current.input.value)}`} POINT
+							</span>{" "}
+							to {pointRef.current.input.value * 0.9}<br />
+							FDT?
+						</>
+					}
 				/>
 			)}
 			<div id="win-swap" data-aos="fade-up">
 				<div className="c2i-container">
-					<div style={{width: "35%"}}>
-					<div className="swap-head-container">
-						<h2 className="module-header">{`Deposit`}</h2>
-						<div className="current-sceptor-container">
-							<img src={IconWallet} style={{ marginRight: "8px" }}></img>
-							<p className="module-blur c2i-no-margin">{`${BaseHelper.numberWithRealDots(
-								currentSceptor
-							)} FDT`}</p>
+					<div style={{ width: "35%" }}>
+						<div className="swap-head-container">
+							<h2 className="module-header">{`Deposit`}</h2>
+							<div className="current-sceptor-container">
+								<img src={IconWallet} style={{ marginRight: "8px" }}></img>
+								<p className="module-blur c2i-no-margin">{`${BaseHelper.numberWithRealDots(
+									balanceFdT
+								)} FDT`}</p>
+							</div>
 						</div>
-					</div>
-					<Space
-						direction="vertical"
-						size={24}
-						className="swap-content-container"
-					>
-						<Space size={24} className="swap-item ">
-							<p className="module-blur c2i-no-margin text-left">Pricing</p>
-							<p className="module-blur c2i-default c2i-no-margin text-left">
-								{/* 1 FISHDOM TOKEN = {BaseHelper.numberWithRealDots(price)} POINT */}
-								1 FDT = 1 POINT
-							</p>
-						</Space>
-						<Space direction="horizontal" size={8} align="start">
-							<div className="c2i-form-group">
-								<div className="c2i-form-control">
-									<Input
-										type="number"
-										min={1}
-										max={maxSupplyCrown}
-										ref={crownRef}
-										placeholder="1 POINT"
-										disabled={disable}
-									/>
+						<Space
+							direction="vertical"
+							size={24}
+							className="swap-content-container"
+						>
+							<Space size={24} className="swap-item ">
+								<p className="module-blur c2i-no-margin text-left">Pricing</p>
+								<p className="module-blur c2i-default c2i-no-margin text-left">
+									1 FDT = 1 POINT
+								</p>
+							</Space>
+							<Space direction="horizontal" size={8} align="start">
+								<div className="c2i-form-group">
+									<div className="c2i-form-control">
+										<Input
+											type="number"
+											min={1}
+											ref={FdTRef}
+											placeholder="1 FdT"
+											disabled={disable}
+										/>
+									</div>
 								</div>
+							</Space>
+							<div className="module-line"></div>
+							<div className="btn-price-container">
+								<div className="price-container">
+									<p className="module-blur"></p>
+								</div>
+								<Button
+									className="swap-confirm-btn module-blur"
+									onClick={() => setIsShowModalSwapFdTToPoint(prev => !prev)}
+								>
+									{"Swap now"}
+								</Button>
 							</div>
 						</Space>
-						<div className="module-line"></div>
-						<div className="btn-price-container">
-							<div className="price-container">
-								{/* <p
-									className={`module-blur ${
-										currentSceptor >= price ? "c2i-active" : "c2i-error"
-									}`}
-								>
-									{BaseHelper.numberWithRealDots(price) + ` SCEPTOR`}
-								</p> */}
-								<p className="module-blur">Total</p>
-							</div>
-							<Button
-								className="swap-confirm-btn module-blur"
-								onClick={showModal}
-							>
-								{"Swap now"}
-							</Button>
-						</div>
-						<p className="module-blur">
-							{currentSceptor >= price
-								? ""
-								: "You haven’t enough SCEPTER for swapping!"}
-						</p>
-					</Space>
-
 					</div>
 
-					<div style={{width: "35%"}}>
-					<div className="swap-head-container">
-						<h2 className="module-header">{`Withdraw`}</h2>
-						<div className="current-sceptor-container">
-							<img src={IconWallet} style={{ marginRight: "8px" }}></img>
-							<p className="module-blur c2i-no-margin">{`${BaseHelper.numberWithRealDots(
-								currentSceptor
-							)} POINT`}</p>
+					<div style={{ width: "35%" }}>
+						<div className="swap-head-container">
+							<h2 className="module-header">{`Withdraw`}</h2>
+							<div className="current-sceptor-container">
+								<img src={IconWallet} style={{ marginRight: "8px" }}></img>
+								<p className="module-blur c2i-no-margin">{`${BaseHelper.numberWithRealDots(
+									userData?.balance || "0"
+								)} POINT`}</p>
+							</div>
 						</div>
-					</div>
-					<Space
-						direction="vertical"
-						size={24}
-						className="swap-content-container"
-					>
-						<Space size={24} className="swap-item ">
-							<p className="module-blur c2i-no-margin text-left">Pricing</p>
-							<p className="module-blur c2i-default c2i-no-margin text-left">
-								{/* 1 TOKEN = {BaseHelper.numberWithRealDots(price)} FISHDOM TOKEN */}
-								1 POINT  = 0.9 FDT
-							</p>
-						</Space>
-						<Space direction="horizontal" size={8} align="start">
-							<div className="c2i-form-group">
-								<div className="c2i-form-control">
-									<Input
-										type="number"
-										min={1}
-										max={maxSupplyCrown}
-										ref={crownRef}
-										placeholder="1 FDT"
-										disabled = {disable}
-									/>
+						<Space
+							direction="vertical"
+							size={24}
+							className="swap-content-container"
+						>
+							<Space size={24} className="swap-item ">
+								<p className="module-blur c2i-no-margin text-left">Pricing</p>
+								<p className="module-blur c2i-default c2i-no-margin text-left">
+									{/* 1 TOKEN = {BaseHelper.numberWithRealDots(price)} FISHDOM TOKEN */}
+									1 POINT  = 0.9 FDT
+								</p>
+							</Space>
+							<Space direction="horizontal" size={8} align="start">
+								<div className="c2i-form-group">
+									<div className="c2i-form-control">
+										<Input
+											type="number"
+											min={1}
+											ref={pointRef}
+											placeholder="1 Point"
+											disabled={disable}
+										/>
+									</div>
 								</div>
+							</Space>
+							<div className="module-line"></div>
+							<div className="btn-price-container">
+								<div className="price-container">
+									<p className="module-blur"></p>
+								</div>
+								<Button
+									className="swap-confirm-btn module-blur"
+									onClick={() => setIsShowModalSwapPointToFdT(prev => !prev)}
+								>
+									{"Swap now"}
+								</Button>
 							</div>
 						</Space>
-						<div className="module-line"></div>
-						<div className="btn-price-container">
-							<div className="price-container">
-								{/* <p
-									className={`module-blur ${
-										currentSceptor >= price ? "c2i-active" : "c2i-error"
-									}`}
-								>
-									{BaseHelper.numberWithRealDots(price) + ` SCEPTOR`}
-								</p> */}
-								<p className="module-blur">Total</p>
-							</div>
-							<Button
-								className="swap-confirm-btn module-blur"
-								onClick={showModal}
-							>
-								{"Swap now"}
-							</Button>
-						</div>
-						<p className="module-blur">
-							{currentSceptor >= price
-								? ""
-								: "You haven’t enough SCEPTER for swapping!"}
-						</p>
-					</Space>
 					</div>
 				</div>
-
-				
 			</div>
 		</>
 	);

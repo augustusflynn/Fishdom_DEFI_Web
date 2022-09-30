@@ -1,10 +1,9 @@
 import { Button, Space } from "antd";
 import Modal from "antd/lib/modal/Modal";
 import React from "react";
-import BaseHelper from "src/utils/BaseHelper";
 
 const SwapModal = (props) => {
-	const { isShowModal, setShowModal, swapHandler, price, loading } = props;
+	const { isShowModal, setShowModal, swapHandler, child, loading } = props;
 	const hideModal = () => {
 		setShowModal(false);
 	};
@@ -22,11 +21,7 @@ const SwapModal = (props) => {
 				<h2 className="module-title">
 					Are you sure to Convert
 					<br />
-					<span className="c2i-active">
-						{`${BaseHelper.numberWithDots(price)}`} FDT
-					</span>{" "}
-					to 1<br />
-					POINT?
+					{child}
 				</h2>
 				<div className="btn-container">
 					<Button

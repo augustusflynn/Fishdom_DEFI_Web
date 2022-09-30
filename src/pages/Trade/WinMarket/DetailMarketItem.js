@@ -158,7 +158,7 @@ function DetailMarketItem() {
 					setShowModal(false);
 					dispatch(market.marketData([tokenId]));
 					message.success("Buy item successfully!");
-					navigate("/trade-win-market");
+					navigate("/");
 				});
 			} catch (err) {
 				setBuyLoading(false);
@@ -266,7 +266,7 @@ function DetailMarketItem() {
 										disabled={
 											isLocked == 1 ||
 											detailItem?.seller ==
-												walletConnect?.provider?.provider?.selectedAddress ||
+											walletConnect?.provider?.provider?.selectedAddress ||
 											rewardId == 1
 										}
 									>
