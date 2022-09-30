@@ -19,4 +19,5 @@ export const INIT_STATE = {
 		withdraw: [],
 	},
 	crownClaimed: null,
+	user: {}
 };

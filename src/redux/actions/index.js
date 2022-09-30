@@ -30,3 +30,7 @@ export const market = createActions({
 	sellData: (payload) => payload,
 	withdrawData: (payload) => payload,
 });
+
+export const user = createActions({
+	setUser: (payload) => payload
+});

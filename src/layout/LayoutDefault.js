@@ -12,12 +12,13 @@ import {
 	walletConnect,
 } from "../connectors/walletConnect";
 import { METAMASK_CONNECT, WALLET_CONNECT } from "../constants/apiContants";
-import { wallet } from "../redux/actions";
+import { user, wallet } from "../redux/actions";
 import "./../../node_modules/aos/dist/aos.css";
 import { SFEED_ANIMATION } from "./../constants/const";
 import FooterLayout from "./FooterLayout";
 import HeaderLayout from "./Topbar/index";
 import TopbarMobile from "./TopbarMobile";
+import axios from "axios";
 
 const { useChainId, useError, useProvider } = hooksMetaMask;
 
@@ -89,12 +90,25 @@ function LayoutDefault() {
 	}, [error, errorW]);
 
 	/// get signer
+
 	useEffect(async () => {
-		// console.log("CHAIN ID", chainId);
-		// console.log("PROVIDERW", providerW);
-		// provider.on("accountsChanged").then((res) => {
-		// 	console.log(res);
-		// });
+		const login = (walletAddress) => {
+			axios.post(process.env.REACT_APP_API_URL + '/api/users/login', { walletAddress: walletAddress })
+				.then((res) => {
+					if (res.data && res.data.msg === "NOT_FOUND") {
+						// fix sau :D
+					} else {
+						dispatch(user.setUser({
+							...res.data.user,
+							token: res.data.token
+						}));
+					}
+				})
+				.catch(err => {
+					console.log('login error')
+				})
+		}
+
 		const getSigner = async () => {
 			try {
 				if (provider || providerW) {
@@ -105,6 +119,7 @@ function LayoutDefault() {
 								.send("eth_requestAccounts", [])
 								.then((data) => {
 									console.log("address: " + data);
+									login(data[0])
 								})
 								.catch((error) => {
 									if (error.code === 4001) {
@@ -169,7 +184,6 @@ function LayoutDefault() {
 	}, []);
 
 	useEffect(() => {
-		console.log("Iam running");
 		let metamasskConnect = localStorage.getItem(METAMASK_CONNECT);
 		if (metamasskConnect) {
 			void metaMask.connectEagerly();

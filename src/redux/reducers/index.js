@@ -4,6 +4,8 @@ import isOpenTabBar from "./isOpenTabBar";
 import wallet from "./wallet";
 import walletFake from "./WalletFake";
 import { marketSetData } from "./market";
+import userReducers from "./user";
+
 export default combineReducers({
 	isOpenTabBar,
 	wallet,
@@ -11,4 +13,5 @@ export default combineReducers({
 	crownClaimData,
 	walletFake,
 	market: marketSetData,
+	user: userReducers
 });
