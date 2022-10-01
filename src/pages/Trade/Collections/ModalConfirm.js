@@ -14,24 +14,12 @@ const ModalConfirm = ({
 	const [quantity, setQuantity] = useState(1);
 	const [priceBNB, setPriceBNB] = useState(0);
 	const priceBNBRef = useRef();
+
 	useEffect(() => {
-		console.log("Vai ca lon data", data);
 		setQuantity(1);
 		form.resetFields();
 		setPriceBNB(0);
 	}, [data, isShowModal]);
-	const onChangeQuantity = (value) => {
-		console.log(value);
-		if (parseInt(value) < 100) {
-			setQuantity(100);
-		} else {
-			const formatValue = Math.round(value).toString();
-			form.setFieldsValue({
-				quantity: formatValue,
-			});
-			setQuantity(formatValue);
-		}
-	};
 
 	const onChangeBNB = (value) => {
 		if (value >= 10 ** -18 && value <= 10 ** 18 - 1) {
@@ -40,13 +28,6 @@ const ModalConfirm = ({
 			setPriceBNB(0);
 		}
 	};
-
-	function formatQuantity(data) {
-		if (!data) return " ";
-		if (data.length <= 8) return data;
-		const length = data.length;
-		return data.slice(0, 3) + "..." + data.slice(length - 3, length);
-	}
 
 	return (
 		<Modal
@@ -61,7 +42,7 @@ const ModalConfirm = ({
 			<Form
 				form={form}
 				onFinish={(values) => {
-					onClick({ ...values, tokenId: data.tokenId });
+					onClick({ ...values, nftId: data.nftId });
 				}}
 			>
 				<div className="back" onClick={() => setShowModal(false)}>
@@ -71,72 +52,6 @@ const ModalConfirm = ({
 				<div className="header c2i-no-margin">
 					<span className="title-buy">Complete your checkout</span>
 				</div>
-				<Divider />
-				<Space direction={"horizontal"} size={21}>
-					<img alt="crown-image" src={data?.image} className="market-img" />
-					<div className="market-container-modal">
-						<h3 className="module-title c2i-no-margin">{data?.name || ""}</h3>
-						{data?.apr && data?.reduce ? (
-							<Space direction="horizontal" size={40}>
-								<div className="attribute">
-									<h3 className="module-title c2i-color-green">
-										{`${data?.apr || "0"}`}%
-									</h3>
-									<p className="module-blur c2i-no-margin">APR Bonus</p>
-								</div>
-								<div className="market-line"></div>
-								<div className="attribute">
-									<h3 className="module-title c2i-color-green">
-										{data?.reduce || "0"}%
-									</h3>
-									<p className="module-blur c2i-no-margin">Mining Reduce</p>
-								</div>
-							</Space>
-						) : (
-							<Space direction="horizontal" size={40}>
-								<div className="module-title" style={{ fontSize: "14px" }}>
-									Amount:&nbsp;{formatQuantity(data?.quantity)}
-								</div>
-								{(data?.quantity !== "1" || data?.quantity > 1) && (
-									<Form.Item
-										name={"quantity"}
-										rules={[
-											{
-												required: true,
-												message: "Please enter quantity",
-											},
-											() => ({
-												validator(_, value) {
-													if (Number(value < 0)) {
-														return Promise.reject(new Error("Invalid price"));
-													} else if (Number(value >= 10 ** 18)) {
-														return Promise.reject(
-															new Error("Price only from 0 to 10^18")
-														);
-													} else {
-														return Promise.resolve();
-													}
-												},
-											}),
-										]}
-									>
-										<div className="attribute">
-											<InputNumber
-												className="market-input"
-												placeholder="Amount"
-												min={100}
-												value={quantity}
-												id="quantity_input"
-												onChange={onChangeQuantity}
-												size="large"
-											/>
-										</div>
-									</Form.Item>
-								)}
-							</Space>
-						)}
-					</div>
-				</Space>
 				<Divider />
 				<Row align="center" justify="space-between">
 					<Col sm={10} className="row-no-margin">
@@ -176,7 +91,7 @@ const ModalConfirm = ({
 										placeholder=" Amount"
 										className="market-input"
 										onChange={onChangeBNB}
-										prefix="BNB"
+										prefix="FdT"
 										size="large"
 									/>
 								</div>
@@ -184,36 +99,34 @@ const ModalConfirm = ({
 
 							<p className="module-blur c2i-no-margin modal-wrap-text">
 								{`Total price: `}
-								<span className="c2i-color-title">{`${
-									priceBNB * quantity >= 1
-										? priceBNB * quantity + " BNB"
-										: (priceBNB > 10 ** -18 && priceBNB < 1) ||
-										  parseFloat(priceBNB) == 0
+								<span className="c2i-color-title">{`${priceBNB * quantity >= 1
+									? priceBNB * quantity + " FdT"
+									: (priceBNB > 10 ** -18 && priceBNB < 1) ||
+										parseFloat(priceBNB) == 0
 										? ethers.utils.formatEther(
-												parseInt(priceBNB * quantity * 10 ** 18).toString()
-										  ) + " BNB"
-										: priceBNB < 10 ** 18 - 1 + " BNB"
-										? parseFloat(priceBNB * quantity).toString() + " BNB"
-										: "Invalid Value"
-								}`}</span>
+											parseInt(priceBNB * quantity * 10 ** 18).toString()
+										) + " FdT"
+										: priceBNB < 10 ** 18 - 1 + " FdT"
+											? parseFloat(priceBNB * quantity).toString() + " FdT"
+											: "Invalid Value"
+									}`}</span>
 							</p>
 
 							<p className="module-blur c2i-no-margin modal-wrap-text">
 								{`Fee:`}
-								<span className="c2i-color-title">{` ~ ${
-									priceBNB * quantity >= 1
-										? priceBNB * quantity * 0.05 + " BNB"
-										: (priceBNB > 10 ** -16 && priceBNB < 1) ||
-										  parseFloat(priceBNB) == 0
+								<span className="c2i-color-title">{` ~ ${priceBNB * quantity >= 1
+									? priceBNB * quantity * 0.05 + " FdT"
+									: (priceBNB > 10 ** -16 && priceBNB < 1) ||
+										parseFloat(priceBNB) == 0
 										? ethers.utils.formatEther(
-												parseInt(
-													priceBNB * quantity * 0.05 * 10 ** 18
-												).toString()
-										  ) + " BNB"
-										: priceBNB < 10 ** 18 - 1 + " BNB"
-										? parseFloat(priceBNB * quantity * 0.05).toString() + " BNB"
-										: 0
-								}`}</span>
+											parseInt(
+												priceBNB * quantity * 0.05 * 10 ** 18
+											).toString()
+										) + " FdT"
+										: priceBNB < 10 ** 18 - 1 + " FdT"
+											? parseFloat(priceBNB * quantity * 0.05).toString() + " FdT"
+											: 0
+									}`}</span>
 							</p>
 						</Space>
 					</Col>

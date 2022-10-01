@@ -3,25 +3,18 @@ import { ethers } from "ethers";
 import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import ModalWallet from "src/layout/Topbar/ModalWallet";
-import { market } from "src/redux/actions";
-import { market$, user$, wallet$ } from "src/redux/selectors";
-import { apiService } from "src/utils/api";
-import { makeQueryBuilder } from "src/utils/MoralisQuery";
-import Scepter from "../../../assets/images/Scepter.jpg";
+import { user$, wallet$ } from "src/redux/selectors";
 import IconWallet from "../../../assets/png/topbar/icon-wallet-white.svg";
-import MarketAbi from "../../../constants/abiMarket.json";
-import ScepterAbi from "../../../constants/abiScepter.json";
-import { crownNFTAbi, crownNFTAdress } from "../../../constants/constants";
+import MarketAbi from "../../../constants/contracts/FishdomMarket.sol/FishdomMarket.json";
+import FishdomNFTAbi from "../../../constants/contracts/FishdomNFT.sol/FishdomNFT.json";
 import Container from "../../../layout/grid/Container";
 import MarketItem from "./MarketItem";
 import ModalConfirm from "./ModalConfirm";
-import crownImgFake from "src/assets/crown/crown.svg";
 import axios from "axios";
 
 const Collection = () => {
 	const userData = useSelector(user$)
 	const walletConnect = useSelector(wallet$);
-	const dispatch = useDispatch();
 	const [listMarket, setListMarket] = useState({
 		data: [],
 		count: 0,
@@ -31,7 +24,7 @@ const Collection = () => {
 		count: 0,
 	});
 	const [currentPage, setCurrentPage] = useState(1);
-	const [page_size, setPageSize] = useState(8);
+	const page_size = 8;
 	const [currentTabKey, setCurrentTabKey] = useState("#marketItem");
 	const [skip, setSkip] = useState(0);
 	const [isShowModal, setIsShowModal] = useState(false);
@@ -42,13 +35,12 @@ const Collection = () => {
 	const [isLoadingAllSiteA, setIsLoadingAllSiteA] = useState(true);
 	const [isLoadingAllSiteB, setIsLoadingAllSiteB] = useState(true);
 
-	const [listIdNFT, setListIdNFT] = useState([]);
 	const [showPopupWallet, setShowPopupWallet] = useState(false);
 
 	useEffect(() => {
 		window.scrollTo(0, 0);
 		handleChangeKey(currentTabKey)
-	}, [currentTabKey]);
+	}, [currentTabKey, userData, walletConnect]);
 
 	async function handleFetchDataMarket(nextSkip) {
 		try {
@@ -74,99 +66,27 @@ const Collection = () => {
 		}
 	}
 
-	async function handleFetchDataCollection(skip, data = listIdNFT) {
-		// try {
-		// 	console.log("Collection", data.toString());
-		// 	setIsLoadingAllSiteB(true);
-
-		// 	console.log("Start handle collection");
-		// 	const CrownContract = new ethers.Contract(
-		// 		crownNFTAdress,
-		// 		crownNFTAbi,
-		// 		walletConnect
-		// 	);
-		// 	if (!CrownContract) {
-		// 		setIsLoadingAllSiteB(false);
-		// 		return;
-		// 	} else {
-		// 		if (Object.keys(data)?.length > 0) {
-		// 			new Promise(async (resolve) => {
-		// 				let result = [];
-		// 				for (let i = skip; i < skip + page_size; i++) {
-		// 					const id = data[i]?.toString();
-		// 					if (id) {
-		// 						result.push(await fulfillDataCollection(id));
-		// 					} else {
-		// 						break;
-		// 					}
-		// 				}
-		// 				resolve(result);
-		// 			})
-		// 				.then(async (res) => {
-		// 					const ScepterContract = new ethers.Contract(
-		// 						ScepterAbi.scepterAddress,
-		// 						ScepterAbi.scepterAbi,
-		// 						walletConnect
-		// 					);
-		// 					if (ScepterContract && skip === 0) {
-		// 						const scepterAmount = await ScepterContract.balanceOf(
-		// 							await walletConnect.getAddress(),
-		// 							0
-		// 						);
-		// 						console.log(await walletConnect.getAddress());
-		// 						if (scepterAmount != "0") {
-		// 							res = [
-		// 								...res,
-		// 								{
-		// 									name: "SCEPTER",
-		// 									tokenId: 0,
-		// 									quantity: scepterAmount.toString(),
-		// 									image: Scepter,
-		// 								},
-		// 							];
-		// 						}
-		// 					}
-		// 					let newData = res;
-		// 					let sellData = sessionStorage.getItem("sell")
-		// 						? JSON.parse(sessionStorage.getItem("sell"))
-		// 						: [];
-		// 					let countSell = 0;
-		// 					if (
-		// 						Object.keys(newData).length > 0 &&
-		// 						Object.keys(sellData).length > 0
-		// 					) {
-		// 						newData = res.filter((item) => {
-		// 							if (sellData.indexOf(item?.tokenId) != -1) {
-		// 								if (item?.tokenId == 0 && item?.quantity != 0) {
-		// 									return true;
-		// 								}
-		// 								countSell++;
-		// 								return false;
-		// 							}
-
-		// 							return true;
-		// 						});
-		// 						if (countSell == 0) {
-		// 							dispatch(market.sellData([]));
-		// 							sessionStorage.setItem("sell", JSON.stringify([]));
-		// 						}
-		// 					}
-		// 					setListCollection({
-		// 						data: newData,
-		// 						count: data.length - countSell,
-		// 					});
-		// 				})
-		// 				.finally(() => {
-		// 					console.log("Run final");
-		// 					setIsLoadingAllSiteB(false);
-		// 				});
-		// 		} else {
-		// 			setIsLoadingAllSiteB(false);
-		// 		}
-		// 	}
-		// } catch (error) {
-		// 	setIsLoadingAllSiteB(false);
-		// }
+	async function handleFetchDataCollection(skip) {
+		try {
+			setIsLoadingAllSiteB(true);
+			axios.post(
+				process.env.REACT_APP_API_URL + "/api/games/getListNFT",
+				{
+					"limit": page_size,
+					"skip": skip
+				},
+				{
+					headers: {
+						Authorization: `Bearer ${userData.token}`
+					}
+				}
+			).then(res => {
+				setListCollection(res.data);
+				setIsLoadingAllSiteB(false);
+			})
+		} catch (error) {
+			setIsLoadingAllSiteB(false);
+		}
 	}
 
 	const handleChangeKey = useCallback(async (key) => {
@@ -175,87 +95,67 @@ const Collection = () => {
 		if (key === "#marketItem") {
 			await handleFetchDataMarket(0);
 		} else {
-			await handleFetchDataCollection();
+			await handleFetchDataCollection(0);
 		}
+		window.location.hash = key
 		currentTabKey !== key && setCurrentTabKey(key);
-	}, [currentTabKey])
+	}, [currentTabKey, userData, walletConnect])
 
 	async function handleSellItem(values) {
 		try {
 			setSellLoading(true);
 			const MarketContract = new ethers.Contract(
-				MarketAbi.addressMarket,
-				MarketAbi.abiMarket,
+				MarketAbi.networks['97'].address,
+				MarketAbi.abi,
 				walletConnect
 			);
-			let ScepterContract, CrownContract;
-			let itemType;
-			console.log(values);
-			if (values.tokenId == 0) {
-				ScepterContract = new ethers.Contract(
-					ScepterAbi.scepterAddress,
-					ScepterAbi.scepterAbi,
-					walletConnect
-				);
-				if (!MarketContract || !ScepterContract) {
-					setSellLoading(false);
-					return;
-				}
-				const approveRes = await ScepterContract.setApprovalForAll(
-					MarketAbi.addressMarket,
-					true
-				);
-				await approveRes.wait();
-				itemType = "0";
-			} else {
-				CrownContract = new ethers.Contract(
-					crownNFTAdress,
-					crownNFTAbi,
-					walletConnect
-				);
-				if (!MarketContract || !CrownContract) {
-					setSellLoading(false);
-					return;
-				}
-				const approveRes = await CrownContract.approve(
-					MarketAbi.addressMarket,
-					values.tokenId
-				);
-				await approveRes.wait();
-				itemType = "1";
-			}
+
+			const FishdomNFTContract = new ethers.Contract(
+				FishdomNFTAbi.networks['97'].address,
+				FishdomNFTAbi.abi,
+				walletConnect
+			);
+
+			const approveRes = await FishdomNFTContract.approve(
+				MarketAbi.networks['97'].address,
+				values.nftId
+			);
+			message.loading("Please wait for approve transaction", 1)
+			await approveRes.wait();
+			window.open(`https://testnet.bscscan.com/tx/${approveRes.hash}`)
 
 			const priceToWei = ethers.utils.parseEther(values.price).toString();
-			console.log(
-				values.tokenId || "0",
-				priceToWei,
-				values.quantity || "1",
-				itemType
-			);
-			let createMarket = await MarketContract.createMarketItem(
-				values.tokenId || "0",
-				priceToWei,
-				values.quantity || "1",
-				itemType
+			const createMarket = await MarketContract.createMarketItem(
+				values.nftId,
+				priceToWei
 			);
 			await createMarket
 				.wait()
 				.then((res) => {
-					let data = sessionStorage.getItem("sell")
-						? JSON.parse(sessionStorage.getItem("sell"))
-						: [];
-					data = [...data, values.tokenId || "0"];
-					dispatch(market.sellData(data));
-					message.success("Sell item successfully");
+					axios.post(
+						process.env.REACT_APP_API_URL + "/api/markets/sell",
+						{
+							txHash: createMarket.hash
+						},
+						{
+							headers: {
+								Authorization: `Bearer ${userData.token}`
+							}
+						}
+					).then(() => {
+						handleChangeKey("#marketItem");
+						message.success("Sell item successfully");
+						window.open(`https://testnet.bscscan.com/tx/${createMarket.hash}`)
+						setIsShowModal(false);
+					}).catch(() => {
+						message.error("Something went wrong. Please try again");
+					})
 					setSellLoading(false);
-					setIsShowModal(false);
-					handleChangeKey("#marketItem");
 				})
 				.catch((err) => {
 					message.error("Something went wrong. Please try again");
 					setSellLoading(false);
 				});
-			setCurrentPage(1);
 		} catch (error) {
 			if (error.code == 4001) {
 				message.error("Transaction cancelled");
@@ -279,22 +179,31 @@ const Collection = () => {
 	async function handleWithdrawItem(itemMarketId) {
 		try {
 			const MarketContract = new ethers.Contract(
-				MarketAbi.addressMarket,
-				MarketAbi.abiMarket,
+				MarketAbi.networks['97'].address,
+				MarketAbi.abi,
 				walletConnect
 			);
-			if (!MarketContract) return;
+
 			setWithdrawLoading(true);
 			const withdrawRes = await MarketContract.withdrawNFT(itemMarketId);
+			message.loading("Please wait for transaction be confirmed", 1)
 			await withdrawRes
 				.wait()
 				.then(() => {
-					let data = sessionStorage.getItem("withdraw")
-						? JSON.parse(sessionStorage.getItem("withdraw"))
-						: [];
-					dispatch(market.withdrawData([...data, itemMarketId]));
-					handleChangeKey("#collectionItem");
-					message.success("Withdraw item successfully");
+					axios.post(
+						process.env.REACT_APP_API_URL + "/api/markets/withdraw",
+						{
+							txHash: withdrawRes.hash
+						},
+						{
+							headers: {
+								Authorization: `Bearer ${userData.token}`
+							}
+						}
+					).then(() => {
+						window.open(`https://testnet.bscscan.com/tx/${withdrawRes.hash}`)
+						message.success("Withdraw item successfully");
+					})
 					setWithdrawLoading(false);
 				})
 				.catch((error) => {
@@ -392,7 +301,7 @@ const Collection = () => {
 																isLoading={withdrawLoading}
 																title="Withdraw"
 																onClick={(data) => {
-																	handleWithdrawItem(data.itemMarketId);
+																	handleWithdrawItem(data.itemId);
 																}}
 															/>
 														</Col>
@@ -428,6 +337,7 @@ const Collection = () => {
 															<MarketItem
 																infoItem={item}
 																title="Sell"
+																currentTabKey={currentTabKey}
 																onClick={(data) => {
 																	setIsShowModal(true);
 																	setSelectedItem(data);
@@ -446,31 +356,35 @@ const Collection = () => {
 								</Tabs.TabPane>
 							</Tabs>
 							{
-								listCollection.count && listMarket.count ? (
-									<div className="pagination">
-										<Pagination
-											total={
-												currentTabKey === "#collectionItem"
-													? listCollection.count
-													: listMarket.count
-											}
-											pageSize={page_size}
-											current={currentPage}
-											onChange={(num) => {
-												window.scrollTo(0, 0);
-												setCurrentPage(num);
-												let pageSize = page_size;
-												const nextSkip = (num - 1) * pageSize;
-												setSkip(nextSkip);
-												if (currentTabKey !== "#collectionItem") {
-													handleFetchDataMarket(nextSkip);
-												} else {
-													handleFetchDataCollection(nextSkip);
+								(
+									(currentTabKey === "#marketItem" && listMarket.count) ||
+									(currentTabKey === "#collectionItem" && listCollection.count)
+								)
+									? (
+										<div className="pagination">
+											<Pagination
+												total={
+													currentTabKey === "#collectionItem"
+														? listCollection.count
+														: listMarket.count
 												}
-											}}
-										/>
-									</div>
-								) : (<></>)
+												pageSize={page_size}
+												current={currentPage}
+												onChange={(num) => {
+													window.scrollTo(0, 0);
+													setCurrentPage(num);
+													let pageSize = page_size;
+													const nextSkip = (num - 1) * pageSize;
+													setSkip(nextSkip);
+													if (currentTabKey !== "#collectionItem") {
+														handleFetchDataMarket(nextSkip);
+													} else {
+														handleFetchDataCollection(nextSkip);
+													}
+												}}
+											/>
+										</div>
+									) : (<></>)
 							}
 						</>
 					)}
