@@ -5,7 +5,7 @@ import PartnersAndInvestors from "./pages/About/PartnersAndInvestors";
 //About
 import Teams from "./pages/About/Teams";
 //stake
-// import Claim from "./pages/Claim";
+import Claim from "./pages/Claim";
 import ComingSoon from "./pages/ComingSoon";
 // import Proposals from "./pages/DAO/Proposals";
 // import CreateProposal from "./pages/DAO/Proposals/CreateProposal";
@@ -49,15 +49,15 @@ const listRoute = [
 				element: <StakeWDA />,
 				childrent: [],
 			},
+			{
+				path: "claim",
+				element: <Claim />,
+				childrent: [],
+			},
 			/*
 			{
 				path: "stake-mining-crown",
 				element: <MiningCROWN />,
-				childrent: [],
-			},
-			{
-				path: "claim",
-				element: <Claim />,
 				childrent: [],
 			},
 			{

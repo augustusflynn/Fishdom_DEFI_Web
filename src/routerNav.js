@@ -15,11 +15,11 @@ export const navigations = [
       //   title: "Mining CROWN",
       //   path: "stake-mining-crown",
       // },
-      // {
-      //   type: "Item",
-      //   title: "Claim",
-      //   path: "claim",
-      // },
+      {
+        type: "Item",
+        title: "Claim",
+        path: "claim",
+      },
     ],
   },
   // {
