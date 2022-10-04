@@ -6,16 +6,11 @@ import { METAMASK_CONNECT, WALLET_CONNECT } from "../../constants/apiContants";
 import { chanId } from "../../constants/index.js";
 
 const {
-	useError,
-	useIsActivating,
 	useIsActive,
 } = hooks;
 
-function MetaMaskSelect(props) {
+function MetaMaskSelect() {
 	const { connector } = useWeb3React();
-	const { setShowMenu, handleCancel } = props;
-	const isActivating = useIsActivating();
-	const error = useError();
 	const isActive = useIsActive();
 	return (
 		<div className={`item-wallet margin-top-0`}>
@@ -29,9 +24,7 @@ function MetaMaskSelect(props) {
 				onClick={() => {
 					localStorage.setItem(METAMASK_CONNECT, "");
 					localStorage.setItem(WALLET_CONNECT, "");
-					connector.deactivate();
-					if (!isActive) metaMask.activate(chanId);
-					handleCancel();
+					metaMask.activate(chanId);
 				}}
 			>
 				<div className="icon-connect"></div>

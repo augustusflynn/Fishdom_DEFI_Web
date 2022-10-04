@@ -226,7 +226,7 @@ function StakeWDA() {
 
 			if (!stakingContract || !wdaContract) return;
 			setIsLoading(true);
-			setShowPopupWallet(false);
+			// setShowPopupWallet(false);
 			setDisbale(true);
 			const stakingPackage = stakingData[parseInt(valueSelectStakingDay)];
 			const stakingAmountToWei = ethers.utils.parseEther(

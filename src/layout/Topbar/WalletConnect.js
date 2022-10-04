@@ -5,19 +5,12 @@ import { hooks, walletConnect } from '../../connectors/walletConnect';
 import { METAMASK_CONNECT, WALLET_CONNECT } from "../../constants/apiContants";
 import { chanId } from '../../constants/index.js';
 
-const { useChainId, useAccounts, useError, useIsActivating, useIsActive, useProvider, useENSNames } = hooks;
+const { useIsActive } = hooks;
 
-function WalletConnect(props) {
+function WalletConnect() {
     const { connector } = useWeb3React()
-    const { setShowMenu } = props
-    const isActivating = useIsActivating()
-    const error = useError()
     const isActive = useIsActive();
 
-    // attempt to connect eagerly on mount
-    // useEffect(() => {
-    //     void metaMask.connectEagerly()
-    // }, [])
     return (
         <div className={`item-wallet`}>
 
