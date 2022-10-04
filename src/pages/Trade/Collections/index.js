@@ -48,7 +48,9 @@ const Collection = () => {
 			axios.post(
 				process.env.REACT_APP_API_URL + "/api/markets/get",
 				{
-					walletAddress: walletConnect._address,
+					filter: {
+						seller: walletConnect._address
+					},
 					skip: nextSkip,
 					limit: page_size
 				},
