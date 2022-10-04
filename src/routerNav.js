@@ -3,6 +3,12 @@ const { SubMenu } = Menu;
 export const navigations = [
   {
     type: "SubMenu",
+    title: "Launch Game",
+    path: process.env.REACT_APP_FISHDOM_GAME_URL,
+    isURLOnly: true
+  },
+  {
+    type: "SubMenu",
     title: "Stake",
     childrent: [
       {
@@ -122,6 +128,11 @@ export const navigations = [
 ];
 
 const getItem = (info, keySub) => {
+  if (info.isURLOnly) {
+    return (
+      <Menu.Item key={info.path} onClick={() => { window.open(info.path, '_blank') }}>{info.title}</Menu.Item>
+    )
+  }
   if (info.childrent && info.childrent.length > 0) {
     return (
       <SubMenu

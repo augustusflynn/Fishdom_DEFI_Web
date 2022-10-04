@@ -36,6 +36,10 @@ const listRoute = [
 		path: "/",
 		element: <LayoutDefault />,
 		childrent: [
+			{
+				path: process.env.REACT_APP_FISHDOM_GAME_URL,
+				isURLOnly: true
+			},
 			/*
 			{
 				path: "",
@@ -193,6 +197,9 @@ const listRoute = [
 ];
 export default listRoute;
 const getRoute = (info) => {
+	if (info.isURLOnly) {
+		return <></>
+	}
 	if (info.childrent.length > 0) {
 		return (
 			<Route path={info.path} element={info.element} key={info.path}>

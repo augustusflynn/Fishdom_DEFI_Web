@@ -44,43 +44,47 @@ function MenuTop() {
 	return (
 		<div className="menu-top">
 			{navigations.map((item, index) => {
-				let isSelect = item.childrent.findIndex(
+				let isSelect = item?.childrent?.length > 0 && item.childrent.findIndex(
 					(item) => item.path === selectedKey
 				);
 				return (
 					<div
 						className={`item-top ${isSelect >= 0 ? "is-selected" : ""}`}
 						key={index}
+						onClick={() => {
+							if (item.isURLOnly) {
+								window.open(item.path, "_blank")
+							}
+						}}
 					>
 						<span className="c2i-color-gray">{item.title}</span>
-						<DownOutlined />
 						{item.childrent && (
-							<div className="tooltip">
-								{item.childrent.map((item2, index2) => {
-									return !item2.hash ? (
-										<div
-											onClick={(e) => handleClick(item2.path, item2.redirect)}
-											key={index2}
-										>
-											{item2.title}
-										</div>
-									) : (
-										<div
-											onClick={(e) => handleScroll(item2.path, item2.hash)}
-											key={index2}
-										>
-											{item2.title}
-										</div>
-									);
-								})}
-							</div>
+							<>
+								<DownOutlined />
+								<div className="tooltip">
+									{item.childrent.map((item2, index2) => {
+										return !item2.hash ? (
+											<div
+												onClick={(e) => handleClick(item2.path, item2.redirect)}
+												key={index2}
+											>
+												{item2.title}
+											</div>
+										) : (
+											<div
+												onClick={(e) => handleScroll(item2.path, item2.hash)}
+												key={index2}
+											>
+												{item2.title}
+											</div>
+										);
+									})}
+								</div>
+							</>
 						)}
 					</div>
 				);
 			})}
-			{/* <Menu selectedKeys={[selectedKey]} mode="horizontal" className="menu-top" theme="dark" onClick={handleClick}>
-                {RenderNav(navigations)}
-            </Menu> */}
 		</div>
 	);
 }
