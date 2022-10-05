@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { Input, Space, Button, message } from "antd";
 import { ethers } from "ethers";
 import { useDispatch, useSelector } from "react-redux";
@@ -25,19 +25,24 @@ function WinSwap() {
 	useEffect(() => {
 		window.scrollTo(0, 0);
 	});
+
+	const getBalanceFdT = useCallback(async () => {
+		const FdTContract = new ethers.Contract(
+			FdTAbi.networks['97'].address,
+			FdTAbi.abi,
+			walletConnect
+		);
+
+		const balanceOf = await FdTContract.balanceOf(walletConnect._address)
+		setBalanceFdT(ethers.utils.formatEther(balanceOf))
+	}, [walletConnect])
+
 	useEffect(async () => {
 		if (!walletConnect) {
 			setDisable(true)
 		} else {
 			setDisable(false)
-			const FdTContract = new ethers.Contract(
-				FdTAbi.networks['97'].address,
-				FdTAbi.abi,
-				walletConnect
-			);
-
-			const balanceOf = await FdTContract.balanceOf(walletConnect._address)
-			setBalanceFdT(ethers.utils.formatEther(balanceOf))
+			getBalanceFdT();
 		}
 	}, [walletConnect]);
 
@@ -76,7 +81,7 @@ function WinSwap() {
 			message.success("Swap successfully!");
 			setIsShowModalSwapFdTToPoint(false);
 			dispatch(user.setUser({ ...userData, balance: parseFloat(userData.balance) + parseFloat(FdTRef.current.input.value) }))
-
+			getBalanceFdT();
 		} catch (err) {
 			setLoading(false);
 			if (err.code == 4001) {
@@ -111,6 +116,7 @@ function WinSwap() {
 			message.success("Swap successfully!");
 			setIsShowModalSwapPointToFdT(false);
 			dispatch(user.setUser({ ...userData, balance: parseFloat(userData.balance) - parseFloat(pointRef.current.input.value) }))
+
 		}).catch(err => {
 			message.error("Transaction error!");
 			console.log('withdraw error', err);

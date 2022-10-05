@@ -1,17 +1,10 @@
-import { useWeb3React } from "@web3-react/core";
 import React from "react";
 import IconMetaMask from "../../assets/png/topbar/icon-metamask.png";
-import { hooks, metaMask } from "../../connectors/metaMask";
-import { METAMASK_CONNECT, WALLET_CONNECT } from "../../constants/apiContants";
-import { chanId } from "../../constants/index.js";
 
-const {
-	useIsActive,
-} = hooks;
+function MetaMaskSelect({
+	onClick, isActive
+}) {
 
-function MetaMaskSelect() {
-	const { connector } = useWeb3React();
-	const isActive = useIsActive();
 	return (
 		<div className={`item-wallet margin-top-0`}>
 			<div className="wallet">
@@ -21,14 +14,10 @@ function MetaMaskSelect() {
 
 			<div
 				className="connect"
-				onClick={() => {
-					localStorage.setItem(METAMASK_CONNECT, "");
-					localStorage.setItem(WALLET_CONNECT, "");
-					metaMask.activate(chanId);
-				}}
+				onClick={onClick}
 			>
 				<div className="icon-connect"></div>
-				{isActive ? <span>{"DisConnect"}</span> : <span>{"Connect"}</span>}
+				{isActive ? <span>{"Disconnect"}</span> : <span>{"Connect"}</span>}
 			</div>
 		</div>
 	);
