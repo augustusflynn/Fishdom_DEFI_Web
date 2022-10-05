@@ -1,18 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { Divider, Modal } from "antd";
 
-import {
-  LockOutlined,
-  GlobalOutlined,
-  AppstoreOutlined,
-} from "@ant-design/icons";
-
 function CheckNetwork(props) {
-  const { isModalVisible, hideWallet } = props;
+  const { isModalVisible } = props;
 
-  const handleCancel = () => {
-    hideWallet(false);
-  };
 
   return (
     <Modal

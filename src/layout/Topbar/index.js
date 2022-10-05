@@ -25,7 +25,7 @@ function Topbar() {
       if (walletConnect) {
         const adress = await walletConnect.getAddress();
         setAdress(adress);
-        hideWallet();
+        // hideWallet();
       } else {
         setAdress("");
       }
@@ -39,10 +39,6 @@ function Topbar() {
 
   const showWallet = () => {
     setShowWallet(true);
-  };
-
-  const hideWallet = () => {
-    setShowWallet(false);
   };
 
   const disconnectWallet = () => {
@@ -66,7 +62,7 @@ function Topbar() {
           {isShowWallet ? (
             <ModalWallet
               isModalVisible={isShowWallet}
-              hideWallet={hideWallet}
+              hideWallet={() => setShowWallet(false)}
             />
           ) : null}
           <MenuTop />

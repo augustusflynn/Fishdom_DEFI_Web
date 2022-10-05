@@ -1,7 +1,7 @@
 import { Button, Col, Empty, message, Pagination, Row, Spin, Tabs } from "antd";
 import { ethers } from "ethers";
 import React, { useCallback, useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import ModalWallet from "src/layout/Topbar/ModalWallet";
 import { user$, wallet$ } from "src/redux/selectors";
 import IconWallet from "../../../assets/png/topbar/icon-wallet-white.svg";
@@ -48,7 +48,9 @@ const Collection = () => {
 			axios.post(
 				process.env.REACT_APP_API_URL + "/api/markets/get",
 				{
-					walletAddress: walletConnect._address,
+					filter: {
+						seller: walletConnect._address
+					},
 					skip: nextSkip,
 					limit: page_size
 				},
