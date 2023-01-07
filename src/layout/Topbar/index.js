@@ -1,37 +1,23 @@
 import { DownOutlined } from "@ant-design/icons";
 import { useWeb3React } from "@web3-react/core";
-import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { message } from "antd";
+import axios from "axios";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import IconWallet from "../../assets/png/topbar/icon-wallet-white.svg";
-import { METAMASK_CONNECT, WALLET_CONNECT } from "../../constants/apiContants";
-import { wallet$ } from "../../redux/selectors";
-import BaseHelper from "../../utils/BaseHelper";
 import Container from "../grid/Container";
 import MenuTop from "./MenuTop";
 import ModalWallet from "./ModalWallet";
-
+import { useDispatch } from 'react-redux'
+import { user } from "src/redux/actions/index.js";
 
 function Topbar() {
   const navigate = useNavigate();
-  const { connector } = useWeb3React();
+  const { library, account, active, chainId } = useWeb3React();
+  const SIGN_MESSAGE = `Hello!! Welcome to Fishdom DEFI, ${account}`
+  const dispatch = useDispatch()
 
   const [isShowWallet, setShowWallet] = useState(false);
-  const [address, setAdress] = useState("no connect");
-  const walletConnect = useSelector(wallet$);
-
-  useEffect(() => {
-    const getSigner = async () => {
-      if (walletConnect) {
-        const adress = await walletConnect.getAddress();
-        setAdress(adress);
-        // hideWallet();
-      } else {
-        setAdress("");
-      }
-    };
-    getSigner();
-  }, [walletConnect]);
 
   const goHome = () => {
     navigate("/");
@@ -41,18 +27,35 @@ function Topbar() {
     setShowWallet(true);
   };
 
-  const disconnectWallet = () => {
-    localStorage.setItem(METAMASK_CONNECT, "");
-    localStorage.setItem(WALLET_CONNECT, "");
-    connector.deactivate();
-    // dispatch(wallet.walletSetData(""));
-    // deactivate();
-  };
+  const login = (signature) => {
+    axios.post(
+      process.env.REACT_APP_API_URL + '/api/users/login',
+      {
+        walletAddress: account,
+        signature: signature,
+        message: SIGN_MESSAGE,
+        chainId: chainId
+      })
+      .then((res) => {
+        if (res.data && res.data.msg === "INVALID_SIGNER") {
+          message.error("Invalid signature")
+        } else {
+          dispatch(user.setUser({
+            ...res.data.user,
+            token: res.data.token
+          }));
+        }
+      })
+      .catch(() => {
+        console.log('login error')
+      })
+  }
 
-  // attempt to connect eagerly on mount
-  useEffect(() => {
-    // void metaMask.connectEagerly()
-  }, []);
+  const onGetAccount = () => {
+    library.getSigner(account)
+      .signMessage(SIGN_MESSAGE)
+      .then(login)
+  }
 
   return (
     <Container>
@@ -66,7 +69,7 @@ function Topbar() {
             />
           ) : null}
           <MenuTop />
-          {!walletConnect ? (
+          {!active ? (
             <div className="wallet-button" onClick={showWallet}>
               <img src={IconWallet} />
               <span> Connect Wallet </span>
@@ -75,11 +78,11 @@ function Topbar() {
             <div className="wallet-address">
               <img src={IconWallet} />
 
-              <p>{BaseHelper.shortTextAdress(address)}</p>
+              <p>{account}</p>
               <DownOutlined />
               <div className="tooltip">
                 <span onClick={showWallet}>Switch Wallet</span>
-                <span onClick={disconnectWallet}>Disconnect</span>
+                <span onClick={onGetAccount}>Get Account</span>
               </div>
             </div>
           )}

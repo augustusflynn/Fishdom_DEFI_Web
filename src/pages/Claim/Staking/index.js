@@ -1,10 +1,7 @@
 import { Pagination, Row, Spin } from "antd";
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { stakingClaim } from "src/redux/actions";
+import React, { useState } from "react";
+import { useSelector } from "react-redux";
 import { wallet$ } from "src/redux/selectors";
-import BaseHelper from "src/utils/BaseHelper";
-import { makeQueryBuilder } from "src/utils/MoralisQuery";
 import StakingItem from "./StakingItem";
 
 const Staking = () => {

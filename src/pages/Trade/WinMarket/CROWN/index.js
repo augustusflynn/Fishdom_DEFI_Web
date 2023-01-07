@@ -8,7 +8,7 @@ import { useSelector } from "react-redux";
 // import BaseHelper from "src/utils/BaseHelper";
 // import * as MoralisQuery from "src/utils/MoralisQuery";
 // import { crownNFTAbi, crownNFTAdress } from "../../../../constants/constants";
-import { user$, wallet$ } from "../../../../redux/selectors";
+import { user$ } from "../../../../redux/selectors";
 import Item from "./Item";
 
 const { Option } = Select;
@@ -36,7 +36,6 @@ const listSortBy = [
 ];
 
 function CROWN() {
-	const walletConnect = useSelector(wallet$);
 	const [listDefault, setListDefault] = useState({
 		data: [],
 		count: 0,
@@ -56,7 +55,7 @@ function CROWN() {
 
 	const handleFetchData = useCallback(async (skip, sort = sortValue) => {
 		try {
-			if (walletConnect && userData && userData.token) {
+			if (userData && userData.token) {
 				await axios.post(
 					`${process.env.REACT_APP_API_URL}/api/markets/get`,
 					{
@@ -78,7 +77,7 @@ function CROWN() {
 		} finally {
 			setLoading(false)
 		}
-	}, [walletConnect, userData]);
+	}, [userData]);
 
 	useEffect(() => {
 		handleFetchData(0);

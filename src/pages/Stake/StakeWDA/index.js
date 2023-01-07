@@ -1,51 +1,32 @@
 import { Button, Col, Input, message, Row, Select, Spin } from "antd";
 import { ethers } from "ethers";
 import React, { Fragment, useEffect, useState } from "react";
-import { useSelector } from "react-redux";
 import ModalWallet from "src/layout/Topbar/ModalWallet";
-import { wallet$ } from "src/redux/selectors";
-// import IconWallet from "../../../assets/png/topbar/icon-wallet-white.svg";
-import * as MoralisQuery from "src/utils/MoralisQuery";
 
 import BaseHelper from "./../../../utils/BaseHelper";
-
-import StakingContract from "../../../constants/abiStaking.json";
-import {
-	crownNFTAbi,
-	crownNFTAdress,
-	wdaAbi,
-	wdaAddress,
-} from "../../../constants/constants";
 import FadeAnimationOdd from "../../../layout/fadeAnimation/FadeAnimationOdd";
 import Container from "../../../layout/grid/Container";
-// import iconNFT from "./../../../assets/images/staking/iconNFT.svg";
-// import iconClose from "./../../../assets/images/iconClose.svg";
-// import iconNFTGreen from "./../../../assets/images/staking/iconNFTGreen.svg";
-import History from "./History";
-// import ModalStaking from "./ModalStaking";
-// import { providerFake } from "src/constants/apiContants";
-// import { Navigate, useNavigate } from "react-router-dom";
+// import History from "./History";
+
+import StakingContract from "../../../constants/abiStaking.json";
+import { useSelector } from "react-redux";
+import { user$ } from "src/redux/selectors";
+
 const { Option } = Select;
 var stakingContract;
-var wdaContract;
+var tokenContract;
 var nftContract;
-var CrownContract;
-// let count = 0;
+
 function StakeWDA() {
-	//hook util\
-	// const navigate = useNavigate();
-	const history = React.useRef(null);
-	const walletConnect = useSelector(wallet$);
-	// const walletConnectFake = useSelector(walletFake$);
+	const { stakingAddress, stakingAbi } = StakingContract;
+
 	const [listSelect, setListSelect] = useState([]);
 	const [stakingData, setStakingData] = useState([
 		{
 			valueDuration: 0,
-			label: "Select Staking Days",
+			label: "Select Staking Day",
 		},
 	]);
-	// const listDuration = [0, 1, 3, 6];
-	// const [showModalChooseNFT, setShowModalChooseNFT] = useState(false);
 	const [ShowPopupWallet, setShowPopupWallet] = useState(false);
 	const [loading, setLoading] = useState(true);
 	const [disable, setDisbale] = useState(false);
@@ -60,72 +41,8 @@ function StakeWDA() {
 
 	const [newStaked, setNewStaked] = useState();
 
-	let cleanUp = true;
+	const userData = useSelector(user$)
 
-	const { stakingAddress, stakingAbi } = StakingContract;
-	//function
-
-	useEffect(() => {
-		try {
-			handleCancel();
-			setValueSelectStakingDay(stakingData[0]);
-			window.scrollTo(0, 0);
-			var isSubscribed = true;
-			const init = async () => {
-				// let provider = walletConnect ? walletConnect : walletConnectFake;
-				// count++;
-				// if (count == 1) {
-				//   return;
-				// }
-				let provider;
-				if (walletConnect) {
-					provider = walletConnect;
-				} else {
-					provider = new ethers.getDefaultProvider("kovan");
-				}
-				CrownContract = new ethers.Contract(
-					crownNFTAdress,
-					crownNFTAbi,
-					provider
-				);
-				stakingContract = new ethers.Contract(
-					stakingAddress,
-					stakingAbi,
-					provider
-				);
-
-				wdaContract = new ethers.Contract(wdaAddress, wdaAbi, provider);
-				nftContract = new ethers.Contract(
-					crownNFTAdress,
-					crownNFTAbi,
-					provider
-				);
-				if (stakingContract && wdaContract && nftContract && CrownContract) {
-					isSubscribed && setShowPopupWallet(false);
-					try {
-						Promise.all([await stakingContract.totalStaked()]).then((res) => {
-							setTotalStaked(
-								BaseHelper.numberToCurrencyStyle(
-									ethers.utils.formatEther(res[0].toString())
-								)
-							);
-						});
-					} catch (error) {
-						console.log("get data staking error: ", error);
-					}
-				}
-			};
-			isSubscribed && init();
-		} catch (error) {
-			console.log(error);
-		}
-		return () => ((isSubscribed = false), (cleanUp = false));
-	}, [walletConnect]);
-	useEffect(() => {
-		let isSubscribed = true;
-		isSubscribed && totalStaked && setLoading(false);
-		return () => (isSubscribed = false);
-	}, [totalStaked]);
 	useEffect(() => {
 		try {
 			(async () => {
@@ -139,7 +56,7 @@ function StakeWDA() {
 		} catch (error) {
 			console.log(error);
 		}
-	}, [walletConnect, valueSelectNFT]);
+	}, [valueSelectNFT]);
 
 	useEffect(() => {
 		try {
@@ -162,6 +79,7 @@ function StakeWDA() {
 			console.log(error);
 		}
 	}, [listSelect]);
+
 	const onchangeValueTypeStaking = (value) => {
 		setValueSelectStakingDay(value);
 	};
@@ -179,36 +97,12 @@ function StakeWDA() {
 		}
 		setStakingAmount(e.target.value);
 	};
-	//function main
-	//get max balance
+	console.log(userData);
 	async function handleClickMax() {
-		if (!walletConnect) {
-			setShowPopupWallet(true);
-			return;
-		}
-		try {
-			if (!wdaContract) {
-				setStakingAmount(0);
-				return;
-			}
-			const address = await walletConnect.getAddress();
-			const balanceOfOwner = await wdaContract.balanceOf(address);
-			setStakingAmount(
-				parseFloat(ethers.utils.formatEther(balanceOfOwner.toString())).toFixed(
-					2
-				)
-			);
-		} catch (error) {
-			console.log("click maxx error", error);
-			message.error(error);
-		}
+		setStakingAmount(userData.balance)
 	}
 	//staking
 	async function handleStake() {
-		if (!walletConnect) {
-			setShowPopupWallet(true);
-			return;
-		}
 		try {
 			if (!parseInt(valueSelectStakingDay)) {
 				message.error("Staking day is not valid!");
@@ -224,9 +118,8 @@ function StakeWDA() {
 				return;
 			}
 
-			if (!stakingContract || !wdaContract) return;
+			if (!stakingContract || !tokenContract) return;
 			setIsLoading(true);
-			// setShowPopupWallet(false);
 			setDisbale(true);
 			const stakingPackage = stakingData[parseInt(valueSelectStakingDay)];
 			const stakingAmountToWei = ethers.utils.parseEther(
@@ -235,24 +128,15 @@ function StakeWDA() {
 			/// aprove WDA
 			console.log(" so luong stake");
 			console.log([stakingAddress, stakingAmountToWei.toString()]);
-			const approveRes = await wdaContract.approve(
+			const approveRes = await tokenContract.approve(
 				stakingAddress,
 				stakingAmountToWei
 			);
 			await approveRes.wait().then((res) => {
 				console.log(res);
 			});
-			/// aprove NFT
-			if (valueSelectNFT.id > 0) {
-				const approveNFT = await nftContract.approve(
-					stakingAddress,
-					valueSelectNFT.id
-				);
-				await approveNFT.wait();
-			}
 			// stake
 
-			console.log("da fdklfdjfkdjfkdsjfkdj");
 			console.table([
 				stakingPackage.selectType,
 				// stakingPackage.stakingType,
@@ -285,13 +169,8 @@ function StakeWDA() {
 						setIsLoading(false);
 						setDisbale(false);
 					});
-
-					// handle
 				})
 				.then(async () => {
-					// history.current("1");
-					setNewStaked(await MoralisQuery.makeQueryBuilder("Staked").first());
-
 					message.success(
 						"Staking successfully! Please wait for 1-3 minutes for actually showing up"
 					);
@@ -343,14 +222,7 @@ function StakeWDA() {
 			setDisbale(false);
 		}
 	}
-	// //function util
-	// const handleShowModal = () => {
-	// 	if (!walletConnect) {
-	// 		setShowPopupWallet(true);
-	// 		return;
-	// 	}
-	// 	setShowModalChooseNFT(true);
-	// };
+
 	const showWallet = () => {
 		setShowPopupWallet(true);
 	};
@@ -366,19 +238,11 @@ function StakeWDA() {
 			{ShowPopupWallet && (
 				<ModalWallet isModalVisible={ShowPopupWallet} hideWallet={hideWallet} />
 			)}
-			{/* {showModalChooseNFT && (
-				<ModalStaking
-					CrownContract={CrownContract}
-					isShowModal={showModalChooseNFT}
-					setShowModal={setShowModalChooseNFT}
-					setValueSelectNFT={setValueSelectNFT}
-				/>
-			)} */}
 			<section className="section" id="section-stake-Wda" data-aos="fade-up">
 				<FadeAnimationOdd />
 				<Container>
 					<div className="module-header text-center" id="header-checkscroll">
-						Staking WDA
+						Staking FDT
 					</div>
 
 					<Fragment>
@@ -388,7 +252,7 @@ function StakeWDA() {
 							<Fragment>
 								<div className="border-round">
 									<div className="text-title-default item-round text-center">
-										Staked:&nbsp;{totalStaked}&nbsp;WDA
+										Staked:&nbsp;{totalStaked}&nbsp;FDT
 									</div>
 								</div>
 								<Row justify="center">
@@ -397,7 +261,7 @@ function StakeWDA() {
 											<div style={{ margin: "24px 0px" }}>
 												{" "}
 												<div className="module-blur c2i-color-title c2i-font-special c2i-no-margin">
-													Staking Days
+													Staking Day
 												</div>
 												<div className="c2i-form-group">
 													<div className="c2i-form-control" id="stake-wda">
@@ -430,7 +294,7 @@ function StakeWDA() {
 															width="100%"
 															className="text-sub"
 															value={stakingAmount}
-															placeholder="WDA Amount..."
+															placeholder="FDT Amount..."
 															onChange={onChangeValueAmount}
 														/>
 														<Button
@@ -442,58 +306,6 @@ function StakeWDA() {
 													</div>
 												</div>
 											</div>
-											{/* {valueSelectStakingDay != 4 && (
-												<div style={{ margin: "24px 0px" }}>
-													{" "}
-													<div className="module-blur c2i-color-title c2i-font-special c2i-no-margin">
-														Choose NFT
-													</div>
-													<Row style={{ marginTop: 11 }}>
-														<div className="border-round choose-nft">
-															<div className="text-sub item-round align-center">
-																<Image
-																	src={
-																		valueSelectNFT?.name
-																			? iconNFTGreen
-																			: iconNFT
-																	}
-																	preview={false}
-																	alt="box"
-																/>
-																<span
-																	style={{ marginLeft: 5 }}
-																	onClick={handleShowModal}
-																	className=" choose"
-																>
-																	{valueSelectNFT?.name
-																		? valueSelectNFT?.name
-																		: "Choose My NFT"}
-																</span>
-																<img
-																	src={iconClose}
-																	onClick={handleCancel}
-																	alt=""
-																	className="icon-close"
-																	style={{ marginLeft: 10 }}
-																/>
-															</div>
-														</div>
-														<div
-															className="text-title-default"
-															style={{
-																marginLeft: 12,
-																alignItems: "center",
-																display: "flex",
-																color: valueSelectNFT?.aprBonus
-																	? "#72DE99"
-																	: "#fff",
-															}}
-														>
-															{valueSelectNFT?.aprBonus || "0"}% APR Bonus
-														</div>
-													</Row>
-												</div>
-											)} */}
 
 											<p className="module-line"></p>
 											<div style={{ margin: "24px 0px" }}>
@@ -514,15 +326,13 @@ function StakeWDA() {
 					</Fragment>
 				</Container>
 			</section>
-			{cleanUp && (
-				<History
-					showWallet={showWallet}
-					walletConnect={walletConnect}
-					CrownContract={CrownContract}
-					history={history}
-					newStaked={newStaked}
-				/>
-			)}
+			{/* <History
+				showWallet={showWallet}
+				walletConnect={walletConnect}
+				CrownContract={CrownContract}
+				history={history}
+				newStaked={newStaked}
+			/> */}
 		</Fragment>
 	);
 }

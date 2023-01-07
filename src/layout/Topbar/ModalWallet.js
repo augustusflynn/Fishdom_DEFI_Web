@@ -1,9 +1,5 @@
-import { Button, Form, message, Modal } from "antd";
-import axios from "axios";
+import { Modal } from "antd";
 import React, { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { user, wallet } from "src/redux/actions/index.js";
-import { user$, wallet$ } from "src/redux/selectors/index.js";
 import MetaMaskSelect from "./MetaMaskSelect.js";
 import WalletConnect from "./WalletConnect";
 import { connectorsByName } from '../../connector';
@@ -18,9 +14,6 @@ import chains from '../../chains';
 function ModalWallet(props) {
 	const { isModalVisible, hideWallet } = props;
 
-	const walletConnect = useSelector(wallet$)
-	const userData = useSelector(user$)
-	const dispatch = useDispatch()
 	const [selectedWallet, setSelectedWallet] = useState(localStorage.getItem('selectedWallet'))
 
 	const context = useWeb3React();
@@ -28,9 +21,8 @@ function ModalWallet(props) {
 		connector,
 		activate,
 		deactivate,
-		account,
 		error,
-		library
+		active
 	} = context;
 
 	// handle logic to recognize the connector currently being activated
@@ -43,7 +35,7 @@ function ModalWallet(props) {
 	}, [activatingConnector, connector]);
 
 	React.useEffect(() => {
-		const REQUIRED_CHAIN = chains.find(chain => chain.chainId === (process.env.NODE_ENV === 'production' ? 56 : 97));
+		const REQUIRED_CHAIN = chains.find(chain => chain.chainId === parseInt(process.env.REACT_APP_NETWORK_ID));
 		if (error && error instanceof UnsupportedChainIdError) {
 			MetaMaskFunctions.switchChain('0x' + Number(REQUIRED_CHAIN.chainId).toString(16)).catch(error => {
 				if (error.code === 4902) {
@@ -70,32 +62,6 @@ function ModalWallet(props) {
 	useInactiveListener(!triedEager || !!activatingConnector);
 
 	React.useEffect(() => {
-		const login = (walletAddress) => {
-			axios.post(process.env.REACT_APP_API_URL + '/api/users/login', { walletAddress: walletAddress })
-				.then((res) => {
-					if (res.data && res.data.msg === "NOT_FOUND") {
-						// fix sau :D
-					} else {
-						dispatch(user.setUser({
-							...res.data.user,
-							token: res.data.token
-						}));
-					}
-				})
-				.catch(err => {
-					console.log('login error')
-				})
-		}
-
-		if (!(!triedEager || !!activatingConnector) && library) {
-			let walletData = library
-				.getSigner(account)
-			login(walletData._address);
-			dispatch(wallet.walletSetData(walletData));
-		}
-	}, [triedEager, activatingConnector])
-
-	React.useEffect(() => {
 		console.log('running');
 		const logURI = uri => {
 			console.log('WalletConnect URI', uri);
@@ -107,19 +73,11 @@ function ModalWallet(props) {
 		};
 	}, []);
 
-	async function handleRegister(data) {
-		await axios.post(
-			`${process.env.REACT_APP_API_URL}/api/users/register`,
-			{
-				...data,
-				walletAddress: walletConnect._address
-			}
-		).then((res) => {
-			console.log(res.data);
-			dispatch(user.setUser(res.data))
-		}).catch(err => {
-			message.error("Register failed. Please try again")
-		});
+	const onDeactivate = () => {
+		deactivate()
+		setActivatingConnector(undefined);
+		localStorage.removeItem('selectedWallet')
+		setSelectedWallet(undefined)
 	}
 
 	return (
@@ -142,8 +100,8 @@ function ModalWallet(props) {
 				<div className="content">
 					<MetaMaskSelect
 						onClick={() => {
-							if (selectedWallet && selectedWallet === "Injected") {
-								deactivate()
+							if (active) {
+								onDeactivate()
 							} else {
 								setActivatingConnector(connectorsByName['Injected']);
 								activate(connectorsByName["Injected"]);
@@ -151,12 +109,12 @@ function ModalWallet(props) {
 								setSelectedWallet("Injected")
 							}
 						}}
-						isActive={selectedWallet && selectedWallet === "Injected"}
+						isActive={active && selectedWallet && selectedWallet === "Injected"}
 					/>
 					<WalletConnect
 						onClick={() => {
-							if (selectedWallet && selectedWallet === "WalletConnect") {
-								deactivate()
+							if (active) {
+								onDeactivate()
 							} else {
 								setActivatingConnector(connectorsByName["WalletConnect"]);
 								activate(connectorsByName["WalletConnect"]);
@@ -164,47 +122,9 @@ function ModalWallet(props) {
 								setSelectedWallet("WalletConnect")
 							}
 						}}
-						isActive={selectedWallet && selectedWallet === "WalletConnect"}
+						isActive={active && selectedWallet && selectedWallet === "WalletConnect"}
 					/>
 				</div>
-				{
-					walletConnect && Object.keys(userData).length === 0 ? (
-						<div>
-							<Form
-								layout="vertical"
-								onFinish={handleRegister}
-							>
-								<Form.Item
-									label="Name"
-									name="name"
-									required
-									rules={[{
-										required: true, message: "Please fill in input"
-									}]}
-								>
-
-									<input className="input-max-modal" />
-								</Form.Item>
-								<Form.Item
-									label="Password"
-									name="password"
-									required
-									rules={[{
-										required: true, message: "Please fill in input"
-									}]}
-								>
-									<input type={"password"} className="input-max-modal" />
-								</Form.Item>
-
-								<Form.Item>
-									<Button className="mt-1" htmlType="submit" type="primary">Submit</Button>
-								</Form.Item>
-							</Form>
-						</div>
-					) : (
-						<></>
-					)
-				}
 			</div>
 		</Modal>
 	);
