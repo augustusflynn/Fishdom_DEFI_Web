@@ -1,40 +1,70 @@
 import { Pagination, Row, Spin } from "antd";
-import React, { useState } from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { wallet$ } from "src/redux/selectors";
+import { user$ } from "src/redux/selectors";
 import StakingItem from "./StakingItem";
 
 const Staking = () => {
 	const pageSize = 10;
-	const walletConnect = useSelector(wallet$);
-	const [stakes, setStakes] = useState([]);
-	const [length, setLength] = useState(0);
+	const [stakes, setStakes] = useState({
+		data: [],
+		total: 0
+	});
 	const [currentPage, setCurrentPage] = useState(1);
 	const [loadData, setLoadData] = useState(false);
+	const userData = useSelector(user$)
 
+	async function getData(skip) {
+		setLoadData(true)
+		await axios.post(
+			process.env.REACT_APP_API_URL + '/api/stakings/get',
+			{
+				skip: skip,
+				limit: pageSize
+			},
+			{
+				headers: {
+					Authorization: `Bearer ${userData.token}`
+				}
+			}
+		)
+			.then(res => {
+				if (res.status === 200) {
+					setStakes(res.data.data)
+				}
+			})
+			.then(() => {
+				setLoadData(false)
+			})
+			.catch(() => {
+				setLoadData(false)
+			})
+	}
+
+	useEffect(() => {
+		getData((currentPage - 1) * pageSize)
+	}, [currentPage])
 
 	return loadData ? (
 		<Spin style={{ top: "168%" }} />
 	) : (
 		<>
 			<Row id="staking" gutter={[24, 24]}>
-				{stakes &&
-					stakes.map((item, idx) => {
-						return (
-							<StakingItem
-								{...{
-									idx,
-									item,
-									stakes,
-									walletConnect,
-									setStakes,
-								}}
-								key={idx}
-							/>
-						);
-					})}
+				{stakes.data.map((item, idx) => {
+					return (
+						<StakingItem
+							{...{
+								item,
+								stakes,
+								setStakes,
+							}}
+							key={idx}
+						/>
+					);
+				})}
 			</Row>
-			{length > 0 ? (
+			{stakes.total > 0 ? (
 				<div
 					className="pagination"
 					style={{
@@ -45,9 +75,9 @@ const Staking = () => {
 					}}
 				>
 					<Pagination
-						onChange={(e) => setCurrentPage(e)}
+						onChange={(page) => setCurrentPage(page)}
 						defaultCurrent={currentPage}
-						total={length}
+						total={stakes.total}
 						pageSize={pageSize}
 					/>{" "}
 				</div>

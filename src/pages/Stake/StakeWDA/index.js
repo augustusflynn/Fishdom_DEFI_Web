@@ -1,17 +1,18 @@
 import { Button, Col, Input, message, Row, Select, Spin } from "antd";
 import { ethers } from "ethers";
 import React, { Fragment, useEffect, useState } from "react";
-import ModalWallet from "src/layout/Topbar/ModalWallet";
 
 import BaseHelper from "./../../../utils/BaseHelper";
 import FadeAnimationOdd from "../../../layout/fadeAnimation/FadeAnimationOdd";
 import Container from "../../../layout/grid/Container";
-// import History from "./History";
+import History from "./History";
 
 import StakingContract from "../../../constants/contracts/FishdomStaking.sol/FishdomStaking.json";
+import TokenContract from "../../../constants/contracts/token/FishdomToken.sol/FishdomToken.json";
 import { useSelector } from "react-redux";
 import { user$ } from "src/redux/selectors";
 import { useWeb3React } from "@web3-react/core";
+import axios from "axios";
 
 const { Option } = Select;
 var stakingContract;
@@ -19,65 +20,73 @@ var tokenContract;
 
 function StakeWDA() {
 	const { library, account, active, chainId } = useWeb3React()
-	const [listSelect, setListSelect] = useState([]);
 	const [stakingData, setStakingData] = useState([
 		{
 			valueDuration: 0,
 			label: "Select Staking Day",
 		},
 	]);
-	const [showPopupWallet, setshowPopupWallet] = useState(false);
 	const [loading, setLoading] = useState(true);
 	const [disable, setDisbale] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
 	//hook staking
 	const [totalStaked, setTotalStaked] = useState("0");
 	const [stakingAmount, setStakingAmount] = useState(0);
-	const [valueSelectNFT, setValueSelectNFT] = useState({ id: 0 });
 	const [valueSelectStakingDay, setValueSelectStakingDay] = useState(
 		stakingData[0]
 	);
 
-	const [newStaked, setNewStaked] = useState();
-
 	const userData = useSelector(user$)
 
 	useEffect(() => {
+		if (!active) {
+			return
+		}
 		try {
 			(async () => {
+				stakingContract = new ethers.Contract(
+					StakingContract.networks[process.env.REACT_APP_NETWORK_ID].address,
+					StakingContract.abi,
+					await library.getSigner(account)
+				)
 				if (stakingContract) {
-					const dataSelect = await stakingContract.getListPackage(
-						valueSelectNFT?.id
+					let dataSelect = await stakingContract.getListPackage();
+
+					if (dataSelect?.length > 0) {
+						dataSelect = dataSelect.map((item) => {
+							return ({
+								selectType: item.id,
+								valueDuration: item.duration.toString(),
+								label: `${item.duration.toString()} Days - ${item.apr.toString()}% APR`,
+							})
+						});
+						setStakingData([
+							{
+								valueDuration: 0,
+								label: "Select Staking Days",
+							},
+							...dataSelect
+						]);
+					}
+
+					tokenContract = new ethers.Contract(
+						TokenContract.networks[process.env.REACT_APP_NETWORK_ID].address,
+						TokenContract.abi,
+						await library.getSigner(account)
+					)
+					let totalStaked = await tokenContract.balanceOf(StakingContract.networks[process.env.REACT_APP_NETWORK_ID].address)
+					setTotalStaked(
+						BaseHelper.numberToCurrencyStyle(
+							ethers.utils.formatEther(totalStaked.toString())
+						)
 					);
-					setListSelect(dataSelect);
+					setLoading(false)
 				}
 			})();
 		} catch (error) {
 			console.log(error);
 		}
-	}, [valueSelectNFT]);
-
-	useEffect(() => {
-		try {
-			if (listSelect?.length > 0) {
-				let listTemp = [];
-				listTemp.push({
-					valueDuration: 0,
-					label: "Select Staking Days",
-				});
-				listSelect.map((item) => {
-					listTemp.push({
-						selectType: item.id,
-						valueDuration: item.duration,
-						label: `${item.duration} Days - ${item.apr}% APR`,
-					});
-				});
-				setStakingData(listTemp);
-			}
-		} catch (error) {
-			console.log(error);
-		}
-	}, [listSelect]);
+	}, [active]);
 
 	const onchangeValueTypeStaking = (value) => {
 		setValueSelectStakingDay(value);
@@ -98,8 +107,29 @@ function StakeWDA() {
 	};
 
 	async function handleClickMax() {
-		setStakingAmount(userData.balance)
+		tokenContract = new ethers.Contract(
+			TokenContract.networks[process.env.REACT_APP_NETWORK_ID].address,
+			TokenContract.abi,
+			await library.getSigner(account)
+		)
+		let userBalance = await tokenContract.balanceOf(account)
+		setStakingAmount(userBalance.toString())
 	}
+
+	async function storeData(txHash) {
+		await axios.post(
+			process.env.REACT_APP_API_URL + '/api/stakings/stake',
+			{
+				txHash: txHash
+			},
+			{
+				headers: {
+					Authorization: `Bearer ${userData.token}`
+				}
+			}
+		)
+	}
+
 	//staking
 	async function handleStake() {
 		try {
@@ -118,38 +148,48 @@ function StakeWDA() {
 			const stakingAmountToWei = ethers.utils.parseEther(
 				stakingAmount.toString()
 			);
-			/// aprove WDA
+			/// aprove token
+			tokenContract = new ethers.Contract(
+				TokenContract.networks[process.env.REACT_APP_NETWORK_ID].address,
+				TokenContract.abi,
+				await library.getSigner(account)
+			)
 			const approveRes = await tokenContract.approve(
 				StakingContract.networks[chainId].address,
 				stakingAmountToWei
 			);
 			await approveRes.wait();
 			// stake
+			stakingContract = new ethers.Contract(
+				StakingContract.networks[process.env.REACT_APP_NETWORK_ID].address,
+				StakingContract.abi,
+				await library.getSigner(account)
+			)
 			const stakingRes = await stakingContract.stake(
 				stakingPackage.selectType,
-				valueSelectNFT.id,
-				stakingAmountToWei.toString()
+				stakingAmountToWei
 			);
+
 			await stakingRes
 				.wait()
-				.then(async (res) => {
+				.then(async () => {
 					// fetch new data
-					Promise.all([await stakingContract.totalStaked()]).then((res) => {
-						setTotalStaked(
-							BaseHelper.numberToCurrencyStyle(
-								ethers.utils.formatEther(res["0"].toString())
-							)
-						);
-						setValueSelectStakingDay({
-							stakingType: 1,
-							valueDuration: 0,
-							label: "Select Staking Days",
+					Promise.all([await stakingContract.totalStaked(), await storeData(stakingRes.hash)])
+						.then((res) => {
+							setTotalStaked(
+								BaseHelper.numberToCurrencyStyle(
+									ethers.utils.formatEther(res["0"].toString())
+								)
+							);
+							setValueSelectStakingDay({
+								stakingType: 1,
+								valueDuration: 0,
+								label: "Select Staking Days",
+							});
+							setStakingAmount(0);
+							setIsLoading(false);
+							setDisbale(false);
 						});
-						setStakingAmount(0);
-						setValueSelectNFT({ id: 0 });
-						setIsLoading(false);
-						setDisbale(false);
-					});
 				})
 				.then(async () => {
 					message.success(
@@ -159,6 +199,8 @@ function StakeWDA() {
 				.catch((error) => {
 					message.error(error?.data?.message || error?.message);
 				});
+
+
 		} catch (error) {
 			setIsLoading(false);
 			console.log("stakign error", error);
@@ -204,21 +246,8 @@ function StakeWDA() {
 		}
 	}
 
-	const showWallet = () => {
-		setshowPopupWallet(true);
-	};
-	const hideWallet = () => {
-		setshowPopupWallet(false);
-	};
-	const handleCancel = () => {
-		setValueSelectNFT({ id: 0 });
-	};
-
 	return (
 		<Fragment>
-			{showPopupWallet && (
-				<ModalWallet isModalVisible={showPopupWallet} hideWallet={hideWallet} />
-			)}
 			<section className="section" id="section-stake-Wda" data-aos="fade-up">
 				<FadeAnimationOdd />
 				<Container>
@@ -307,13 +336,7 @@ function StakeWDA() {
 					</Fragment>
 				</Container>
 			</section>
-			{/* <History
-				showWallet={showWallet}
-				walletConnect={walletConnect}
-				CrownContract={CrownContract}
-				history={history}
-				newStaked={newStaked}
-			/> */}
+			<History />
 		</Fragment>
 	);
 }

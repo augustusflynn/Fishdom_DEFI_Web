@@ -1,5 +1,5 @@
 import { Row, Space, Pagination, Empty, Spin } from "antd";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import Item from "./Item";
 
 const LIMIT_DISPLAY_ITEM = 6;
@@ -9,7 +9,6 @@ function HistoryHavest({
 	setSkip,
 	data,
 	count,
-	CrownContract,
 	currentPage,
 	setCurrentPage,
 	loading,
@@ -21,7 +20,7 @@ function HistoryHavest({
 		data &&
 		data?.length > 0 &&
 		data.map((item, index) => (
-			<Item item={item} key={index} CrownContract={CrownContract} />
+			<Item item={item} key={index} />
 		));
 	useEffect(() => {
 		if (data) {
