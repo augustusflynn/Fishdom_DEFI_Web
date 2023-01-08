@@ -2,15 +2,15 @@ import { Button, message, Space } from "antd";
 import { ethers } from "ethers";
 import React from "react";
 import { useSelector } from "react-redux";
-import { user$, wallet$ } from "src/redux/selectors";
-import BaseHelper from "src/utils/BaseHelper";
+import { user$ } from "src/redux/selectors";
 import FishdomMarketAbi from '../../../../constants/contracts/FishdomMarket.sol/FishdomMarket.json'
 import FishdomTokenAbi from '../../../../constants/contracts/token/FishdomToken.sol/FishdomToken.json'
 import axios from "axios";
+import { useWeb3React } from "@web3-react/core";
 
 function Item(props) {
 	const { infoItem } = props;
-	const walletConnect = useSelector(wallet$)
+	const { account, library } = useWeb3React()
 	const userData = useSelector(user$)
 
 	async function buyHandler() {
@@ -18,13 +18,13 @@ function Item(props) {
 			const FishdomMarket = new ethers.Contract(
 				FishdomMarketAbi.networks['97'].address,
 				FishdomMarketAbi.abi,
-				walletConnect
+				await library.getSigner(account)
 			);
 
 			const FishdomToken = new ethers.Contract(
 				FishdomTokenAbi.networks['97'].address,
 				FishdomTokenAbi.abi,
-				walletConnect
+				await library.getSigner(account)
 			);
 
 			const approveTx = await FishdomToken.approve(
@@ -90,7 +90,7 @@ function Item(props) {
 					<Button
 						onClick={buyHandler}
 						className="w-100"
-						disabled={infoItem.seller.toLowerCase() === walletConnect._address.toLowerCase()}
+						disabled={infoItem.seller.toLowerCase() === account.toLowerCase()}
 					>Buy</Button>
 				</Space>
 			</Space>

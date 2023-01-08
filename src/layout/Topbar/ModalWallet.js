@@ -20,20 +20,15 @@ function ModalWallet(props) {
 	const { isModalVisible, hideWallet } = props;
 
 	const [selectedWallet, setSelectedWallet] = useState(localStorage.getItem('selectedWallet'))
-	const dispatch = useDispatch()
-	const userData = useSelector(user$)
+
 	const context = useWeb3React();
 	const {
 		connector,
 		activate,
 		deactivate,
 		error,
-		active,
-		account,
-		library,
-		chainId
+		active
 	} = context;
-	const SIGN_MESSAGE = `Hello!! Welcome to Fishdom DEFI, ${account}`
 
 	// handle logic to recognize the connector currently being activated
 	const [activatingConnector, setActivatingConnector] = React.useState();
@@ -89,37 +84,6 @@ function ModalWallet(props) {
 		localStorage.removeItem('selectedWallet')
 		setSelectedWallet(undefined)
 	}
-
-	const login = (signature) => {
-		axios.post(
-			process.env.REACT_APP_API_URL + '/api/users/login',
-			{
-				walletAddress: account,
-				signature: signature,
-				message: SIGN_MESSAGE,
-				chainId: chainId
-			})
-			.then((res) => {
-				if (res.data && res.data.msg === "INVALID_SIGNER") {
-					message.error("Invalid signature")
-				} else {
-					dispatch(user.setUser({
-						...res.data.user,
-						token: res.data.token
-					}));
-				}
-			})
-			.catch(() => {
-				console.log('login error')
-			})
-	}
-
-	useEffect(() => {
-		if (active && _.isEmpty(userData))
-			library.getSigner(account)
-				.signMessage(SIGN_MESSAGE)
-				.then(login)
-	}, [active, userData])
 
 	return (
 		<Modal

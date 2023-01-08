@@ -3,7 +3,7 @@ import { ethers } from "ethers";
 import React, { useCallback, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import ModalWallet from "src/layout/Topbar/ModalWallet";
-import { user$, wallet$ } from "src/redux/selectors";
+import { user$ } from "src/redux/selectors";
 import IconWallet from "../../../assets/png/topbar/icon-wallet-white.svg";
 import MarketAbi from "../../../constants/contracts/FishdomMarket.sol/FishdomMarket.json";
 import FishdomNFTAbi from "../../../constants/contracts/FishdomNFT.sol/FishdomNFT.json";
@@ -27,7 +27,6 @@ const Collection = () => {
 	const [currentPage, setCurrentPage] = useState(1);
 	const page_size = 8;
 	const [currentTabKey, setCurrentTabKey] = useState("#marketItem");
-	const [skip, setSkip] = useState(0);
 	const [isShowModal, setIsShowModal] = useState(false);
 	const [selectedItem, setSelectedItem] = useState();
 	const [sellLoading, setSellLoading] = useState(false);
@@ -53,7 +52,8 @@ const Collection = () => {
 						seller: account
 					},
 					skip: nextSkip,
-					limit: page_size
+					limit: page_size,
+					order: "{ \"nftId\": -1 }"
 				},
 				{
 					headers: {
@@ -76,7 +76,8 @@ const Collection = () => {
 				process.env.REACT_APP_API_URL + "/api/games/getListNFT",
 				{
 					"limit": page_size,
-					"skip": skip
+					"skip": skip,
+					"order": "{ \"nftId\": -1 }"
 				},
 				{
 					headers: {
@@ -94,7 +95,6 @@ const Collection = () => {
 
 	const handleChangeKey = useCallback(async (key) => {
 		setCurrentPage(1);
-		setSkip(1);
 		if (key === "#marketItem") {
 			await handleFetchDataMarket(0);
 		} else {
@@ -206,6 +206,7 @@ const Collection = () => {
 					).then(() => {
 						window.open(`https://testnet.bscscan.com/tx/${withdrawRes.hash}`)
 						message.success("Withdraw item successfully");
+						handleFetchDataCollection(0)
 					})
 					setWithdrawLoading(false);
 				})
@@ -378,7 +379,6 @@ const Collection = () => {
 													setCurrentPage(num);
 													let pageSize = page_size;
 													const nextSkip = (num - 1) * pageSize;
-													setSkip(nextSkip);
 													if (currentTabKey !== "#collectionItem") {
 														handleFetchDataMarket(nextSkip);
 													} else {

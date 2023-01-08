@@ -96,7 +96,7 @@ function StakeWDA() {
 		}
 		setStakingAmount(e.target.value);
 	};
-	console.log(userData);
+
 	async function handleClickMax() {
 		setStakingAmount(userData.balance)
 	}
