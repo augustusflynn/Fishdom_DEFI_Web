@@ -198,6 +198,7 @@ function StakeWDA() {
 				})
 				.catch((error) => {
 					message.error(error?.data?.message || error?.message);
+					setIsLoading(false)
 				});
 
 

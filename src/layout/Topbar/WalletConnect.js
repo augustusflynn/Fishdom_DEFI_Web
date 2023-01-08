@@ -8,7 +8,7 @@ function WalletConnect({
         <div className={`item-wallet`}>
             <div className="wallet">
                 <img src={IconWalletConnect} />
-                <span>WalletConnect</span>
+                <span>Wallet Connect</span>
             </div>
 
             <div className="connect"

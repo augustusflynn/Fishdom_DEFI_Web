@@ -15,7 +15,7 @@ const Staking = () => {
 	const [loadData, setLoadData] = useState(false);
 	const userData = useSelector(user$)
 
-	async function getData(skip) {
+	async function getData(skip = 0) {
 		setLoadData(true)
 		await axios.post(
 			process.env.REACT_APP_API_URL + '/api/stakings/get',
@@ -57,7 +57,7 @@ const Staking = () => {
 							{...{
 								item,
 								stakes,
-								setStakes,
+								getData,
 							}}
 							key={idx}
 						/>

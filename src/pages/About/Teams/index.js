@@ -67,7 +67,7 @@ function Team() {
                 style={{ maxWidth: "500px" }}
               >
                 Experienced research and developer, has contributed in many medium-large projects.
-                Over 1 years of experience in software and blockchain development, has knowledge in other technology: Machine Learning, AI, Game Development ...
+                Over 1 years of experience in Software and Blockchain Development, has knowledge in other technologies: Machine Learning, AI, Game Development ...
               </div>
             </div>
           </div>

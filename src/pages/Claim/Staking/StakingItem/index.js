@@ -1,24 +1,26 @@
-import { Button, Col, Input, Space } from "antd";
+import { Button, Col, Input, message, Space } from "antd";
 import { ethers } from "ethers";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
-import { stakingAbi, stakingAddress } from "src/constants/abiStaking.json";
+import StakingContract from "../../../../constants/contracts/FishdomStaking.sol/FishdomStaking.json";
 import CountdownClock from "src/layout/grid/CountdownV2";
-import { durationStakeData } from "src/constants/mining";
 import BaseHelper from "src/utils/BaseHelper";
 import { useWeb3React } from "@web3-react/core";
+import axios from "axios";
+import { useSelector } from "react-redux";
+import { user$ } from "src/redux/selectors";
 
 const StakingItem = (props) => {
-	const { item, stakes, setStakes, account } = props;
-	const { active, library } = useWeb3React()
+	const userData = useSelector(user$)
+	const { item, stakes, getData } = props;
+	const { active, library, account, chainId } = useWeb3React()
 	const [isloadingStake, setIsLoadingStake] = useState(false);
 	const [canClaim, setCanClaim] = useState(true);
 	const [isloadingClaim, setIsLoadingClaim] = useState(false);
 	const [earnNow, setEarnNow] = useState(0);
 	const [expiredTime, setExpiredTime] = useState(
 		moment(item?.createdAt)
-			.add(durationStakeData[item?.duration || 0], "seconds")
+			.add(parseInt(item?.duration), "days")
 			.toDate()
 			.getTime() || 0
 	);
@@ -47,8 +49,8 @@ const StakingItem = (props) => {
 			try {
 				if (active) {
 					const stakeContract = new ethers.Contract(
-						stakingAddress,
-						stakingAbi,
+						StakingContract.networks[chainId].address,
+						StakingContract.abi,
 						await library.getSigner(account)
 					);
 					const earned = await stakeContract.getEarned(item?.stakeId);
@@ -68,61 +70,99 @@ const StakingItem = (props) => {
 		return () => { };
 	}, [active, item]);
 
-	const buttonHandler = async (stakingId, crownId, typeHandler) => {
-		// if (walletConnect) {
-		// 	const stakeContract = new ethers.Contract(
-		// 		stakingAddress,
-		// 		stakingAbi,
-		// 		walletConnect
-		// 	);
-		// 	const crownContract = new ethers.Contract(
-		// 		crownNFTAdress,
-		// 		crownNFTAbi,
-		// 		walletConnect
-		// 	);
+	const onStoreDataClaim = (txHash) => {
+		axios.post(
+			process.env.REACT_APP_API_URL + '/api/stakings/claim',
+			{
+				txHash: txHash
+			},
+			{
+				headers: {
+					Authorization: `Bearer ${userData.token}`
+				}
+			}
+		)
+			.then((res) => {
+				if (res.data && res.data.msg === "INVALID_SIGNER") {
+					message.error("Invalid signature")
+				} else {
+					getData(0)
+				}
+			})
+	}
 
-		// 	try {
-		// 		if (typeHandler == 0) {
-		// 			setIsLoadingClaim(true);
-		// 			console.log("Iam staking", stakingId);
-		// 			console.log(item?.nftId);
-		// 			if (item?.nftId != 0) {
-		// 				const tx1 = await crownContract.approve(
-		// 					stakingAddress,
-		// 					item?.nftId
-		// 				);
-		// 				await tx1.wait();
-		// 			}
-		// 			const tx = await stakeContract.claim(stakingId);
-		// 			await tx.wait();
-		// 			setIsLoadingClaim(false);
-		// 			setEarnNow(
-		// 				parseFloat(ethers.utils.formatEther(item?.amount)).toFixed(7)
-		// 			);
-		// 			setCanClaim(true);
-		// 		} else {
-		// 			setIsLoadingStake(true);
-		// 			const tx = await stakeContract.unstake(stakingId);
-		// 			await tx.wait();
-		// 			setIsLoadingStake(false);
-		// 		}
-		// 		if (!(typeHandler == 0 && item?.duration == 0)) {
-		// 			setStakes(stakes.filter((item) => item?.stakeId != stakingId));
-		// 			dispatch(stakingClaim.stakingClaimed([stakingId]));
-		// 		}
-		// 		message.success(
-		// 			"Successfully! Please wait 2-3 minutes for actually execution!"
-		// 		);
-		// 	} catch (err) {
-		// 		setIsLoadingClaim(false);
-		// 		setIsLoadingStake(false);
-		// 		message.error(err?.data?.message || "Cancel execution!");
-		// 	}
-		// } else {
-		// 	message.error("Please connect your wallet!");
-		// 	return;
-		// }
-	};
+	const onStoreDataUnstake = (txHash) => {
+		axios.post(
+			process.env.REACT_APP_API_URL + '/api/stakings/unstake',
+			{
+				txHash: txHash
+			},
+			{
+				headers: {
+					Authorization: `Bearer ${userData.token}`
+				}
+			}
+		)
+			.then((res) => {
+				if (res.data && res.data.msg === "INVALID_SIGNER") {
+					message.error("Invalid signature")
+				} else {
+					getData(0)
+				}
+			})
+	}
+
+	const handleClaim = (stakingId) => {
+		if (!active) {
+			return
+		}
+		try {
+			const stakeContract = new ethers.Contract(
+				StakingContract.networks[chainId].address,
+				StakingContract.abi,
+				await library.getSigner(account)
+			)
+			setIsLoadingClaim(true);
+			const tx = await stakeContract.claim(stakingId);
+			await tx.wait()
+				.then(() => {
+					onStoreDataClaim(tx.hash)
+					setIsLoadingClaim(false);
+					message.success(
+						"Successfully! Please wait 2-3 minutes for actually execution!"
+					);
+				});
+		} catch (err) {
+			setIsLoadingClaim(false);
+			message.error(err?.data?.message || "Cancel execution!");
+		}
+	}
+
+	const handleUnstake = (stakingId) => {
+		if (!active) {
+			return
+		}
+		try {
+			const stakeContract = new ethers.Contract(
+				StakingContract.networks[chainId].address,
+				StakingContract.abi,
+				await library.getSigner(account)
+			)
+			setIsLoadingStake(true);
+			const tx = await stakeContract.unstake(stakingId);
+			await tx.wait()
+				.then(() => {
+					onStoreDataUnstake(tx.hash)
+					setIsLoadingStake(false);
+					message.success(
+						"Successfully! Please wait 2-3 minutes for actually execution!"
+					);
+				});
+		} catch (err) {
+			setIsLoadingStake(false);
+			message.error(err?.data?.message || "Cancel execution!");
+		}
+	}
 
 	return (
 		<Col xs={24} sm={stakes.length == 1 ? 24 : 12}>
@@ -166,10 +206,6 @@ const StakingItem = (props) => {
 								<span className="c2i-color-title ml-8"> Unlimited Time</span>
 							</p>
 						)}
-						<p className="module-blur c2i-no-margin flex wrap">
-							{`Apr Bonus: `}
-							<span className="c2i-color-title ml-8">AprBonus</span>
-						</p>
 					</Space>
 					<div className="line"></div>
 					<Space direction="vertical" size={24} className="buy-section">
@@ -206,9 +242,7 @@ const StakingItem = (props) => {
 							</div>
 						</Space>
 						<Space direction="vertical" size={12} className="input-section">
-							<h3 className="module-blur c2i-no-margin c2i-color-title c2i-font-special">
-								{item?.duration == 0 ? "Staked Till Now" : "Staked After End"}:
-							</h3>
+							<h3 className="module-blur c2i-no-margin c2i-color-title c2i-font-special">Earned</h3>
 							<div className="c2i-form-group">
 								<div className="c2i-form-control">
 									<Input
@@ -221,28 +255,29 @@ const StakingItem = (props) => {
 								</div>
 							</div>
 						</Space>
-						<div className="flex justify-between wrap">
-							<Button
-								className={`${item?.duration != 0 ? "confirm-btn" : "confirm-btn-twins"
-									} c2i-no-margin`}
-								onClick={() => buttonHandler(item?.stakeId, item?.nftId, 0)}
-								loading={isloadingClaim}
-								disabled={item?.duration == 0 ? !canClaim : disableBtn}
-							>
-								Claim Now
-							</Button>
-
-							{item?.duration != 0 ? (
-								<></>
-							) : (
+						<div>
+							<Space size="middle">
 								<Button
-									className="confirm-btn-twins c2i-no-margin"
-									onClick={() => buttonHandler(item?.stakeId, item?.nftId, 1)}
-									loading={isloadingStake}
+									className={`${item?.duration === '0' ? "confirm-btn" : "confirm-btn-twins"} c2i-no-margin`}
+									onClick={() => handleClaim(item?.stakeId)}
+									loading={isloadingClaim}
+									disabled={item?.duration === 0 ? !canClaim : disableBtn}
 								>
-									Unstake Now
+									Claim Now
 								</Button>
-							)}
+
+								{item?.duration === '0' ? (
+									<Button
+										className="confirm-btn-twins c2i-no-margin"
+										onClick={() => handleUnstake(item?.stakeId)}
+										loading={isloadingStake}
+									>
+										Unstake Now
+									</Button>
+								) : (
+									<></>
+								)}
+							</Space>
 						</div>
 					</Space>
 				</Space>

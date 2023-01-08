@@ -200,7 +200,12 @@ function WinSwap() {
 								</div>
 								<Button
 									className="swap-confirm-btn module-blur"
-									onClick={() => setIsShowModalSwapFdTToPoint(prev => !prev)}
+									onClick={() => {
+										let value = FdTRef?.current?.input?.value || 0
+										if (value && !isNaN(value) && value > 0) {
+											setIsShowModalSwapFdTToPoint(prev => !prev)
+										}
+									}}
 								>
 									{"Swap now"}
 								</Button>
@@ -250,7 +255,12 @@ function WinSwap() {
 								</div>
 								<Button
 									className="swap-confirm-btn module-blur"
-									onClick={() => setIsShowModalSwapPointToFdT(prev => !prev)}
+									onClick={() => {
+										let value = pointRef?.current?.input?.value || 0
+										if (value && !isNaN(value) && value > 0) {
+											setIsShowModalSwapPointToFdT(prev => !prev)
+										}
+									}}
 								>
 									{"Swap now"}
 								</Button>
