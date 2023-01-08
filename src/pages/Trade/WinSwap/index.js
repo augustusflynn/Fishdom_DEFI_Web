@@ -9,9 +9,10 @@ import IconWallet from "src/assets/png/topbar/icon-wallet-white.svg";
 import FdTAbi from '../../../constants/contracts/token/FishdomToken.sol/FishdomToken.json';
 import axios from "axios";
 import { user } from "src/redux/actions";
+import { useWeb3React } from "@web3-react/core";
 
 function WinSwap() {
-	const walletConnect = useSelector(wallet$);
+	const web3Context = useWeb3React()
 	const [isShowModalSwapFdTToPoint, setIsShowModalSwapFdTToPoint] = useState(false);
 	const [isShowModalSwapPointToFdT, setIsShowModalSwapPointToFdT] = useState(false);
 	const [disable, setDisable] = useState(false);
@@ -26,28 +27,27 @@ function WinSwap() {
 		window.scrollTo(0, 0);
 	});
 
-	const getBalanceFdT = useCallback(async () => {
+	const getBalanceFdT = async () => {
 		const FdTContract = new ethers.Contract(
-			FdTAbi.networks['97'].address,
+			FdTAbi.networks[process.env.REACT_APP_NETWORK_ID].address,
 			FdTAbi.abi,
-			walletConnect
+			await web3Context.library.getSigner(web3Context.account)
 		);
-
-		const balanceOf = await FdTContract.balanceOf(walletConnect._address)
+		const balanceOf = await FdTContract.balanceOf(web3Context.account)
 		setBalanceFdT(ethers.utils.formatEther(balanceOf))
-	}, [walletConnect])
+	}
 
 	useEffect(async () => {
-		if (!walletConnect) {
+		if (!web3Context.active) {
 			setDisable(true)
 		} else {
 			setDisable(false)
 			getBalanceFdT();
 		}
-	}, [walletConnect]);
+	}, [web3Context.active]);
 
 	async function handleDeposit() {
-		if (!walletConnect) {
+		if (!web3Context.active) {
 			message.error("Please connect wallet!");
 			setDisable(true)
 			return
@@ -55,9 +55,9 @@ function WinSwap() {
 		setLoading(true);
 		try {
 			const FdTContract = new ethers.Contract(
-				FdTAbi.networks['97'].address,
+				FdTAbi.networks[process.env.REACT_APP_NETWORK_ID].address,
 				FdTAbi.abi,
-				walletConnect
+				await web3Context.library.getSigner(web3Context.account)
 			);
 			const transferTx = await FdTContract.transfer(
 				process.env.REACT_APP_MASTER_ADDRESS,
@@ -94,7 +94,7 @@ function WinSwap() {
 	}
 
 	async function handleWithdraw() {
-		if (!walletConnect) {
+		if (!web3Context.active) {
 			message.error("Please connect wallet!");
 			setDisable(true)
 			return
@@ -116,10 +116,10 @@ function WinSwap() {
 			message.success("Swap successfully!");
 			setIsShowModalSwapPointToFdT(false);
 			dispatch(user.setUser({ ...userData, balance: parseFloat(userData.balance) - parseFloat(pointRef.current.input.value) }))
-
 		}).catch(err => {
 			message.error("Transaction error!");
 			console.log('withdraw error', err);
+			setLoading(false)
 		});
 	}
 

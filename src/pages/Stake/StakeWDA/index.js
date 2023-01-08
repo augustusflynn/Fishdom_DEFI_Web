@@ -8,18 +8,17 @@ import FadeAnimationOdd from "../../../layout/fadeAnimation/FadeAnimationOdd";
 import Container from "../../../layout/grid/Container";
 // import History from "./History";
 
-import StakingContract from "../../../constants/abiStaking.json";
+import StakingContract from "../../../constants/contracts/FishdomStaking.sol/FishdomStaking.json";
 import { useSelector } from "react-redux";
 import { user$ } from "src/redux/selectors";
+import { useWeb3React } from "@web3-react/core";
 
 const { Option } = Select;
 var stakingContract;
 var tokenContract;
-var nftContract;
 
 function StakeWDA() {
-	const { stakingAddress, stakingAbi } = StakingContract;
-
+	const { library, account, active, chainId } = useWeb3React()
 	const [listSelect, setListSelect] = useState([]);
 	const [stakingData, setStakingData] = useState([
 		{
@@ -27,7 +26,7 @@ function StakeWDA() {
 			label: "Select Staking Day",
 		},
 	]);
-	const [ShowPopupWallet, setShowPopupWallet] = useState(false);
+	const [showPopupWallet, setshowPopupWallet] = useState(false);
 	const [loading, setLoading] = useState(true);
 	const [disable, setDisbale] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
@@ -66,7 +65,7 @@ function StakeWDA() {
 					valueDuration: 0,
 					label: "Select Staking Days",
 				});
-				listSelect.map((item, idx) => {
+				listSelect.map((item) => {
 					listTemp.push({
 						selectType: item.id,
 						valueDuration: item.duration,
@@ -108,17 +107,11 @@ function StakeWDA() {
 				message.error("Staking day is not valid!");
 				return;
 			}
-			if (
-				Number(stakingAmount) < 1 ||
-				Number(stakingAmount) == undefined ||
-				Number(stakingAmount) == "" ||
-				Number(stakingAmount) == "NaN"
-			) {
+			if (!stakingAmount || isNaN(stakingAmount)) {
 				message.error("Staking amount is not valid!");
 				return;
 			}
 
-			if (!stakingContract || !tokenContract) return;
 			setIsLoading(true);
 			setDisbale(true);
 			const stakingPackage = stakingData[parseInt(valueSelectStakingDay)];
@@ -126,26 +119,14 @@ function StakeWDA() {
 				stakingAmount.toString()
 			);
 			/// aprove WDA
-			console.log(" so luong stake");
-			console.log([stakingAddress, stakingAmountToWei.toString()]);
 			const approveRes = await tokenContract.approve(
-				stakingAddress,
+				StakingContract.networks[chainId].address,
 				stakingAmountToWei
 			);
-			await approveRes.wait().then((res) => {
-				console.log(res);
-			});
+			await approveRes.wait();
 			// stake
-
-			console.table([
-				stakingPackage.selectType,
-				// stakingPackage.stakingType,
-				valueSelectNFT.id,
-				stakingAmountToWei.toString(),
-			]);
 			const stakingRes = await stakingContract.stake(
 				stakingPackage.selectType,
-				// stakingPackage.stakingType,
 				valueSelectNFT.id,
 				stakingAmountToWei.toString()
 			);
@@ -224,10 +205,10 @@ function StakeWDA() {
 	}
 
 	const showWallet = () => {
-		setShowPopupWallet(true);
+		setshowPopupWallet(true);
 	};
 	const hideWallet = () => {
-		setShowPopupWallet(false);
+		setshowPopupWallet(false);
 	};
 	const handleCancel = () => {
 		setValueSelectNFT({ id: 0 });
@@ -235,8 +216,8 @@ function StakeWDA() {
 
 	return (
 		<Fragment>
-			{ShowPopupWallet && (
-				<ModalWallet isModalVisible={ShowPopupWallet} hideWallet={hideWallet} />
+			{showPopupWallet && (
+				<ModalWallet isModalVisible={showPopupWallet} hideWallet={hideWallet} />
 			)}
 			<section className="section" id="section-stake-Wda" data-aos="fade-up">
 				<FadeAnimationOdd />

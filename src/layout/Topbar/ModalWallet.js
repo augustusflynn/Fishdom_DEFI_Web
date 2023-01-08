@@ -1,5 +1,5 @@
-import { Modal } from "antd";
-import React, { useState } from "react";
+import { message, Modal } from "antd";
+import React, { useEffect, useState } from "react";
 import MetaMaskSelect from "./MetaMaskSelect.js";
 import WalletConnect from "./WalletConnect";
 import { connectorsByName } from '../../connector';
@@ -10,20 +10,30 @@ import {
 import { useEagerConnect, useInactiveListener } from '../../hooks';
 import * as MetaMaskFunctions from '../../metamask';
 import chains from '../../chains';
+import axios from "axios";
+import { user } from "src/redux/actions/index.js";
+import { useDispatch, useSelector } from "react-redux";
+import { user$ } from "src/redux/selectors/index.js";
+import _ from "lodash";
 
 function ModalWallet(props) {
 	const { isModalVisible, hideWallet } = props;
 
 	const [selectedWallet, setSelectedWallet] = useState(localStorage.getItem('selectedWallet'))
-
+	const dispatch = useDispatch()
+	const userData = useSelector(user$)
 	const context = useWeb3React();
 	const {
 		connector,
 		activate,
 		deactivate,
 		error,
-		active
+		active,
+		account,
+		library,
+		chainId
 	} = context;
+	const SIGN_MESSAGE = `Hello!! Welcome to Fishdom DEFI, ${account}`
 
 	// handle logic to recognize the connector currently being activated
 	const [activatingConnector, setActivatingConnector] = React.useState();
@@ -79,6 +89,37 @@ function ModalWallet(props) {
 		localStorage.removeItem('selectedWallet')
 		setSelectedWallet(undefined)
 	}
+
+	const login = (signature) => {
+		axios.post(
+			process.env.REACT_APP_API_URL + '/api/users/login',
+			{
+				walletAddress: account,
+				signature: signature,
+				message: SIGN_MESSAGE,
+				chainId: chainId
+			})
+			.then((res) => {
+				if (res.data && res.data.msg === "INVALID_SIGNER") {
+					message.error("Invalid signature")
+				} else {
+					dispatch(user.setUser({
+						...res.data.user,
+						token: res.data.token
+					}));
+				}
+			})
+			.catch(() => {
+				console.log('login error')
+			})
+	}
+
+	useEffect(() => {
+		if (active && _.isEmpty(userData))
+			library.getSigner(account)
+				.signMessage(SIGN_MESSAGE)
+				.then(login)
+	}, [active, userData])
 
 	return (
 		<Modal

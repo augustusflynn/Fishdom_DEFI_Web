@@ -28,3 +28,12 @@
       width: 100%;
     }
   }
+
+#section-core-team .avt-image {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  img {
+    border-radius: 50%;
+  }
+}

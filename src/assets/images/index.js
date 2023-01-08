@@ -34,14 +34,6 @@ const IMAGES = {
     FUNNY: require("./landingPage/iconFunny.svg").default,
     KINGSHIP: require("./landingPage/iconKingShip.svg").default,
   },
-  TEAM: {
-    MEMBER_1: require("./core-team/Core Team - Images.png").default,
-    MEMBER_2: require("./core-team/Core Team - Images-1.png").default,
-    MEMBER_3: require("./core-team/Core Team - Images-2.png").default,
-    MEMBER_4: require("./core-team/Core Team - Images-3.png").default,
-    MEMBER_5: require("./core-team/Core Team - Images-4.png").default,
-    MEMBER_6: require("./core-team/Core Team - Images-5.png").default,
-  },
   PARTNER: {
     PARTNER_3: require("./partner/Partners.svg").default,
     PARTNER_4: require("./partner/Partners-1.svg").default,

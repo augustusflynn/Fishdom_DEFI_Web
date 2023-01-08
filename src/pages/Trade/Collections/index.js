@@ -11,10 +11,11 @@ import Container from "../../../layout/grid/Container";
 import MarketItem from "./MarketItem";
 import ModalConfirm from "./ModalConfirm";
 import axios from "axios";
+import { useWeb3React } from "@web3-react/core";
 
 const Collection = () => {
 	const userData = useSelector(user$)
-	const walletConnect = useSelector(wallet$);
+	const { library, account, active } = useWeb3React()
 	const [listMarket, setListMarket] = useState({
 		data: [],
 		count: 0,
@@ -40,7 +41,7 @@ const Collection = () => {
 	useEffect(() => {
 		window.scrollTo(0, 0);
 		handleChangeKey(currentTabKey)
-	}, [currentTabKey, userData, walletConnect]);
+	}, [currentTabKey, userData]);
 
 	async function handleFetchDataMarket(nextSkip) {
 		try {
@@ -49,7 +50,7 @@ const Collection = () => {
 				process.env.REACT_APP_API_URL + "/api/markets/get",
 				{
 					filter: {
-						seller: walletConnect._address
+						seller: account
 					},
 					skip: nextSkip,
 					limit: page_size
@@ -101,7 +102,7 @@ const Collection = () => {
 		}
 		window.location.hash = key
 		currentTabKey !== key && setCurrentTabKey(key);
-	}, [currentTabKey, userData, walletConnect])
+	}, [currentTabKey, userData])
 
 	async function handleSellItem(values) {
 		try {
@@ -109,13 +110,13 @@ const Collection = () => {
 			const MarketContract = new ethers.Contract(
 				MarketAbi.networks['97'].address,
 				MarketAbi.abi,
-				walletConnect
+				await library.getSigner(account)
 			);
 
 			const FishdomNFTContract = new ethers.Contract(
 				FishdomNFTAbi.networks['97'].address,
 				FishdomNFTAbi.abi,
-				walletConnect
+				await library.getSigner(account)
 			);
 
 			const approveRes = await FishdomNFTContract.approve(
@@ -181,9 +182,9 @@ const Collection = () => {
 	async function handleWithdrawItem(itemMarketId) {
 		try {
 			const MarketContract = new ethers.Contract(
-				MarketAbi.networks['97'].address,
+				MarketAbi.networks[process.env.REACT_APP_NETWORK_ID].address,
 				MarketAbi.abi,
-				walletConnect
+				await library.getSigner(account)
 			);
 
 			setWithdrawLoading(true);
@@ -243,7 +244,7 @@ const Collection = () => {
 			<section className="section" id="section-win-market">
 				<Container>
 					<div className="module-header text-center">Your collection</div>
-					{!walletConnect ? (
+					{!active ? (
 						<>
 							<ModalWallet
 								isModalVisible={showPopupWallet}
