@@ -1,6 +1,6 @@
 import React from "react";
 import Container from "../../../layout/grid/Container";
-import CROWN from "./CROWN";
+import Content from "./Content";
 
 
 function WinMarket() {
@@ -8,7 +8,7 @@ function WinMarket() {
 		<section className="section" id="section-win-market">
 			<Container>
 				<div className="module-header text-center">Marketplace</div>
-				<CROWN />
+				<Content />
 			</Container>
 		</section>
 	);

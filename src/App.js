@@ -14,7 +14,7 @@ import listRoute, { RenderRoutes } from "./routes";
 require("dotenv").config();
 
 function App() {
-  const { active, library, chainId, account } = useWeb3React()
+  const { active, library, chainId, account, activate } = useWeb3React()
   const dispatch = useDispatch()
   const userData = useSelector(user$)
   const SIGN_MESSAGE = `Hello!! Welcome to Fishdom DEFI, ${account}`
@@ -44,10 +44,11 @@ function App() {
   }
 
   useEffect(() => {
-    if (active && _.isEmpty(userData))
+    if (active && _.isEmpty(userData)) {
       library.getSigner(account)
         .signMessage(SIGN_MESSAGE)
         .then(login)
+    }
   }, [active, userData])
 
   return (

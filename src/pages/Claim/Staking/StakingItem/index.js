@@ -3,67 +3,53 @@ import { ethers } from "ethers";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
 import StakingContract from "../../../../constants/contracts/FishdomStaking.sol/FishdomStaking.json";
-import CountdownClock from "src/layout/grid/CountdownV2";
 import BaseHelper from "src/utils/BaseHelper";
 import { useWeb3React } from "@web3-react/core";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import { user$ } from "src/redux/selectors";
+import _ from "lodash";
+
+const UNIT_TO_SECOND = 10
 
 const StakingItem = (props) => {
 	const userData = useSelector(user$)
 	const { item, stakes, getData } = props;
 	const { active, library, account, chainId } = useWeb3React()
 	const [isloadingStake, setIsLoadingStake] = useState(false);
-	const [canClaim, setCanClaim] = useState(true);
 	const [isloadingClaim, setIsLoadingClaim] = useState(false);
 	const [earnNow, setEarnNow] = useState(0);
-	const [expiredTime, setExpiredTime] = useState(
+	const expiredTime =
 		moment(item?.createdAt)
-			.add(parseInt(item?.duration), "days")
+			.add(parseInt(item?.duration * UNIT_TO_SECOND), "seconds")
 			.toDate()
 			.getTime() || 0
-	);
 
-	const [disableBtn, setDisableBtn] = useState(
-		moment().toDate().getTime() < expiredTime
-	);
 
-	useEffect(() => {
-		setDisableBtn(moment().toDate().getTime() < expiredTime);
-	}, [expiredTime]);
-
-	useEffect(() => {
-		if (item) {
-			setExpiredTime(
-				moment(item?.createdAt)
-					.add(durationStakeData[item?.duration || 0], "hour")
-					.toDate()
-					.getTime() || 0
-			);
-		}
-	}, [item]);
+	const disableBtn = moment().toDate().getTime() < expiredTime;
 
 	useEffect(() => {
 		(async () => {
 			try {
-				if (active) {
-					const stakeContract = new ethers.Contract(
-						StakingContract.networks[chainId].address,
-						StakingContract.abi,
-						await library.getSigner(account)
-					);
-					const earned = await stakeContract.getEarned(item?.stakeId);
-					if (item?.stakeId && item?.duration == 0) {
-						if (parseFloat(earned) - parseFloat(item?.amount) <= 0) {
-							setCanClaim(false);
-						} else {
-							setCanClaim(true);
+				if (!_.isEmpty(item)) {
+					let storedData = localStorage.getItem(`Staking_${item.stakeId}`)
+					if (storedData) {
+						setEarnNow(storedData);
+					} else {
+						if (active) {
+							const stakeContract = new ethers.Contract(
+								StakingContract.networks[chainId].address,
+								StakingContract.abi,
+								await library.getSigner(account)
+							);
+							const earned = await stakeContract.getEarned(item?.stakeId);
+							const parsedEarned = parseFloat(ethers.utils.formatEther(earned.toString())).toFixed(7)
+							setEarnNow(parsedEarned);
+							if (item?.duration !== 0) {
+								localStorage.setItem(`Staking_${item.stakeId}`, parsedEarned)
+							}
 						}
 					}
-					setEarnNow(
-						parseFloat(ethers.utils.formatEther(earned.toString())).toFixed(7)
-					);
 				}
 			} catch (err) { }
 		})();
@@ -86,8 +72,13 @@ const StakingItem = (props) => {
 				if (res.data && res.data.msg === "INVALID_SIGNER") {
 					message.error("Invalid signature")
 				} else {
+					localStorage.removeItem(`Staking_${item.stakeId}`)
 					getData(0)
 				}
+				setIsLoadingClaim(false);
+			})
+			.catch(() => {
+				setIsLoadingClaim(false);
 			})
 	}
 
@@ -107,12 +98,13 @@ const StakingItem = (props) => {
 				if (res.data && res.data.msg === "INVALID_SIGNER") {
 					message.error("Invalid signature")
 				} else {
+					localStorage.removeItem(`Staking_${item.stakeId}`)
 					getData(0)
 				}
 			})
 	}
 
-	const handleClaim = (stakingId) => {
+	const handleClaim = async () => {
 		if (!active) {
 			return
 		}
@@ -123,11 +115,10 @@ const StakingItem = (props) => {
 				await library.getSigner(account)
 			)
 			setIsLoadingClaim(true);
-			const tx = await stakeContract.claim(stakingId);
+			const tx = await stakeContract.claim(item?.stakeId);
 			await tx.wait()
 				.then(() => {
-					onStoreDataClaim(tx.hash)
-					setIsLoadingClaim(false);
+					onStoreDataClaim(tx.hash);
 					message.success(
 						"Successfully! Please wait 2-3 minutes for actually execution!"
 					);
@@ -138,7 +129,7 @@ const StakingItem = (props) => {
 		}
 	}
 
-	const handleUnstake = (stakingId) => {
+	const handleUnstake = async () => {
 		if (!active) {
 			return
 		}
@@ -149,7 +140,7 @@ const StakingItem = (props) => {
 				await library.getSigner(account)
 			)
 			setIsLoadingStake(true);
-			const tx = await stakeContract.unstake(stakingId);
+			const tx = await stakeContract.unstake(item.stakeId);
 			await tx.wait()
 				.then(() => {
 					onStoreDataUnstake(tx.hash)
@@ -160,6 +151,7 @@ const StakingItem = (props) => {
 				});
 		} catch (err) {
 			setIsLoadingStake(false);
+			console.log(err);
 			message.error(err?.data?.message || "Cancel execution!");
 		}
 	}
@@ -186,13 +178,7 @@ const StakingItem = (props) => {
 								<span className="mr-8">Expired Time:</span>
 								{expiredTime - moment().toDate().getTime() <= 86400000 ? (
 									<span>
-										<CountdownClock
-											expiredTime={expiredTime}
-											id={`timer ${item?.block_number || 0}`}
-											className="c2i-color-title"
-											hookFunction={setDisableBtn}
-											hookFunctionValue={false}
-										/>
+										Expired
 									</span>
 								) : (
 									<span className="c2i-color-title">{`${moment(
@@ -249,7 +235,7 @@ const StakingItem = (props) => {
 										type="number"
 										min={1}
 										disabled
-										value={BaseHelper.numberToCurrencyStyle(earnNow)}
+										value={earnNow ? BaseHelper.numberToCurrencyStyle(earnNow) : "..."}
 										placeholder={`${BaseHelper.numberToCurrencyStyle(earnNow)}`}
 									/>
 								</div>
@@ -259,9 +245,9 @@ const StakingItem = (props) => {
 							<Space size="middle">
 								<Button
 									className={`${item?.duration === '0' ? "confirm-btn" : "confirm-btn-twins"} c2i-no-margin`}
-									onClick={() => handleClaim(item?.stakeId)}
+									onClick={handleClaim}
 									loading={isloadingClaim}
-									disabled={item?.duration === 0 ? !canClaim : disableBtn}
+									disabled={item?.duration === '0' ? false : disableBtn}
 								>
 									Claim Now
 								</Button>
@@ -269,7 +255,7 @@ const StakingItem = (props) => {
 								{item?.duration === '0' ? (
 									<Button
 										className="confirm-btn-twins c2i-no-margin"
-										onClick={() => handleUnstake(item?.stakeId)}
+										onClick={handleUnstake}
 										loading={isloadingStake}
 									>
 										Unstake Now

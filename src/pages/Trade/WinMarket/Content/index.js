@@ -35,7 +35,7 @@ const listSortBy = [
 	},
 ];
 
-function CROWN() {
+function MarketContent() {
 	const [listDefault, setListDefault] = useState({
 		data: [],
 		count: 0,
@@ -157,4 +157,4 @@ function CROWN() {
 	);
 }
 
-export default CROWN;
+export default MarketContent;

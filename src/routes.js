@@ -27,7 +27,6 @@ import FAQ from "./pages/Resources/FAQ";
 import StakeWDA from "./pages/Stake/StakeWDA";
 import Collection from "./pages/Trade/Collections";
 import WinMarket from "./pages/Trade/WinMarket";
-import DetailMarketItem from "./pages/Trade/WinMarket/DetailMarketItem";
 import WinSwap from "./pages/Trade/WinSwap";
 // import Vesting from "./pages/Vesting";
 
@@ -114,11 +113,6 @@ const listRoute = [
 			{
 				path: "",
 				element: <WinMarket />,
-				childrent: [],
-			},
-			{
-				path: "detail-market-item",
-				element: <DetailMarketItem />,
 				childrent: [],
 			},
 			{
