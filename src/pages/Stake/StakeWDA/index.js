@@ -13,6 +13,7 @@ import { useSelector } from "react-redux";
 import { user$ } from "src/redux/selectors";
 import { useWeb3React } from "@web3-react/core";
 import axios from "axios";
+import _ from "lodash";
 
 const { Option } = Select;
 var stakingContract;
@@ -20,12 +21,14 @@ var tokenContract;
 
 function StakeWDA() {
 	const { library, account, active, chainId } = useWeb3React()
-	const [stakingData, setStakingData] = useState([
-		{
-			valueDuration: 0,
-			label: "Select Staking Day",
-		},
-	]);
+	const stakingData = [
+		{ valueDuration: 0, label: 'Select Staking Days' },
+		{ selectType: 0, valueDuration: '30', label: '30 Days - 100% APR' },
+		{ selectType: 1, valueDuration: '90', label: '90 Days - 138% APR' },
+		{ selectType: 2, valueDuration: '180', label: '180 Days - 220% APR' },
+		{ selectType: 3, valueDuration: '0', label: '0 Days - 5% APR' }
+	];
+
 	const [loading, setLoading] = useState(true);
 	const [disable, setDisbale] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
@@ -38,8 +41,22 @@ function StakeWDA() {
 
 	const userData = useSelector(user$)
 
+	const getTotalStaked = async () => {
+		tokenContract = new ethers.Contract(
+			TokenContract.networks[process.env.REACT_APP_NETWORK_ID].address,
+			TokenContract.abi,
+			await library.getSigner(account)
+		)
+		let totalStaked = await tokenContract.balanceOf(StakingContract.networks[process.env.REACT_APP_NETWORK_ID].address)
+		setTotalStaked(
+			BaseHelper.numberToCurrencyStyle(
+				ethers.utils.formatEther(totalStaked.toString())
+			)
+		);
+	}
+
 	useEffect(() => {
-		if (!active) {
+		if (!active || _.isEmpty(userData)) {
 			return
 		}
 		try {
@@ -49,44 +66,13 @@ function StakeWDA() {
 					StakingContract.abi,
 					await library.getSigner(account)
 				)
-				if (stakingContract) {
-					let dataSelect = await stakingContract.getListPackage();
-
-					if (dataSelect?.length > 0) {
-						dataSelect = dataSelect.map((item) => {
-							return ({
-								selectType: item.id,
-								valueDuration: item.duration.toString(),
-								label: `${item.duration.toString()} Days - ${item.apr.toString()}% APR`,
-							})
-						});
-						setStakingData([
-							{
-								valueDuration: 0,
-								label: "Select Staking Days",
-							},
-							...dataSelect
-						]);
-					}
-
-					tokenContract = new ethers.Contract(
-						TokenContract.networks[process.env.REACT_APP_NETWORK_ID].address,
-						TokenContract.abi,
-						await library.getSigner(account)
-					)
-					let totalStaked = await tokenContract.balanceOf(StakingContract.networks[process.env.REACT_APP_NETWORK_ID].address)
-					setTotalStaked(
-						BaseHelper.numberToCurrencyStyle(
-							ethers.utils.formatEther(totalStaked.toString())
-						)
-					);
-					setLoading(false)
-				}
+				getTotalStaked()
+				setLoading(false)
 			})();
 		} catch (error) {
 			console.log(error);
 		}
-	}, [active]);
+	}, [active, userData]);
 
 	const onchangeValueTypeStaking = (value) => {
 		setValueSelectStakingDay(value);
@@ -174,13 +160,11 @@ function StakeWDA() {
 				.wait()
 				.then(async () => {
 					// fetch new data
-					Promise.all([await stakingContract.totalStaked(), await storeData(stakingRes.hash)])
-						.then((res) => {
-							setTotalStaked(
-								BaseHelper.numberToCurrencyStyle(
-									ethers.utils.formatEther(res["0"].toString())
-								)
-							);
+					Promise.all([
+						await storeData(stakingRes.hash),
+						await getTotalStaked()
+					])
+						.then(() => {
 							setValueSelectStakingDay({
 								stakingType: 1,
 								valueDuration: 0,
@@ -199,6 +183,7 @@ function StakeWDA() {
 				.catch((error) => {
 					message.error(error?.data?.message || error?.message);
 					setIsLoading(false)
+					setDisbale(false);
 				});
 
 
@@ -263,7 +248,7 @@ function StakeWDA() {
 							<Fragment>
 								<div className="border-round">
 									<div className="text-title-default item-round text-center">
-										Staked:&nbsp;{totalStaked}&nbsp;FDT
+										Balance of Contract:&nbsp;{parseFloat(totalStaked).toFixed(7)}&nbsp;FDT
 									</div>
 								</div>
 								<Row justify="center">

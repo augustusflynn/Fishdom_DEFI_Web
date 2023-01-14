@@ -108,24 +108,24 @@ const Collection = () => {
 		try {
 			setSellLoading(true);
 			const MarketContract = new ethers.Contract(
-				MarketAbi.networks['97'].address,
+				MarketAbi.networks[process.env.REACT_APP_NETWORK_ID].address,
 				MarketAbi.abi,
 				await library.getSigner(account)
 			);
 
 			const FishdomNFTContract = new ethers.Contract(
-				FishdomNFTAbi.networks['97'].address,
+				FishdomNFTAbi.networks[process.env.REACT_APP_NETWORK_ID].address,
 				FishdomNFTAbi.abi,
 				await library.getSigner(account)
 			);
 
 			const approveRes = await FishdomNFTContract.approve(
-				MarketAbi.networks['97'].address,
+				MarketAbi.networks[process.env.REACT_APP_NETWORK_ID].address,
 				values.nftId
 			);
 			message.loading("Please wait for approve transaction", 1)
 			await approveRes.wait();
-			window.open(`https://testnet.bscscan.com/tx/${approveRes.hash}`)
+			window.open(`${process.env.REACT_APP_EXPLORE_SCAN_URL}/tx/${approveRes.hash}`)
 
 			const priceToWei = ethers.utils.parseEther(values.price).toString();
 			const createMarket = await MarketContract.createMarketItem(
@@ -134,7 +134,7 @@ const Collection = () => {
 			);
 			await createMarket
 				.wait()
-				.then((res) => {
+				.then(() => {
 					axios.post(
 						process.env.REACT_APP_API_URL + "/api/markets/sell",
 						{
@@ -148,7 +148,7 @@ const Collection = () => {
 					).then(() => {
 						handleChangeKey("#marketItem");
 						message.success("Sell item successfully");
-						window.open(`https://testnet.bscscan.com/tx/${createMarket.hash}`)
+						window.open(`${process.env.REACT_APP_EXPLORE_SCAN_URL}/tx/${createMarket.hash}`)
 						setIsShowModal(false);
 					}).catch(() => {
 						message.error("Something went wrong. Please try again");
@@ -204,9 +204,9 @@ const Collection = () => {
 							}
 						}
 					).then(() => {
-						window.open(`https://testnet.bscscan.com/tx/${withdrawRes.hash}`)
+						window.open(`${process.env.REACT_APP_EXPLORE_SCAN_URL}/tx/${withdrawRes.hash}`)
 						message.success("Withdraw item successfully");
-						handleFetchDataCollection(0)
+						handleFetchDataMarket(0)
 					})
 					setWithdrawLoading(false);
 				})

@@ -63,7 +63,7 @@ function WinSwap() {
 				process.env.REACT_APP_MASTER_ADDRESS,
 				ethers.utils.parseEther(FdTRef.current.input.value)
 			);
-			message.warning("Please wait for transaction finised...");
+			message.warning("Please wait for transaction finished...");
 
 			await transferTx.wait();
 			await axios.post(
@@ -111,7 +111,7 @@ function WinSwap() {
 				}
 			}
 		).then(res => {
-			window.open(`https://testnet.bscscan.com/tx/${res.data.tx.hash}`, '_blank')
+			window.open(`${process.env.REACT_APP_EXPLORE_SCAN_URL}/tx/${res.data.tx.hash}`, '_blank')
 			setLoading(false);
 			message.success("Swap successfully!");
 			setIsShowModalSwapPointToFdT(false);

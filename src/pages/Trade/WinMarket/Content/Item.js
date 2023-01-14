@@ -16,19 +16,19 @@ function Item(props) {
 	async function buyHandler() {
 		try {
 			const FishdomMarket = new ethers.Contract(
-				FishdomMarketAbi.networks['97'].address,
+				FishdomMarketAbi.networks[process.env.REACT_APP_NETWORK_ID].address,
 				FishdomMarketAbi.abi,
 				await library.getSigner(account)
 			);
 
 			const FishdomToken = new ethers.Contract(
-				FishdomTokenAbi.networks['97'].address,
+				FishdomTokenAbi.networks[process.env.REACT_APP_NETWORK_ID].address,
 				FishdomTokenAbi.abi,
 				await library.getSigner(account)
 			);
 
 			const approveTx = await FishdomToken.approve(
-				FishdomMarketAbi.networks['97'].address,
+				FishdomMarketAbi.networks[process.env.REACT_APP_NETWORK_ID].address,
 				ethers.utils.parseEther(infoItem.price)
 			);
 			message.loading('Waiting approve FdT', 1)
@@ -78,7 +78,7 @@ function Item(props) {
 						ID:{" "}{infoItem.tokenId}
 					</div>
 					<div style={{ overflow: 'hidden' }}>
-						<a href={`https://testnet.bscscan.com/tx/${infoItem.txHash}`} target="_blank">
+						<a href={`${process.env.REACT_APP_EXPLORE_SCAN_URL}/tx/${infoItem.txHash}`} target="_blank">
 							Tx Hash:{" "}{infoItem.txHash}
 						</a>
 					</div>

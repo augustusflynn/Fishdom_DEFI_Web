@@ -11,6 +11,7 @@ import ScrollTop from "./component/ScrollTop";
 import { user } from "./redux/actions";
 import { user$ } from "./redux/selectors";
 import listRoute, { RenderRoutes } from "./routes";
+import { injected } from './connector';
 require("dotenv").config();
 
 function App() {
@@ -48,6 +49,8 @@ function App() {
       library.getSigner(account)
         .signMessage(SIGN_MESSAGE)
         .then(login)
+    } else {
+      activate(injected)
     }
   }, [active, userData])
 

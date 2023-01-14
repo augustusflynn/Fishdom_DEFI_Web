@@ -30,34 +30,25 @@ const StakingItem = (props) => {
 
 	useEffect(() => {
 		(async () => {
-			try {
-				if (!_.isEmpty(item)) {
-					let storedData = localStorage.getItem(`Staking_${item.stakeId}`)
-					if (storedData) {
-						setEarnNow(storedData);
-					} else {
-						if (active) {
-							const stakeContract = new ethers.Contract(
-								StakingContract.networks[chainId].address,
-								StakingContract.abi,
-								await library.getSigner(account)
-							);
-							const earned = await stakeContract.getEarned(item?.stakeId);
-							const parsedEarned = parseFloat(ethers.utils.formatEther(earned.toString())).toFixed(7)
-							setEarnNow(parsedEarned);
-							if (item?.duration !== 0) {
-								localStorage.setItem(`Staking_${item.stakeId}`, parsedEarned)
-							}
-						}
-					}
+			if (active && !_.isEmpty(item)) {
+				const stakeContract = new ethers.Contract(
+					StakingContract.networks[chainId].address,
+					StakingContract.abi,
+					await library.getSigner(account)
+				);
+				const earned = await stakeContract.getEarned(item?.stakeId);
+				const parsedEarned = parseFloat(ethers.utils.formatEther(earned.toString())).toFixed(7)
+				setEarnNow(parsedEarned);
+				if (item?.duration !== 0) {
+					localStorage.setItem(`Staking_${item.stakeId}`, parsedEarned)
 				}
-			} catch (err) { }
+			}
 		})();
 		return () => { };
 	}, [active, item]);
 
-	const onStoreDataClaim = (txHash) => {
-		axios.post(
+	const onStoreDataClaim = async (txHash) => {
+		await axios.post(
 			process.env.REACT_APP_API_URL + '/api/stakings/claim',
 			{
 				txHash: txHash
@@ -117,12 +108,11 @@ const StakingItem = (props) => {
 			setIsLoadingClaim(true);
 			const tx = await stakeContract.claim(item?.stakeId);
 			await tx.wait()
-				.then(() => {
-					onStoreDataClaim(tx.hash);
-					message.success(
-						"Successfully! Please wait 2-3 minutes for actually execution!"
-					);
-				});
+			setIsLoadingClaim(false);
+			await onStoreDataClaim(tx.hash);
+			message.success(
+				"Successfully! Please wait 2-3 minutes for actually execution!"
+			);
 		} catch (err) {
 			setIsLoadingClaim(false);
 			message.error(err?.data?.message || "Cancel execution!");
@@ -157,7 +147,7 @@ const StakingItem = (props) => {
 	}
 
 	return (
-		<Col xs={24} sm={stakes.length == 1 ? 24 : 12}>
+		<Col xs={24} sm={stakes.data.length === 1 ? 24 : 12}>
 			<div className="frame">
 				<Space direction="vertical" size={16}>
 					<Space direction="vertical" size={4}>

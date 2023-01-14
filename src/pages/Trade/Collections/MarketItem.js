@@ -27,7 +27,7 @@ function MarketItem({
 					{(currentTabKey === "#marketItem" || !currentTabKey) ? (
 						<>
 							<div style={{ overflow: 'hidden' }}>
-								<a href={`https://testnet.bscscan.com/tx/${infoItem.txHash}`} target="_blank">
+								<a href={`${process.env.REACT_APP_EXPLORE_SCAN_URL}/tx/${infoItem.txHash}`} target="_blank">
 									Tx Hash:{" "}{infoItem.txHash}
 								</a>
 							</div>

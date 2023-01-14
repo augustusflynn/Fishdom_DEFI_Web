@@ -8,6 +8,7 @@ import axios from "axios";
 import { useSelector } from "react-redux";
 import { user$ } from "src/redux/selectors";
 import { Tabs } from "antd";
+import _ from "lodash";
 const { TabPane } = Tabs;
 
 function History() {
@@ -28,23 +29,25 @@ function History() {
 
 	const userData = useSelector(user$)
 
-	useEffect(async () => {
-		try {
-			if (active) {
-				try {
-					setSkip(0);
-					setCurrentPage(1);
-					if (tabKey == 1) {
-						await handleFetchStakedData(0);
-					} else {
-						await handleFetchHavestData(0);
+	useEffect(() => {
+		(async () => {
+			try {
+				if (active && !_.isEmpty(userData)) {
+					try {
+						setSkip(0);
+						setCurrentPage(1);
+						if (tabKey == 1) {
+							await handleFetchStakedData(0);
+						} else {
+							await handleFetchHavestData(0);
+						}
+					} catch (error) {
+						console.log(error);
 					}
-				} catch (error) {
-					console.log(error);
 				}
-			}
-		} catch (error) { }
-	}, [tabKey, active]);
+			} catch (error) { }
+		})()
+	}, [tabKey, active, userData]);
 
 	const handleFetchStakedData = async (skip) => {
 		try {
@@ -64,34 +67,38 @@ function History() {
 				if (res.status === 200) {
 					setListHistoryStakingData(res.data.data);
 				}
+				setLoading(false)
 			})
 		} catch (error) {
 			console.log(error);
+			setLoading(false)
 		}
 	};
 
 	const handleFetchHavestData = async (skip) => {
-		// try {
-		// 	setLoading(true);
-		// 	await axios.post(
-		// 		process.env.REACT_APP_API_URL + '/api/havest-stake/get',
-		// 		{
-		// 			skip: skip,
-		// 			limit: 8
-		// 		},
-		// 		{
-		// 			headers: {
-		// 				Authorization: `Bearer ${userData.token}`
-		// 			}
-		// 		}
-		// 	).then(res => {
-		// 		if (res.status === 200) {
-		// 			setListHistoryStakingData(res.data.data);
-		// 		}
-		// 	})
-		// } catch (error) {
-		// 	console.log(error);
-		// }
+		try {
+			setLoading(true);
+			await axios.post(
+				process.env.REACT_APP_API_URL + '/api/havests/get',
+				{
+					skip: skip,
+					limit: 8
+				},
+				{
+					headers: {
+						Authorization: `Bearer ${userData.token}`
+					}
+				}
+			).then(res => {
+				if (res.status === 200) {
+					setListHistoryHavestData(res.data.data);
+				}
+				setLoading(false)
+			})
+		} catch (error) {
+			setLoading(false)
+			console.log(error);
+		}
 	}
 
 	return (

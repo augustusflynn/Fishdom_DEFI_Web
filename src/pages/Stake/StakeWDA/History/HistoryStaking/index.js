@@ -16,8 +16,7 @@ function HistoryStaking({
 }) {
 	let renderHistoryStaking;
 	renderHistoryStaking =
-		data &&
-		data?.length > 0 &&
+		count > 0 &&
 		data.map((item, index) => (
 			<Item item={item} key={index} />
 		));
