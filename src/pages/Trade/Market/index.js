@@ -3,7 +3,7 @@ import Container from "../../../layout/grid/Container";
 import Content from "./Content";
 
 
-function WinMarket() {
+function Marketplace() {
 	return (
 		<section className="section" id="section-win-market">
 			<Container>
@@ -13,4 +13,4 @@ function WinMarket() {
 		</section>
 	);
 }
-export default WinMarket;
+export default Marketplace;

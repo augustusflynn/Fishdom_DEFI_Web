@@ -1,9 +1,6 @@
-import { providerFake } from "./apiContants";
-
 export const INIT_STATE = {
 	isOpenTabBar: true,
 	walletConnect: null,
-	walletConnectFake: providerFake,
 	stakingClaimData: {
 		stake: [],
 		claimed: [],

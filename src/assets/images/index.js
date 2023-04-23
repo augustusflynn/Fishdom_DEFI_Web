@@ -1,5 +1,4 @@
 const IMAGES = {
-  BANNER_LANDING: require("./landingPage/banner-firstNFT.svg").default,
   ICON: {
     ARROW: require("./landingPage/iconArrow.svg").default,
     FILE: require("./landingPage/iconFile.svg").default,

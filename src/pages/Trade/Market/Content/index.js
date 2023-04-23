@@ -1,37 +1,33 @@
 import { Col, Pagination, Row, Select, Space, Spin } from "antd";
 import axios from "axios";
-// import { ethers } from "ethers";
 import React, { useCallback, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-// import { providerFake } from "src/constants/apiContants";
-// import { apiService } from "src/utils/api";
-// import BaseHelper from "src/utils/BaseHelper";
-// import * as MoralisQuery from "src/utils/MoralisQuery";
-// import { crownNFTAbi, crownNFTAdress } from "../../../../constants/constants";
 import { user$ } from "../../../../redux/selectors";
 import Item from "./Item";
 
 const { Option } = Select;
 
 const listSortBy = [
-	// {
-	// 	label: "Recenlty Listed",
-	// 	value: {
-	// 		key: "createdAt",
-	// 		value: "asc",
-	// 	},
-	// },
+	{
+		label: "Recenlty Listed",
+		value: JSON.stringify({
+			key: "createdAt",
+			value: "DESC",
+		}),
+	},
 	{
 		label: "Lowest Price",
-		value: {
-			"price": 1,
-		},
+		value: JSON.stringify({
+			key: "price",
+			value: "ASC",
+		}),
 	},
 	{
 		label: "Highest Price",
-		value: {
-			"price": -1,
-		},
+		value: JSON.stringify({
+			key: "price",
+			value: "DESC",
+		}),
 	},
 ];
 
@@ -40,11 +36,9 @@ function MarketContent() {
 		data: [],
 		count: 0,
 	});
-	const [sortValue, setSortValue] = useState(
-		'{"price":1}'
-	);
+	const [sortValue, setSortValue] = useState();
 	const pageSize = 8;
-	const [loading, setLoading] = useState(true);
+	const [loading, setLoading] = useState(false);
 	const [skip, setSkip] = useState(0)
 	const userData = useSelector(user$)
 
@@ -54,34 +48,31 @@ function MarketContent() {
 	};
 
 	const handleFetchData = useCallback(async (skip, sort = sortValue) => {
-		try {
-			if (userData && userData.token) {
-				await axios.post(
-					`${process.env.REACT_APP_API_URL}/api/markets/get`,
-					{
-						"limit": pageSize,
-						"skip": skip,
-						"order": sort
-					},
-					{
-						headers: {
-							Authorization: `Bearer ${userData.token}`
-						}
-					}
-				).then(res => {
-					setListDefault(res.data.data)
-				})
+		setLoading(true)
+		await axios.post(
+			`${process.env.REACT_APP_API_URL}/Market/get`,
+			{
+				"limit": pageSize,
+				"skip": skip,
+				"order": sort ? JSON.parse(sort) : undefined
+			},
+			{
+				headers: {
+					Authorization: `Bearer ${userData.token}`
+				}
 			}
-		} catch {
-			console.log('fetch data market error')
-		} finally {
+		).then(res => {
+			setListDefault(res.data.data)
+		}).finally(() => {
 			setLoading(false)
-		}
-	}, [userData]);
+		})
+	}, [userData.token]);
 
 	useEffect(() => {
-		handleFetchData(0);
-	}, [handleFetchData]);
+		if (userData.token) {
+			handleFetchData(0);
+		}
+	}, [userData.token, handleFetchData]);
 
 	return loading ? (
 		<div className="flex justify-center">
@@ -97,13 +88,14 @@ function MarketContent() {
 							placeholder="Sort by"
 							optionFilterProp="children"
 							value={sortValue}
+							defaultActiveFirstOption
 							onChange={handleChangeSort}
 						>
 							{listSortBy.map((item) => {
 								return (
 									<Option
-										value={JSON.stringify(item.value)}
-										key={JSON.stringify(item.value)}
+										value={item.value}
+										key={item.value}
 									>
 										{item.label}
 									</Option>
@@ -112,23 +104,8 @@ function MarketContent() {
 						</Select>
 					</div>
 				</div>
-				{Object.keys(listDefault.data).length >= 0 &&
-					listDefault?.data
-						.sort((a, b) => {
-							let arrSortValue = JSON.parse(sortValue);
-							if (arrSortValue.value == "asc") {
-								return (
-									parseFloat(a[arrSortValue.key]) -
-									parseFloat(b[arrSortValue.key])
-								);
-							} else {
-								return (
-									-parseFloat(a[arrSortValue.key]) +
-									parseFloat(b[arrSortValue.key])
-								);
-							}
-						})
-						.map((item, index) => {
+				{listDefault?.data && listDefault?.data.length > 0 &&
+						listDefault?.data.map((item, index) => {
 							return (
 								<Col xl={6} lg={8} md={12} sm={24} xs={24} key={index}>
 									<Item key={index} infoItem={item} />
@@ -137,7 +114,7 @@ function MarketContent() {
 						})}
 			</Row>
 
-			{listDefault?.count == 0 ? (
+			{listDefault?.count === 0 ? (
 				<></>
 			) : (
 				<Space direction="vertical" className="pagination" align="center">

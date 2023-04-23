@@ -1,11 +1,11 @@
 import { useWeb3React } from "@web3-react/core";
 import { Modal } from "antd";
-import React, { useEffect, useState } from "react";
+import _ from "lodash";
+import React, { useState } from "react";
 import { useSelector } from "react-redux";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import IconWallet from "../../assets/png/topbar/icon-wallet-white.svg";
-import { METAMASK_CONNECT, WALLET_CONNECT } from "../../constants/apiContants";
-import { wallet$ } from "../../redux/selectors";
+import { user$ } from "../../redux/selectors";
 import { navigations } from "../../routerNav";
 import BaseHelper from "../../utils/BaseHelper";
 import ModalWallet from "../Topbar/ModalWallet";
@@ -13,29 +13,11 @@ import ModalWallet from "../Topbar/ModalWallet";
 // import {}
 function ModalMenu(props) {
 	const { isModalVisible, hideMenu, setShowMenu } = props;
-	const [account, setAcount] = useState("");
 	const navigate = useNavigate();
-	const location = useLocation();
-	const walletConnect = useSelector(wallet$);
-	const { connector } = useWeb3React();
-
+	const { active, account } = useWeb3React();
 	const [isShowWallet, setShowWallet] = useState(false);
-	const [selectedKey, setSelectedKey] = useState(
-		location?.pathname?.replace("/", "")
-	);
-
-	useEffect(() => {
-		const getSigner = async () => {
-			if (walletConnect) {
-				const adress = await walletConnect.getAddress();
-				setAcount(adress);
-				hideWallet();
-			} else {
-				setAcount("");
-			}
-		};
-		getSigner();
-	}, [walletConnect]);
+	const userData = useSelector(user$)
+	const isLoggedIn = !_.isEmpty(userData)
 
 	const handleClick = (key, redirect) => {
 		if (redirect) {
@@ -43,7 +25,6 @@ function ModalMenu(props) {
 			return;
 		}
 		navigate(key);
-		setSelectedKey(key);
 		hideMenu();
 		window.scrollTo(0, 0);
 	};
@@ -66,13 +47,6 @@ function ModalMenu(props) {
 		setShowMenu(false);
 	};
 
-	const disconnectWallet = () => {
-		localStorage.setItem(METAMASK_CONNECT, "");
-		localStorage.setItem(WALLET_CONNECT, "");
-		connector.deactivate();
-		setShowMenu(false);
-	};
-
 	return (
 		<React.Fragment>
 			{isShowWallet ? (
@@ -92,7 +66,7 @@ function ModalMenu(props) {
 			>
 				<div className="logo-mobile" onClick={goHome} />
 				<div className="head">
-					{account ? (
+					{(isLoggedIn && active) ? (
 						<div>
 							<div className="flex-center">
 								<img src={IconWallet} />
@@ -103,12 +77,6 @@ function ModalMenu(props) {
 							<div className="flex-center btn-connect">
 								<button className="btn-mobile-default" onClick={showWallet}>
 									<span style={{ whiteSpace: "nowrap" }}>Switch Wallet</span>
-								</button>
-								<button
-									className="btn-mobile-default"
-									onClick={disconnectWallet}
-								>
-									<span style={{ whiteSpace: "nowrap" }}>Disconnect</span>
 								</button>
 							</div>
 						</div>

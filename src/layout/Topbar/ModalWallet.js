@@ -10,25 +10,33 @@ import {
 import { useEagerConnect, useInactiveListener } from '../../hooks';
 import * as MetaMaskFunctions from '../../metamask';
 import chains from '../../chains';
-import axios from "axios";
-import { user } from "src/redux/actions/index.js";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { user$ } from "src/redux/selectors/index.js";
 import _ from "lodash";
+import axios from "axios";
+import { user } from "src/redux/actions/index.js";
+import { APP_USER_ERROR } from "src/constants/errorCode.js";
 
 function ModalWallet(props) {
 	const { isModalVisible, hideWallet } = props;
 
 	const [selectedWallet, setSelectedWallet] = useState(localStorage.getItem('selectedWallet'))
-
 	const context = useWeb3React();
 	const {
 		connector,
 		activate,
 		deactivate,
 		error,
-		active
+		active,
+		library, 
+		chainId, 
+		account
 	} = context;
+
+	const userData = useSelector(user$)
+	const isLoggedIn = !_.isEmpty(userData)
+	const dispatch = useDispatch()
+  const SIGN_MESSAGE = `Hello!! Welcome to Fishdom DEFI, ${account}`
 
 	// handle logic to recognize the connector currently being activated
 	const [activatingConnector, setActivatingConnector] = React.useState();
@@ -51,7 +59,7 @@ function ModalWallet(props) {
 						rpcUrls: REQUIRED_CHAIN.rpcUrls,
 						blockExplorerUrls: REQUIRED_CHAIN.blockExplorerUrls,
 					}).catch(err => {
-						alert('Cannot add ' + REQUIRED_CHAIN.chainName + ' to your MetaMask');
+						alert('Cannot add ' + REQUIRED_CHAIN.chainName + ' to your Wallet');
 					});
 				}
 			});
@@ -81,8 +89,43 @@ function ModalWallet(props) {
 	const onDeactivate = () => {
 		deactivate()
 		setActivatingConnector(undefined);
-		localStorage.removeItem('selectedWallet')
 		setSelectedWallet(undefined)
+		user.setUser({})
+		localStorage.removeItem('selectedWallet')
+	}
+
+  const login = (signature) => {
+    axios.post(
+      process.env.REACT_APP_API_URL + '/AppUsers/loginUser',
+      {
+        walletAddress: account,
+        signature: signature,
+        message: SIGN_MESSAGE,
+        chainId: chainId
+      })
+      .then((res) => {
+        if (Object.values(APP_USER_ERROR).includes(res.data.error)) {
+          message.error(res.data.error.replace('_', ' '))
+        } else {
+          dispatch(user.setUser(res.data.data));
+        }
+      })
+      .catch(() => {
+        console.log('login error')
+      })
+  }
+
+	const requestSignature = (connector) => {
+		activate(connectorsByName[connector]);
+		setActivatingConnector(connectorsByName[connector]);
+		setSelectedWallet(connector)
+		localStorage.setItem('selectedWallet', connector)
+		if (active && _.isEmpty(userData)) {
+      library.getSigner(account)
+        .signMessage(SIGN_MESSAGE)
+        .then(login)
+				.then(hideWallet)
+    }
 	}
 
 	return (
@@ -105,29 +148,23 @@ function ModalWallet(props) {
 				<div className="content">
 					<MetaMaskSelect
 						onClick={() => {
-							if (active) {
+							if (isLoggedIn && active && selectedWallet === "Injected") {
 								onDeactivate()
 							} else {
-								setActivatingConnector(connectorsByName['Injected']);
-								activate(connectorsByName["Injected"]);
-								localStorage.setItem('selectedWallet', 'Injected')
-								setSelectedWallet("Injected")
+								requestSignature("Injected")
 							}
 						}}
-						isActive={active && selectedWallet && selectedWallet === "Injected"}
+						isActive={isLoggedIn && active && selectedWallet === "Injected"}
 					/>
 					<WalletConnect
 						onClick={() => {
-							if (active) {
+							if (isLoggedIn && active && selectedWallet === "WalletConnect") {
 								onDeactivate()
 							} else {
-								setActivatingConnector(connectorsByName["WalletConnect"]);
-								activate(connectorsByName["WalletConnect"]);
-								localStorage.setItem('selectedWallet', 'WalletConnect')
-								setSelectedWallet("WalletConnect")
+								requestSignature("WalletConnect")
 							}
 						}}
-						isActive={active && selectedWallet && selectedWallet === "WalletConnect"}
+						isActive={isLoggedIn && active && selectedWallet === "WalletConnect"}
 					/>
 				</div>
 			</div>

@@ -20,7 +20,7 @@ export function useInactiveListener(suppress = false) {
       const handleAccountsChanged = (accounts /*: string[] */) => {
         console.log("Handling 'accountsChanged' event with payload", accounts);
         if (accounts.length > 0) {
-          activate(injected);
+          window.location.reload()
         }
       };
       const handleNetworkChanged = (networkId /*: string | number*/) => {

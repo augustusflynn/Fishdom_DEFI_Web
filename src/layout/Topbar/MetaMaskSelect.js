@@ -4,7 +4,6 @@ import IconMetaMask from "../../assets/png/topbar/icon-metamask.png";
 function MetaMaskSelect({
 	onClick, isActive
 }) {
-
 	return (
 		<div className={`item-wallet margin-top-0`}>
 			<div className="wallet">

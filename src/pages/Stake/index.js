@@ -2,13 +2,13 @@ import { Button, Col, Input, message, Row, Select, Spin } from "antd";
 import { ethers } from "ethers";
 import React, { Fragment, useEffect, useState } from "react";
 
-import BaseHelper from "./../../../utils/BaseHelper";
-import FadeAnimationOdd from "../../../layout/fadeAnimation/FadeAnimationOdd";
-import Container from "../../../layout/grid/Container";
+import BaseHelper from "./../../utils/BaseHelper";
+import FadeAnimationOdd from "../../layout/fadeAnimation/FadeAnimationOdd";
+import Container from "../../layout/grid/Container";
 import History from "./History";
 
-import StakingContract from "../../../constants/contracts/FishdomStaking.sol/FishdomStaking.json";
-import TokenContract from "../../../constants/contracts/token/FishdomToken.sol/FishdomToken.json";
+import StakingContract from "../../constants/contracts/FishdomStaking.sol/FishdomStaking.json";
+import TokenContract from "../../constants/contracts/token/FishdomToken.sol/FishdomToken.json";
 import { useSelector } from "react-redux";
 import { user$ } from "src/redux/selectors";
 import { useWeb3React } from "@web3-react/core";

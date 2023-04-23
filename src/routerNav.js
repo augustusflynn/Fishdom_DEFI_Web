@@ -16,11 +16,6 @@ export const navigations = [
         title: "Staking",
         path: "stake",
       },
-      // {
-      //   type: "Item",
-      //   title: "Mining CROWN",
-      //   path: "stake-mining-crown",
-      // },
       {
         type: "Item",
         title: "Claim",
@@ -28,38 +23,6 @@ export const navigations = [
       },
     ],
   },
-  // {
-  //   type: "SubMenu",
-  //   title: "Products",
-  //   childrent: [
-  //     {
-  //       type: "Item",
-  //       title: "CROWN Lucky",
-  //       path: "products-crown-lucky",
-  //     },
-  //     {
-  //       type: "Item",
-  //       title: "CROWN Auction",
-  //       path: "products-crown-auction",
-  //     },
-  //     {
-  //       type: "Item",
-  //       title: "Lucky Ticket",
-  //       path: "products-lucky-ticket",
-  //     },
-  //   ],
-  // },
-  // {
-  //   type: "SubMenu",
-  //   title: "DAO",
-  //   childrent: [
-  //     {
-  //       type: "Item",
-  //       title: "Proposals",
-  //       path: "dao-proposals",
-  //     },
-  //   ],
-  // },
   {
     type: "SubMenu",
     title: "Trade",
@@ -69,11 +32,11 @@ export const navigations = [
         title: "Swap",
         path: "trade-swap",
       },
-      // {
-      //   type: "Item",
-      //   title: "WinMarket",
-      //   path: "trade-win-market",
-      // },
+      {
+        type: "Item",
+        title: "Market",
+        path: "/",
+      },
       {
         type: "Item",
         title: "Your collection",
@@ -81,27 +44,6 @@ export const navigations = [
       },
     ],
   },
-  // {
-  //   type: "SubMenu",
-  //   title: "Resources",
-  //   childrent: [
-  //     {
-  //       type: "Item",
-  //       title: "Documents",
-  //       redirect: "https://docs.windao.fi/",
-  //     },
-  //     {
-  //       type: "Item",
-  //       title: "Tokenomics",
-  //       path: "resources-tokenomics",
-  //     },
-  //     {
-  //       type: "Item",
-  //       title: "FAQ",
-  //       redirect: "https://docs.windao.fi/faq",
-  //     },
-  //   ],
-  // },
   {
     type: "SubMenu",
     title: "About",
@@ -116,14 +58,8 @@ export const navigations = [
         title: "Partners & Investors",
         path: "about-team",
         hash: "section-partner",
-      },
-      // {
-      //   type: "Item",
-      //   title: "Audits",
-      //   path: "/",
-      //   hash: "section-audits",
-      // },
-    ],
+      }
+    ]
   },
 ];
 

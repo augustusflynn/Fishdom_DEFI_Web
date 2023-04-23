@@ -40,7 +40,7 @@ function Item(props) {
 			message.loading("Please wait for transaction finised...", 1);
 			await buyTx.wait();
 			await axios.post(
-				process.env.REACT_APP_API_URL + '/api/markets/buy',
+				process.env.REACT_APP_API_URL + '/Market/buy',
 				{
 					txHash: buyTx.hash
 				},
@@ -51,7 +51,7 @@ function Item(props) {
 				}
 			)
 		} catch (error) {
-			if (error.code == 4001) {
+			if (error.code === 4001) {
 				message.error("Transaction cancelled!");
 			} else {
 				message.error("Transaction error!");
@@ -65,7 +65,7 @@ function Item(props) {
 			<Space direction="vertical" size={16} className="market-item">
 				<div className="c2i-pointer">
 					<img
-						src={`${process.env.REACT_APP_API_URL}/api/games/idle/${infoItem.tokenId}.json`}
+						src={`${process.env.REACT_APP_API_URL}/NFT/idle/${infoItem.nftId}`}
 						alt="Fishdom Fish"
 						className="market-img"
 					/>
@@ -90,7 +90,7 @@ function Item(props) {
 					<Button
 						onClick={buyHandler}
 						className="w-100"
-						disabled={infoItem.seller.toLowerCase() === account.toLowerCase()}
+						disabled={infoItem.seller.toLowerCase() === account?.toLowerCase()}
 					>Buy</Button>
 				</Space>
 			</Space>

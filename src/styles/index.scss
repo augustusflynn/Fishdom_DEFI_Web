@@ -36,12 +36,12 @@ iframe {
   z-index: -1 !important;
 }
 
-@import "./page/animationCommon.scss";
-@import "./page/tradeWin.scss";
-@import "./page/CROWNLucky.scss";
+.w-100 {
+  width: 100%;
+}
 
-@import "./page/luckyTicket.scss";
-@import "./page/date_picker.scss";
+@import "./page/animationCommon.scss";
+@import "./page/market.scss";
 @import "./page/base.scss";
 @import "./layout/default.scss";
 @import "./antd/menu.scss";
@@ -51,24 +51,12 @@ iframe {
 @import "./layout/modalMenu.scss";
 @import "./page/landing.scss";
 @import "./page/layout.scss";
-@import "./page/seed&PrivateRound.scss";
 @import "./page/team.scss";
-@import "./page/tokenomic.scss";
-@import "./page/vesting.scss";
 @import "./modal/modalInstall.scss";
-@import "./page/CROWNAuction.scss";
-@import "./page/date_picker.scss";
 @import "./antd/pagination.scss";
-@import "./page/NFTProfile.scss";
-@import "./page/proposal.scss";
-@import "./page/stakeWDA.scss";
+@import "./page/staking.scss";
 @import "./page/responsive.scss";
-@import "./page/CROWNLucky.scss";
-@import "./page/date_picker.scss";
 @import "./antd/pagination.scss";
-@import "./page/NFTProfile.scss";
-@import "./page/miningCROWN.scss";
-@import "./page/winMarket.scss";
-@import "./page/detailNft.scss";
+@import "./page/market.scss";
 @import "./page/collection.scss";
 @import "./antd/notification.css";

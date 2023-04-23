@@ -1,20 +1,12 @@
 import React, { useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import IconMenu from '../../assets/png/topbar/icon-more-menu.svg';
 import ModalMenu from './ModalMenu';
 
 
 function TopbarMobile() {
-// console.log("");
-
   const navigate = useNavigate();
-  const location = useLocation();
-  // const [selectedKey, setSelectedKey] = useState(location?.pathname?.replace("/", ""));
   const [isShowMenu, setShowMenu] = useState(false);
-  // const handleClick = ({ item, key, keyPath, domEvent }) => {
-  //     navigate(key);
-  //     setSelectedKey(key);
-  // };
 
   const goHome = () => {
     window.scrollTo(0, 0);
@@ -22,7 +14,6 @@ function TopbarMobile() {
   };
 
   const showMenu = () => {
-    console.log("ddd: ", isShowMenu);
     setShowMenu(true);
   };
   const hideMenu = () => {

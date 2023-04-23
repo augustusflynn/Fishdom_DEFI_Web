@@ -11,7 +11,7 @@ import axios from "axios";
 import { user } from "src/redux/actions";
 import { useWeb3React } from "@web3-react/core";
 
-function WinSwap() {
+function SwapPage() {
 	const web3Context = useWeb3React()
 	const [isShowModalSwapFdTToPoint, setIsShowModalSwapFdTToPoint] = useState(false);
 	const [isShowModalSwapPointToFdT, setIsShowModalSwapPointToFdT] = useState(false);
@@ -272,4 +272,4 @@ function WinSwap() {
 		</>
 	);
 }
-export default WinSwap;
+export default SwapPage;
