@@ -8,8 +8,5 @@ export const isOpenTabBar = createActions({
 });
 
 export const user = createActions({
-	setUser: (payload) => {
-		localStorage.setItem('fd_user', JSON.stringify(payload))
-		return payload
-	}
+	setUser: (payload) => payload
 });

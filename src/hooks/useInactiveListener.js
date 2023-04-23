@@ -17,12 +17,12 @@ export function useInactiveListener(suppress = false) {
         console.log("Handling 'chainChanged' event with payload", chainId);
         activate(injected);
       };
-      const handleAccountsChanged = (accounts /*: string[] */) => {
-        console.log("Handling 'accountsChanged' event with payload", accounts);
-        if (accounts.length > 0) {
-          window.location.reload()
-        }
-      };
+      // const handleAccountsChanged = (accounts /*: string[] */) => {
+      //   console.log("Handling 'accountsChanged' event with payload", accounts);
+      //   if (accounts.length > 0) {
+      //     window.location.reload()
+      //   }
+      // };
       const handleNetworkChanged = (networkId /*: string | number*/) => {
         console.log("Handling 'networkChanged' event with payload", networkId);
         activate(injected);
@@ -30,14 +30,14 @@ export function useInactiveListener(suppress = false) {
 
       ethereum.on('connect', handleConnect);
       ethereum.on('chainChanged', handleChainChanged);
-      ethereum.on('accountsChanged', handleAccountsChanged);
+      // ethereum.on('accountsChanged', handleAccountsChanged);
       ethereum.on('networkChanged', handleNetworkChanged);
 
       return () => {
         if (ethereum.removeListener) {
           ethereum.removeListener('connect', handleConnect);
           ethereum.removeListener('chainChanged', handleChainChanged);
-          ethereum.removeListener('accountsChanged', handleAccountsChanged);
+          // ethereum.removeListener('accountsChanged', handleAccountsChanged);
           ethereum.removeListener('networkChanged', handleNetworkChanged);
         }
       };
