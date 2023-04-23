@@ -49,7 +49,7 @@ const ModalConfirm = ({
 					<div className="icon-back"></div>
 					<span>Go back</span>
 				</div>
-				<div className="header c2i-no-margin">
+				<div className="header custom-no-margin">
 					<span className="title-buy">Complete your checkout</span>
 				</div>
 				<Divider />
@@ -97,9 +97,9 @@ const ModalConfirm = ({
 								</div>
 							</Form.Item>
 
-							<p className="module-blur c2i-no-margin modal-wrap-text">
+							<p className="module-blur custom-no-margin modal-wrap-text">
 								{`Total price: `}
-								<span className="c2i-color-title">{`${priceBNB * quantity >= 1
+								<span className="custom-color-title">{`${priceBNB * quantity >= 1
 									? priceBNB * quantity + " FdT"
 									: (priceBNB > 10 ** -18 && priceBNB < 1) ||
 										parseFloat(priceBNB) == 0
@@ -112,9 +112,9 @@ const ModalConfirm = ({
 									}`}</span>
 							</p>
 
-							<p className="module-blur c2i-no-margin modal-wrap-text">
+							<p className="module-blur custom-no-margin modal-wrap-text">
 								{`Fee:`}
-								<span className="c2i-color-title">{` ~ ${priceBNB * quantity >= 1
+								<span className="custom-color-title">{` ~ ${priceBNB * quantity >= 1
 									? priceBNB * quantity * 0.05 + " FdT"
 									: (priceBNB > 10 ** -16 && priceBNB < 1) ||
 										parseFloat(priceBNB) == 0

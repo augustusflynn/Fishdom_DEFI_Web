@@ -63,7 +63,7 @@ function Item(props) {
 	if (infoItem)
 		return (
 			<Space direction="vertical" size={16} className="market-item">
-				<div className="c2i-pointer">
+				<div className="custom-pointer">
 					<img
 						src={`${process.env.REACT_APP_API_URL}/NFT/idle/${infoItem.nftId}`}
 						alt="Fishdom Fish"
@@ -75,7 +75,10 @@ function Item(props) {
 						<label className="module-title">{infoItem.name}</label>
 					</div>
 					<div>
-						ID:{" "}{infoItem.tokenId}
+						NFT ID:{" "}{infoItem.nftId}
+					</div>
+					<div>
+						Market Item ID:{" "}{infoItem.itemId}
 					</div>
 					<div style={{ overflow: 'hidden' }}>
 						<a href={`${process.env.REACT_APP_EXPLORE_SCAN_URL}/tx/${infoItem.txHash}`} target="_blank">

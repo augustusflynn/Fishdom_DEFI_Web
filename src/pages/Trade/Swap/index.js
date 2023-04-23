@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Input, Space, Button, message } from "antd";
 import { ethers } from "ethers";
 import { useDispatch, useSelector } from "react-redux";
-import { user$, wallet$ } from "src/redux/selectors";
+import { user$ } from "src/redux/selectors";
 import BaseHelper from "src/utils/BaseHelper";
 import SwapModal from "./Modal";
 import IconWallet from "src/assets/png/topbar/icon-wallet-white.svg";
@@ -47,7 +47,7 @@ function SwapPage() {
 	}, [web3Context.active]);
 
 	async function handleDeposit() {
-		if (!web3Context.active) {
+		if (!(web3Context.active && userData.token)) {
 			message.error("Please connect wallet!");
 			setDisable(true)
 			return
@@ -67,7 +67,7 @@ function SwapPage() {
 
 			await transferTx.wait();
 			await axios.post(
-				process.env.REACT_APP_API_URL + '/api/users/deposit',
+				process.env.REACT_APP_API_URL + '/Exchange/requestDepositPoint',
 				{
 					txHash: transferTx.hash
 				},
@@ -80,7 +80,8 @@ function SwapPage() {
 			setLoading(false);
 			message.success("Swap successfully!");
 			setIsShowModalSwapFdTToPoint(false);
-			dispatch(user.setUser({ ...userData, balance: parseFloat(userData.balance) + parseFloat(FdTRef.current.input.value) }))
+			dispatch(user.setUser({ ...userData, balance: parseFloat(userData?.balance || 0) + parseFloat(FdTRef.current.input.value) }))
+			FdTRef.current.input.value = ''
 			getBalanceFdT();
 		} catch (err) {
 			setLoading(false);
@@ -94,14 +95,14 @@ function SwapPage() {
 	}
 
 	async function handleWithdraw() {
-		if (!web3Context.active) {
+		if (!(web3Context.active && userData.token)) {
 			message.error("Please connect wallet!");
 			setDisable(true)
 			return
 		}
 		setLoading(true);
 		await axios.post(
-			process.env.REACT_APP_API_URL + '/api/users/withdraw',
+			process.env.REACT_APP_API_URL + '/Exchange/requestWithdrawFishdomToken',
 			{
 				amount: pointRef.current.input.value
 			},
@@ -115,7 +116,8 @@ function SwapPage() {
 			setLoading(false);
 			message.success("Swap successfully!");
 			setIsShowModalSwapPointToFdT(false);
-			dispatch(user.setUser({ ...userData, balance: parseFloat(userData.balance) - parseFloat(pointRef.current.input.value) }))
+			dispatch(user.setUser({ ...userData, balance: parseFloat(userData?.balance || 0) - parseFloat(pointRef.current.input.value) }))
+			pointRef.current.input.value = ''
 		}).catch(err => {
 			message.error("Transaction error!");
 			console.log('withdraw error', err);
@@ -133,7 +135,7 @@ function SwapPage() {
 					setShowModal={setIsShowModalSwapFdTToPoint}
 					child={
 						<>
-							<span className="c2i-active">
+							<span className="custom-active">
 								{`${BaseHelper.numberWithDots(FdTRef.current.input.value)}`} FDT
 							</span>{" "}
 							to {FdTRef.current.input.value}<br />
@@ -150,7 +152,7 @@ function SwapPage() {
 					setShowModal={setIsShowModalSwapPointToFdT}
 					child={
 						<>
-							<span className="c2i-active">
+							<span className="custom-active">
 								{`${BaseHelper.numberWithDots(pointRef.current.input.value)}`} POINT
 							</span>{" "}
 							to {pointRef.current.input.value * 0.9}<br />
@@ -160,13 +162,13 @@ function SwapPage() {
 				/>
 			)}
 			<div id="win-swap" data-aos="fade-up">
-				<div className="c2i-container">
+				<div className="page-container">
 					<div style={{ width: "35%" }}>
 						<div className="swap-head-container">
 							<h2 className="module-header">{`Deposit`}</h2>
-							<div className="current-sceptor-container">
+							<div className="balance-container">
 								<img src={IconWallet} style={{ marginRight: "8px" }}></img>
-								<p className="module-blur c2i-no-margin">{`${balanceFdT} FDT`}</p>
+								<p className="module-blur custom-no-margin">{`${balanceFdT} FDT`}</p>
 							</div>
 						</div>
 						<Space
@@ -175,14 +177,14 @@ function SwapPage() {
 							className="swap-content-container"
 						>
 							<Space size={24} className="swap-item ">
-								<p className="module-blur c2i-no-margin text-left">Pricing</p>
-								<p className="module-blur c2i-default c2i-no-margin text-left">
+								<p className="module-blur custom-no-margin text-left">Pricing</p>
+								<p className="module-blur custom-default custom-no-margin text-left">
 									1 FDT = 1 POINT
 								</p>
 							</Space>
 							<Space direction="horizontal" size={8} align="start">
-								<div className="c2i-form-group">
-									<div className="c2i-form-control">
+								<div className="custom-form-group">
+									<div className="custom-form-control">
 										<Input
 											type="number"
 											min={1}
@@ -199,7 +201,7 @@ function SwapPage() {
 									<p className="module-blur"></p>
 								</div>
 								<Button
-									className="swap-confirm-btn module-blur"
+								className="swap-confirm-btn module-blur"
 									onClick={() => {
 										let value = FdTRef?.current?.input?.value || 0
 										if (value && !isNaN(value) && value > 0) {
@@ -216,9 +218,9 @@ function SwapPage() {
 					<div style={{ width: "35%" }}>
 						<div className="swap-head-container">
 							<h2 className="module-header">{`Withdraw`}</h2>
-							<div className="current-sceptor-container">
+							<div className="balance-container">
 								<img src={IconWallet} style={{ marginRight: "8px" }}></img>
-								<p className="module-blur c2i-no-margin">{`${BaseHelper.numberWithRealDots(
+								<p className="module-blur custom-no-margin">{`${BaseHelper.numberWithRealDots(
 									userData?.balance || "0"
 								)} POINT`}</p>
 							</div>
@@ -229,15 +231,15 @@ function SwapPage() {
 							className="swap-content-container"
 						>
 							<Space size={24} className="swap-item ">
-								<p className="module-blur c2i-no-margin text-left">Pricing</p>
-								<p className="module-blur c2i-default c2i-no-margin text-left">
+								<p className="module-blur custom-no-margin text-left">Pricing</p>
+								<p className="module-blur custom-default custom-no-margin text-left">
 									{/* 1 TOKEN = {BaseHelper.numberWithRealDots(price)} FISHDOM TOKEN */}
 									1 POINT  = 0.9 FDT
 								</p>
 							</Space>
 							<Space direction="horizontal" size={8} align="start">
-								<div className="c2i-form-group">
-									<div className="c2i-form-control">
+								<div className="custom-form-group">
+									<div className="custom-form-control">
 										<Input
 											type="number"
 											min={1}

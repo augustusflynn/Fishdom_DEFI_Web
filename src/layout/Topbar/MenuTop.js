@@ -50,7 +50,7 @@ function MenuTop() {
 							}
 						}}
 					>
-						<span className="c2i-color-gray">{item.title}</span>
+						<span className="custom-color-gray">{item.title}</span>
 						{item.childrent && (
 							<>
 								<DownOutlined />

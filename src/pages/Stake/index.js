@@ -256,11 +256,11 @@ function StakeWDA() {
 										<div className="module-content">
 											<div style={{ margin: "24px 0px" }}>
 												{" "}
-												<div className="module-blur c2i-color-title c2i-font-special c2i-no-margin">
+												<div className="module-blur custom-color-title custom-font-special custom-no-margin">
 													Staking Day
 												</div>
-												<div className="c2i-form-group">
-													<div className="c2i-form-control" id="stake-wda">
+												<div className="custom-form-group">
+													<div className="custom-form-control" id="stake-wda">
 														<Select
 															value={valueSelectStakingDay}
 															getPopupContainer={() =>
@@ -280,11 +280,11 @@ function StakeWDA() {
 
 											<div style={{ margin: "24px 0px" }}>
 												{" "}
-												<div className="module-blur c2i-color-title c2i-font-special c2i-no-margin">
+												<div className="module-blur custom-color-title custom-font-special custom-no-margin">
 													Staking
 												</div>
-												<div className="c2i-form-group">
-													<div className="c2i-form-control">
+												<div className="custom-form-group">
+													<div className="custom-form-control">
 														<Input
 															type="number"
 															width="100%"

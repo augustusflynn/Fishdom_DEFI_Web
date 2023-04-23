@@ -14,7 +14,7 @@ function MarketItem({
 			<Space size={16} direction="vertical" className="market-item">
 				<div>
 					<img
-						src={`${process.env.REACT_APP_API_URL}/api/games/idle/${infoItem?.tokenId || infoItem?.nftId || 0}.json`}
+						src={`${process.env.REACT_APP_API_URL}/NFT/idle/${infoItem?.nftId || 0}`}
 						alt="crown" className="market-img" />
 				</div>
 				<Space direction="vertical" size={8}>
@@ -41,7 +41,7 @@ function MarketItem({
 					)}
 				</Space>
 				<Button
-					className="button c2i-no-margin"
+					className="button custom-no-margin"
 					disabled={isLoading}
 					onClick={() => {
 						onClick(infoItem);

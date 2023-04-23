@@ -15,7 +15,7 @@ const SwapModal = (props) => {
 			footer={null}
 			closable={null}
 			onCancel={hideModal}
-			className="swap-modal c2i-modal"
+			className="swap-modal custom-modal"
 		>
 			<Space direction="vertical" size={24}>
 				<h2 className="module-title">

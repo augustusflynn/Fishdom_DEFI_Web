@@ -151,46 +151,46 @@ const StakingItem = (props) => {
 			<div className="frame">
 				<Space direction="vertical" size={16}>
 					<Space direction="vertical" size={4}>
-						<h2 className="module-title c2i-no-margin">
-							<span className="c2i-color-green">{`${BaseHelper.numberToCurrencyStyle(
+						<h2 className="module-title custom-no-margin">
+							<span className="custom-color-green">{`${BaseHelper.numberToCurrencyStyle(
 								ethers.utils.formatEther(item?.amount)
 							)}`}</span>{" "}
 							FDT has been staked
 						</h2>
-						<p className="module-blur c2i-no-margin flex wrap">
+						<p className="module-blur custom-no-margin flex wrap">
 							<span className="mr-8">Staking Days: </span>
-							<span className="c2i-color-title">
+							<span className="custom-color-title">
 								{`${item?.duration} Days - ${item?.apr}% APR`}
 							</span>
 						</p>
 						{item?.duration != 0 ? (
-							<p className="module-blur c2i-no-margin flex wrap">
+							<p className="module-blur custom-no-margin flex wrap">
 								<span className="mr-8">Expired Time:</span>
 								{expiredTime - moment().toDate().getTime() <= 86400000 ? (
 									<span>
 										Expired
 									</span>
 								) : (
-									<span className="c2i-color-title">{`${moment(
+									<span className="custom-color-title">{`${moment(
 										expiredTime
 									).format("LLL")}`}</span>
 								)}
 							</p>
 						) : (
-							<p className="module-blur c2i-no-margin flex">
+							<p className="module-blur custom-no-margin flex">
 								{`${"Expired Time: "}`}
-								<span className="c2i-color-title ml-8"> Unlimited Time</span>
+								<span className="custom-color-title ml-8"> Unlimited Time</span>
 							</p>
 						)}
 					</Space>
 					<div className="line"></div>
 					<Space direction="vertical" size={24} className="buy-section">
 						<Space direction="vertical" size={12} className="input-section">
-							<h3 className="module-blur c2i-no-margin c2i-color-title c2i-font-special">
+							<h3 className="module-blur custom-no-margin custom-color-title custom-font-special">
 								Interest Rate (per year)
 							</h3>
-							<div className="c2i-form-group">
-								<div className="c2i-form-control">
+							<div className="custom-form-group">
+								<div className="custom-form-control">
 									<Input
 										type="number"
 										min={1}
@@ -201,11 +201,11 @@ const StakingItem = (props) => {
 							</div>
 						</Space>
 						<Space direction="vertical" size={12} className="input-section">
-							<h3 className="module-blur c2i-no-margin c2i-color-title c2i-font-special">
+							<h3 className="module-blur custom-no-margin custom-color-title custom-font-special">
 								FDT Amount
 							</h3>
-							<div className="c2i-form-group">
-								<div className="c2i-form-control">
+							<div className="custom-form-group">
+								<div className="custom-form-control">
 									<Input
 										type="number"
 										min={1}
@@ -218,9 +218,9 @@ const StakingItem = (props) => {
 							</div>
 						</Space>
 						<Space direction="vertical" size={12} className="input-section">
-							<h3 className="module-blur c2i-no-margin c2i-color-title c2i-font-special">Earned</h3>
-							<div className="c2i-form-group">
-								<div className="c2i-form-control">
+							<h3 className="module-blur custom-no-margin custom-color-title custom-font-special">Earned</h3>
+							<div className="custom-form-group">
+								<div className="custom-form-control">
 									<Input
 										type="number"
 										min={1}
@@ -234,7 +234,7 @@ const StakingItem = (props) => {
 						<div>
 							<Space size="middle">
 								<Button
-									className={`${item?.duration === '0' ? "confirm-btn" : "confirm-btn-twins"} c2i-no-margin`}
+									className={`${item?.duration === '0' ? "confirm-btn" : "confirm-btn-twins"} custom-no-margin`}
 									onClick={handleClaim}
 									loading={isloadingClaim}
 									disabled={item?.duration === '0' ? false : disableBtn}
@@ -244,7 +244,7 @@ const StakingItem = (props) => {
 
 								{item?.duration === '0' ? (
 									<Button
-										className="confirm-btn-twins c2i-no-margin"
+										className="confirm-btn-twins custom-no-margin"
 										onClick={handleUnstake}
 										loading={isloadingStake}
 									>

@@ -7,30 +7,9 @@ export const isOpenTabBar = createActions({
 	setStatus: (payload) => payload,
 });
 
-export const wallet = createActions({
-	walletSetData: (payload) => payload,
-});
-
-export const walletFake = createActions({
-	walletSetFakeData: (payload) => payload,
-});
-
-export const stakingClaim = createActions({
-	stakingClaimData: (payload) => payload,
-	stakingClaimed: (payload) => payload,
-});
-
-export const crownClaim = createActions({
-	crownClaimData: (payload) => payload,
-	crownClaimed: (payload) => payload,
-});
-
-export const market = createActions({
-	marketData: (payload) => payload,
-	sellData: (payload) => payload,
-	withdrawData: (payload) => payload,
-});
-
 export const user = createActions({
-	setUser: (payload) => payload
+	setUser: (payload) => {
+		localStorage.setItem('fd_user', JSON.stringify(payload))
+		return payload
+	}
 });

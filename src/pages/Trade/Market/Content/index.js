@@ -34,7 +34,7 @@ const listSortBy = [
 function MarketContent() {
 	const [listDefault, setListDefault] = useState({
 		data: [],
-		count: 0,
+		total: 0,
 	});
 	const [sortValue, setSortValue] = useState();
 	const pageSize = 8;
@@ -81,8 +81,8 @@ function MarketContent() {
 	) : (
 		<div className="tab-crown">
 			<Row justify="center" align="middle">
-				<div className="c2i-form-group w100">
-					<div className="c2i-form-control">
+				<div className="custom-form-group w100">
+					<div className="custom-form-control">
 						<Select
 							className="select-sort"
 							placeholder="Sort by"
@@ -113,13 +113,12 @@ function MarketContent() {
 							);
 						})}
 			</Row>
-
-			{listDefault?.count === 0 ? (
+			{listDefault?.total === 0 ? (
 				<></>
 			) : (
 				<Space direction="vertical" className="pagination" align="center">
 					<Pagination
-						total={Math.ceil(listDefault.count / pageSize)}
+						total={Math.ceil(listDefault.total / pageSize)}
 						showSizeChanger={false}
 						defaultPageSize={pageSize}
 						onChange={(num) => {

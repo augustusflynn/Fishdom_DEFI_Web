@@ -23,19 +23,19 @@ html {
   z-index: 2;
   position: relative;
 }
-.c2i-container-fluid {
+.page-container-fluid {
   width: 100%;
   padding-left: 15px;
 }
 
-.c2i-container {
+.page-container {
   width: 100%;
   padding-right: 15px;
   padding-left: 15px;
   margin-right: auto;
   margin-left: auto;
 }
-.c2i-nft-profile {
+.custom-nft-profile {
   width: 352.98px;
   height: 352.98px;
   @media (max-width: 1200px) {
@@ -64,24 +64,24 @@ html {
   }
 }
 @media (min-width: 576px) {
-  .c2i-container {
+  .page-container {
     max-width: 540px;
   }
 }
 @media (min-width: 768px) {
-  .c2i-container {
+  .page-container {
     max-width: 720px;
   }
 }
 @media (min-width: 992px) {
-  .c2i-container {
+  .page-container {
     max-width: 960px;
   }
 }
 @media (min-width: 1200px) {
-  .c2i-container {
+  .page-container {
     max-width: 1140px;
-    flex-direction: row!important;
+    flex-direction: row;
     justify-content: space-around;
   }
 }
@@ -326,41 +326,41 @@ button.ant-btn:disabled:hover {
     border-color: #4085ff;
   }
 }
-.c2i-color-title {
+.custom-color-title {
   @include color-title;
 }
-.c2i-color-gray {
+.custom-color-gray {
   color: #999999;
 }
-.c2i-color-sub {
+.custom-color-sub {
   @include color-sub;
 }
-.c2i-color-green {
+.custom-color-green {
   color: #72de99;
 }
-.c2i-font-special {
+.custom-font-special {
   @include font-special;
 }
-.c2i-font-normal {
+.custom-font-normal {
   @include font-default;
 }
-.c2i-no-margin {
+.custom-no-margin {
   margin: 0 !important;
 }
-.c2i-no-padding {
+.custom-no-padding {
   padding: 0 !important;
 }
-.c2i-active {
+.custom-active {
   color: #72de99;
 }
-.c2i-default {
+.custom-default {
   color: #f4f4f4;
 }
-.c2i-error {
+.custom-error {
   color: #ff7777;
 }
-.c2i-form-group {
-  .c2i-form-control {
+.custom-form-group {
+  .custom-form-control {
     height: 48px;
     margin-top: 16px;
     justify-content: space-evenly;
@@ -433,7 +433,7 @@ button.ant-btn:disabled:hover {
   ////fixed
 }
 
-.c2i-modal {
+.custom-modal {
   .ant-modal-content {
     .module-title {
       text-align: center !important;

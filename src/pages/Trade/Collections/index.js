@@ -12,17 +12,18 @@ import MarketItem from "./MarketItem";
 import ModalConfirm from "./ModalConfirm";
 import axios from "axios";
 import { useWeb3React } from "@web3-react/core";
+import { MARKET_ERROR } from "src/constants/errorCode";
 
 const Collection = () => {
 	const userData = useSelector(user$)
 	const { library, account, active } = useWeb3React()
 	const [listMarket, setListMarket] = useState({
 		data: [],
-		count: 0,
+		total: 0,
 	});
 	const [listCollection, setListCollection] = useState({
 		data: [],
-		count: 0,
+		total: 0,
 	});
 	const [currentPage, setCurrentPage] = useState(1);
 	const page_size = 8;
@@ -32,8 +33,8 @@ const Collection = () => {
 	const [sellLoading, setSellLoading] = useState(false);
 	const [withdrawLoading, setWithdrawLoading] = useState(false);
 
-	const [isLoadingAllSiteA, setIsLoadingAllSiteA] = useState(true);
-	const [isLoadingAllSiteB, setIsLoadingAllSiteB] = useState(true);
+	const [isLoadingAllSiteA, setIsLoadingAllSiteA] = useState(false);
+	const [isLoadingAllSiteB, setIsLoadingAllSiteB] = useState(false);
 
 	const [showPopupWallet, setShowPopupWallet] = useState(false);
 
@@ -44,16 +45,15 @@ const Collection = () => {
 
 	async function handleFetchDataMarket(nextSkip) {
 		try {
+			if (!(userData && userData.token)) {
+				return
+			}
 			setIsLoadingAllSiteA(true);
 			axios.post(
-				process.env.REACT_APP_API_URL + "/api/markets/get",
+				process.env.REACT_APP_API_URL + "/Market/getCollection",
 				{
-					filter: {
-						seller: account
-					},
 					skip: nextSkip,
-					limit: page_size,
-					order: "{ \"nftId\": -1 }"
+					limit: page_size
 				},
 				{
 					headers: {
@@ -71,13 +71,15 @@ const Collection = () => {
 
 	async function handleFetchDataCollection(skip) {
 		try {
+			if (!(userData && userData.token)) {
+				return
+			}
 			setIsLoadingAllSiteB(true);
 			axios.post(
-				process.env.REACT_APP_API_URL + "/api/games/getListNFT",
+				process.env.REACT_APP_API_URL + "/NFT/getCollection",
 				{
 					"limit": page_size,
-					"skip": skip,
-					"order": "{ \"nftId\": -1 }"
+					"skip": skip
 				},
 				{
 					headers: {
@@ -85,7 +87,7 @@ const Collection = () => {
 					}
 				}
 			).then(res => {
-				setListCollection(res.data);
+				setListCollection(res.data.data);
 				setIsLoadingAllSiteB(false);
 			})
 		} catch (error) {
@@ -136,7 +138,7 @@ const Collection = () => {
 				.wait()
 				.then(() => {
 					axios.post(
-						process.env.REACT_APP_API_URL + "/api/markets/sell",
+						process.env.REACT_APP_API_URL + "/Market/sell",
 						{
 							txHash: createMarket.hash
 						},
@@ -155,23 +157,13 @@ const Collection = () => {
 					})
 					setSellLoading(false);
 				})
-				.catch((err) => {
+				.catch(() => {
 					message.error("Something went wrong. Please try again");
 					setSellLoading(false);
 				});
 		} catch (error) {
 			if (error.code == 4001) {
 				message.error("Transaction cancelled");
-			} else if (
-				error?.data?.message &&
-				error.data.message.includes("nonexisting token")
-			) {
-				message.error("Item has been bought!");
-			} else if (
-				error?.message &&
-				error.message.includes("nonexisting token")
-			) {
-				message.error("Item has been bought!");
 			} else {
 				message.error("Something went wrong. Please try again");
 			}
@@ -194,7 +186,7 @@ const Collection = () => {
 				.wait()
 				.then(() => {
 					axios.post(
-						process.env.REACT_APP_API_URL + "/api/markets/withdraw",
+						process.env.REACT_APP_API_URL + "/Market/withdraw",
 						{
 							txHash: withdrawRes.hash
 						},
@@ -245,7 +237,7 @@ const Collection = () => {
 			<section className="section" id="section-win-market">
 				<Container>
 					<div className="module-header text-center">Your collection</div>
-					{!active ? (
+					{!(userData && userData.token) ? (
 						<>
 							<ModalWallet
 								isModalVisible={showPopupWallet}
@@ -361,16 +353,16 @@ const Collection = () => {
 							</Tabs>
 							{
 								(
-									(currentTabKey === "#marketItem" && listMarket.count) ||
-									(currentTabKey === "#collectionItem" && listCollection.count)
+									(currentTabKey === "#marketItem" && listMarket.total) ||
+									(currentTabKey === "#collectionItem" && listCollection.total)
 								)
 									? (
 										<div className="pagination">
 											<Pagination
 												total={
 													currentTabKey === "#collectionItem"
-														? listCollection.count
-														: listMarket.count
+														? listCollection.total
+														: listMarket.total
 												}
 												pageSize={page_size}
 												current={currentPage}

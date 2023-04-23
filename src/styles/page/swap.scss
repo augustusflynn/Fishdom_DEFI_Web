@@ -2,10 +2,9 @@
   .text-left {
     text-align: left !important;
   }
-  .c2i-container {
+  .page-container {
     display: flex;
     align-items: center;
-    flex-direction: column;
   }
   .ant-space-item {
     width: 100%;
@@ -14,7 +13,7 @@
   .module-line {
     margin: 0;
   }
-  .c2i-form-control {
+  .custom-form-control {
     .ant-input {
       background: #302A3C;
       border: none;
@@ -49,6 +48,19 @@
   .module-header {
     margin-bottom: 16px;
   }
+
+  .balance-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 8px 20px;
+    position: static;
+    min-width: 181px;
+    height: 40px;
+    border: 1.5px solid #F4F4F4;
+    border-radius: 32px;
+  }
+  
   .swap-head-container {
     text-align: center;
     margin-bottom: 56px;
@@ -57,14 +69,15 @@
     flex-direction: column;
     align-items: center;
   }
+  
   .ant-input{
     height: 48px;
     color: $color-title;
     min-width: 240px;
     width: 100%;
   }
-  .c2i-form-group {
-    .c2i-form-control {
+  .custom-form-group {
+    .custom-form-control {
       margin-top: 0;
     }
   }
@@ -124,19 +137,6 @@
     .module-blur:nth-child(1){
       @include font-special;
     }
-    .module-blur:nth-child(2){
-    }
-  }
-  .current-sceptor-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 8px 20px;
-    position: static;
-    min-width: 181px;
-    height: 40px;
-    border: 1.5px solid #F4F4F4;
-    border-radius: 32px;
   }
 }
 
