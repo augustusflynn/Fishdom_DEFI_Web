@@ -49,7 +49,7 @@ const StakingItem = (props) => {
 
 	const onStoreDataClaim = async (txHash) => {
 		await axios.post(
-			process.env.REACT_APP_API_URL + '/api/stakings/claim',
+			process.env.REACT_APP_API_URL + '/Staking/claim',
 			{
 				txHash: txHash
 			},
@@ -75,7 +75,7 @@ const StakingItem = (props) => {
 
 	const onStoreDataUnstake = (txHash) => {
 		axios.post(
-			process.env.REACT_APP_API_URL + '/api/stakings/unstake',
+			process.env.REACT_APP_API_URL + '/Staking/unstake',
 			{
 				txHash: txHash
 			},
@@ -234,15 +234,15 @@ const StakingItem = (props) => {
 						<div>
 							<Space size="middle">
 								<Button
-									className={`${item?.duration === '0' ? "confirm-btn" : "confirm-btn-twins"} custom-no-margin`}
+									className={`${item?.duration === 0 ? "confirm-btn" : "confirm-btn-twins"} custom-no-margin`}
 									onClick={handleClaim}
 									loading={isloadingClaim}
-									disabled={item?.duration === '0' ? false : disableBtn}
+									disabled={item?.duration === 0 ? false : disableBtn}
 								>
 									Claim Now
 								</Button>
 
-								{item?.duration === '0' ? (
+								{item?.duration === 0 ? (
 									<Button
 										className="confirm-btn-twins custom-no-margin"
 										onClick={handleUnstake}

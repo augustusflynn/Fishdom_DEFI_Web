@@ -53,7 +53,7 @@ function History() {
 		try {
 			setLoading(true);
 			await axios.post(
-				process.env.REACT_APP_API_URL + '/api/stakings/get',
+				process.env.REACT_APP_API_URL + '/Staking/getStaking',
 				{
 					skip: skip,
 					limit: 8
@@ -79,7 +79,7 @@ function History() {
 		try {
 			setLoading(true);
 			await axios.post(
-				process.env.REACT_APP_API_URL + '/api/havests/get',
+				process.env.REACT_APP_API_URL + '/Staking/getHarvest',
 				{
 					skip: skip,
 					limit: 8

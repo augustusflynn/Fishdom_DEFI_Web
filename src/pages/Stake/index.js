@@ -19,7 +19,7 @@ const { Option } = Select;
 var stakingContract;
 var tokenContract;
 
-function StakeWDA() {
+function Staking() {
 	const { library, account, active, chainId } = useWeb3React()
 	const stakingData = [
 		{ valueDuration: 0, label: 'Select Staking Days' },
@@ -104,7 +104,7 @@ function StakeWDA() {
 
 	async function storeData(txHash) {
 		await axios.post(
-			process.env.REACT_APP_API_URL + '/api/stakings/stake',
+			process.env.REACT_APP_API_URL + '/Staking/stake',
 			{
 				txHash: txHash
 			},
@@ -326,4 +326,4 @@ function StakeWDA() {
 		</Fragment>
 	);
 }
-export default StakeWDA;
+export default Staking;
