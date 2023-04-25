@@ -1,0 +1,15 @@
+.profile {
+  margin-top: 24px;
+  display: flex;
+  justify-content: space-between;
+
+  &>div {
+    &:first-child, &:last-child {
+      width: 47%;
+    }
+
+    &.divider {
+      border-left: 1px solid grey;
+    }
+  }
+}

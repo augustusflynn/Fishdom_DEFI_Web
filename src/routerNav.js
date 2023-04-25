@@ -14,7 +14,7 @@ export const navigations = [
       {
         type: "Item",
         title: "Staking",
-        path: "stake",
+        path: "staking",
       },
       {
         type: "Item",

@@ -1,5 +1,5 @@
 import { message, Modal } from "antd";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import MetaMaskSelect from "./MetaMaskSelect.js";
 import WalletConnect from "./WalletConnect";
 import { connectorsByName } from '../../connector';

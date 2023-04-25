@@ -108,7 +108,7 @@ function MarketContent() {
 						listDefault?.data.map((item, index) => {
 							return (
 								<Col xl={6} lg={8} md={12} sm={24} xs={24} key={index}>
-									<Item key={index} infoItem={item} onFetchData={handleFetchData(skip, sortValue)}/>
+									<Item key={index} infoItem={item} onFetchData={() => handleFetchData(skip, sortValue)}/>
 								</Col>
 							);
 						})}

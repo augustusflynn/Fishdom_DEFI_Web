@@ -71,6 +71,7 @@ function Topbar() {
             <DownOutlined />
             <div className="tooltip">
               <span onClick={showWallet}>Switch Wallet</span>
+              <span onClick={() => navigate('/profile')}>Profile</span>
             </div>
           </div>
           ) : (

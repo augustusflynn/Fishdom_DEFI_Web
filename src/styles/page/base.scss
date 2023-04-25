@@ -375,6 +375,13 @@ button.ant-btn:disabled:hover {
     margin-left: 1.2em;
   }
 }
+
+.custom-input {
+  background-color: #221e2a !important;
+  border: 1.5px solid #999999 !important;
+  color: #999999 !important; 
+}
+
 .ant-select {
   width: 100%;
   &:not(.ant-select-customize-input) .ant-select-selector {
@@ -500,4 +507,8 @@ button.ant-btn:disabled:hover {
 
 .ant-input-number-handler-wrap {
   display: none;
+}
+
+.ant-form-item-label label {
+  color: #f4f4f4;
 }

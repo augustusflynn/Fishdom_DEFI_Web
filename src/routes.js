@@ -4,7 +4,8 @@ import PartnersAndInvestors from "./pages/About/PartnersAndInvestors";
 import Teams from "./pages/About/Teams";
 import Claim from "./pages/Claim";
 import ComingSoon from "./pages/ComingSoon";
-import Stake from "./pages/Stake";
+import Profile from "./pages/Profile";
+import Staking from "./pages/Staking";
 import Collection from "./pages/Trade/Collections";
 import Marketplace from "./pages/Trade/Market";
 import Swap from "./pages/Trade/Swap";
@@ -19,8 +20,8 @@ const listRoute = [
 				isURLOnly: true
 			},
 			{
-				path: "stake",
-				element: <Stake />,
+				path: "staking",
+				element: <Staking />,
 				childrent: [],
 			},
 			{
@@ -52,6 +53,11 @@ const listRoute = [
 				path: "about-partners-and-investors",
 				element: <PartnersAndInvestors />,
 				childrent: [],
+			},
+			{
+				path: "profile",
+				element: <Profile />,
+				childrent: []
 			},
 			{
 				path: "*",

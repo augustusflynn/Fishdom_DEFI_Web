@@ -22,7 +22,7 @@ function MarketItem({
 						<label className="module-title">{infoItem.name}</label>
 					</div>
 					<div>
-						ID:{" "}{infoItem?.tokenId || infoItem?.nftId || 0}
+						ID:{" "}{infoItem?.nftId || 0}
 					</div>
 					{(currentTabKey === "#marketItem" || !currentTabKey) ? (
 						<>
