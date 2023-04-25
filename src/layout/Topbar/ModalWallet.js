@@ -106,7 +106,7 @@ function ModalWallet(props) {
       })
       .then((res) => {
         if (Object.values(APP_USER_ERROR).includes(res.data.error)) {
-          message.error(res.data.error.replace('_', ' '))
+          message.error(res.data.error.replaceAll('_', ' '))
         } else {
           dispatch(user.setUser(res.data.data));
         }
