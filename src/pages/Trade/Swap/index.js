@@ -10,6 +10,8 @@ import FdTAbi from '../../../constants/contracts/token/FishdomToken.sol/FishdomT
 import axios from "axios";
 import { user } from "src/redux/actions";
 import { useWeb3React } from "@web3-react/core";
+import _ from "lodash";
+import { catchErrorWallet } from "src/metamask";
 
 function SwapPage() {
 	const web3Context = useWeb3React()
@@ -38,13 +40,13 @@ function SwapPage() {
 	}
 
 	useEffect(async () => {
-		if (!web3Context.active) {
-			setDisable(true)
-		} else {
+		if (web3Context.active && !_.isEmpty(userData)) {
 			setDisable(false)
 			getBalanceFdT();
+		} else {
+			setDisable(true)
 		}
-	}, [web3Context.active]);
+	}, [web3Context.active, userData]);
 
 	async function handleDeposit() {
 		if (!(web3Context.active && userData.token)) {
@@ -66,7 +68,7 @@ function SwapPage() {
 			message.warning("Please wait for transaction finished...");
 
 			await transferTx.wait();
-			await axios.post(
+			const resp = await axios.post(
 				process.env.REACT_APP_API_URL + '/Exchange/requestDepositPoint',
 				{
 					txHash: transferTx.hash
@@ -80,17 +82,11 @@ function SwapPage() {
 			setLoading(false);
 			message.success("Swap successfully!");
 			setIsShowModalSwapFdTToPoint(false);
-			dispatch(user.setUser({ ...userData, balance: parseFloat(userData?.balance || 0) + parseFloat(FdTRef.current.input.value) }))
-			FdTRef.current.input.value = ''
+			dispatch(user.setUser(resp.data.data))
 			getBalanceFdT();
-		} catch (err) {
+		} catch (error) {
 			setLoading(false);
-			if (err.code == 4001) {
-				message.error("Transaction cancelled!");
-			} else {
-				message.error("Transaction error!");
-			}
-			console.log(err);
+			catchErrorWallet(error);
 		}
 	}
 
@@ -112,14 +108,12 @@ function SwapPage() {
 				}
 			}
 		).then(res => {
-			window.open(`${process.env.REACT_APP_EXPLORE_SCAN_URL}/tx/${res.data.tx.hash}`, '_blank')
 			setLoading(false);
 			message.success("Swap successfully!");
 			setIsShowModalSwapPointToFdT(false);
-			dispatch(user.setUser({ ...userData, balance: parseFloat(userData?.balance || 0) - parseFloat(pointRef.current.input.value) }))
-			pointRef.current.input.value = ''
+			dispatch(user.setUser(res.data.data))
 		}).catch(err => {
-			message.error("Transaction error!");
+			message.error("Transaction failed!");
 			console.log('withdraw error', err);
 			setLoading(false)
 		});

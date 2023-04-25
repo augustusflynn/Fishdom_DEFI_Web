@@ -92,6 +92,7 @@ function ModalWallet(props) {
 		setSelectedWallet(undefined)
 		user.setUser({})
 		localStorage.removeItem('selectedWallet')
+		localStorage.removeItem('fd_user')
 	}
 
   const login = (signature) => {
@@ -111,7 +112,7 @@ function ModalWallet(props) {
         }
       })
       .catch(() => {
-        console.log('login error')
+				message.error("Something went wrong!")
       })
   }
 

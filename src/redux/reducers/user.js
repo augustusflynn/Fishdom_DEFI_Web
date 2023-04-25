@@ -7,8 +7,14 @@ export default function userReducers(
 ) {
   switch (action.type) {
     case getType(user.setUser):
-      localStorage.setItem('fd_user', JSON.stringify(action.payload))   
-      return action.payload;
+      localStorage.setItem('fd_user', JSON.stringify({
+        ...state,
+        ...action.payload
+      }))   
+      return {
+        ...state,
+        ...action.payload
+      };
     default:
       return state;
   }

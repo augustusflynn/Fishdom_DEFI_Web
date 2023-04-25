@@ -14,6 +14,7 @@ import { user$ } from "src/redux/selectors";
 import { useWeb3React } from "@web3-react/core";
 import axios from "axios";
 import _ from "lodash";
+import { catchErrorWallet } from "src/metamask";
 
 const { Option } = Select;
 var stakingContract;
@@ -123,7 +124,7 @@ function Staking() {
 				message.error("Staking day is not valid!");
 				return;
 			}
-			if (!stakingAmount || isNaN(stakingAmount)) {
+			if (!stakingAmount || isNaN(stakingAmount) || stakingAmount < 0) {
 				message.error("Staking amount is not valid!");
 				return;
 			}
@@ -134,6 +135,7 @@ function Staking() {
 			const stakingAmountToWei = ethers.utils.parseEther(
 				stakingAmount.toString()
 			);
+
 			/// aprove token
 			tokenContract = new ethers.Contract(
 				TokenContract.networks[process.env.REACT_APP_NETWORK_ID].address,
@@ -180,59 +182,11 @@ function Staking() {
 						"Staking successfully! Please wait for 1-3 minutes for actually showing up"
 					);
 				})
-				.catch((error) => {
-					if (error.code == 4001) {
-						message.error("Transaction cancelled");
-					} else {
-						message.error("Something went wrong. Please try again");
-					}
-					setIsLoading(false)
-					setDisbale(false);
-				});
-
-
 		} catch (error) {
 			setIsLoading(false);
-			console.log("stakign error", error);
-			if (
-				error?.data?.message ==
-				"execution reverted: ERC20: transfer amount exceeds balance"
-			) {
-				message.error("transfer amount exceeds balance");
-				setDisbale(false);
-				return;
-			}
-			if (
-				error?.data?.message?.includes("nonce") ||
-				error?.message.includes("nonce")
-			) {
-				message.error("Please try again!");
-				setDisbale(false);
-				return;
-			}
-			if (
-				error?.data?.message?.includes("replacement fee") ||
-				error?.message.includes("replacement fee")
-			) {
-				message.error("Please try again!");
-				setDisbale(false);
-				return;
-			}
-			if (
-				error?.data?.message?.includes("out-of-bounds") ||
-				error?.message.includes("out-of-bounds")
-			) {
-				message.error("Overallowance amount of staking wda!");
-				setDisbale(false);
-				return;
-			}
-			if (error.code == 4001) {
-				message.error("Transaction cancelled!");
-			} else {
-				message.error(error?.data?.message || error?.message);
-			}
-
 			setDisbale(false);
+			console.log("staking error", { error });
+			catchErrorWallet(error)
 		}
 	}
 
@@ -293,6 +247,7 @@ function Staking() {
 															type="number"
 															width="100%"
 															className="text-sub"
+															min={0}
 															value={stakingAmount}
 															placeholder="FDT Amount..."
 															onChange={onChangeValueAmount}

@@ -13,6 +13,7 @@ import ModalConfirm from "./ModalConfirm";
 import axios from "axios";
 import { useWeb3React } from "@web3-react/core";
 import { MARKET_ERROR } from "src/constants/errorCode";
+import { catchErrorWallet } from "src/metamask";
 
 const Collection = () => {
 	const userData = useSelector(user$)
@@ -162,13 +163,8 @@ const Collection = () => {
 					setSellLoading(false);
 				});
 		} catch (error) {
-			if (error.code == 4001) {
-				message.error("Transaction cancelled");
-			} else {
-				message.error("Something went wrong. Please try again");
-			}
+			catchErrorWallet(error);
 			setSellLoading(false);
-			console.log("handle sell error", error);
 		}
 	}
 	async function handleWithdrawItem(itemMarketId) {
@@ -203,22 +199,7 @@ const Collection = () => {
 					setWithdrawLoading(false);
 				})
 				.catch((error) => {
-					if (error.code == 4001) {
-						message.error("Transaction cancelled");
-					} else if (
-						error?.data?.message &&
-						error.data.message.includes("nonexisting token")
-					) {
-						message.error("Item has been bought!");
-					} else if (
-						error?.message &&
-						error.message.includes("nonexisting token")
-					) {
-						message.error("Item has been bought!");
-					} else {
-						message.error("Something went wrong. Please try again");
-					}
-					console.log("withdraw error", error);
+					catchErrorWallet(error)
 					setWithdrawLoading(false);
 				});
 		} catch (error) {

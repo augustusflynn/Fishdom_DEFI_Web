@@ -7,9 +7,10 @@ import FishdomMarketAbi from '../../../../constants/contracts/FishdomMarket.sol/
 import FishdomTokenAbi from '../../../../constants/contracts/token/FishdomToken.sol/FishdomToken.json'
 import axios from "axios";
 import { useWeb3React } from "@web3-react/core";
+import { catchErrorWallet } from "src/metamask";
 
 function Item(props) {
-	const { infoItem } = props;
+	const { infoItem, onFetchData } = props;
 	const { account, library } = useWeb3React()
 	const userData = useSelector(user$)
 
@@ -51,12 +52,9 @@ function Item(props) {
 				}
 			)
 		} catch (error) {
-			if (error.code === 4001) {
-				message.error("Transaction cancelled!");
-			} else {
-				message.error("Transaction error!");
-			}
-			console.log('buy error', error);
+			catchErrorWallet(error)
+		} finally {
+			onFetchData()
 		}
 	}
 

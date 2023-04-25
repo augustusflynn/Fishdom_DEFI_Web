@@ -9,6 +9,7 @@ import axios from "axios";
 import { useSelector } from "react-redux";
 import { user$ } from "src/redux/selectors";
 import _ from "lodash";
+import { catchErrorWallet } from "src/metamask";
 
 const UNIT_TO_SECOND = 10
 
@@ -60,10 +61,10 @@ const StakingItem = (props) => {
 			}
 		)
 			.then((res) => {
-				if (res.data && res.data.msg === "INVALID_SIGNER") {
+				if (res.error && res.error === "INVALID_SIGNER") {
 					message.error("Invalid signature")
 				} else {
-					localStorage.removeItem(`Staking_${item.stakeId}`)
+					localStorage.removeItem(`Staking_${item.stakingId}`)
 					getData(0)
 				}
 				setIsLoadingClaim(false);
@@ -86,10 +87,10 @@ const StakingItem = (props) => {
 			}
 		)
 			.then((res) => {
-				if (res.data && res.data.msg === "INVALID_SIGNER") {
+				if (res.error && res.error === "INVALID_SIGNER") {
 					message.error("Invalid signature")
 				} else {
-					localStorage.removeItem(`Staking_${item.stakeId}`)
+					localStorage.removeItem(`Staking_${item.stakingId}`)
 					getData(0)
 				}
 			})
@@ -106,16 +107,16 @@ const StakingItem = (props) => {
 				await library.getSigner(account)
 			)
 			setIsLoadingClaim(true);
-			const tx = await stakeContract.claim(item?.stakeId);
+			const tx = await stakeContract.claim(item?.stakingId);
 			await tx.wait()
 			setIsLoadingClaim(false);
 			await onStoreDataClaim(tx.hash);
 			message.success(
 				"Successfully! Please wait 2-3 minutes for actually execution!"
 			);
-		} catch (err) {
+		} catch (error) {
 			setIsLoadingClaim(false);
-			message.error(err?.data?.message || "Cancel execution!");
+			catchErrorWallet(error)
 		}
 	}
 
@@ -130,7 +131,7 @@ const StakingItem = (props) => {
 				await library.getSigner(account)
 			)
 			setIsLoadingStake(true);
-			const tx = await stakeContract.unstake(item.stakeId);
+			const tx = await stakeContract.unstake(item.stakingId);
 			await tx.wait()
 				.then(() => {
 					onStoreDataUnstake(tx.hash)
@@ -139,10 +140,9 @@ const StakingItem = (props) => {
 						"Successfully! Please wait 2-3 minutes for actually execution!"
 					);
 				});
-		} catch (err) {
+		} catch (error) {
 			setIsLoadingStake(false);
-			console.log(err);
-			message.error(err?.data?.message || "Cancel execution!");
+			catchErrorWallet(error)
 		}
 	}
 
@@ -166,7 +166,7 @@ const StakingItem = (props) => {
 						{item?.duration != 0 ? (
 							<p className="module-blur custom-no-margin flex wrap">
 								<span className="mr-8">Expired Time:</span>
-								{expiredTime - moment().toDate().getTime() <= 86400000 ? (
+								{!disableBtn ? (
 									<span>
 										Expired
 									</span>

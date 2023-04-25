@@ -9,7 +9,7 @@ export const navigations = [
   },
   {
     type: "SubMenu",
-    title: "Stake",
+    title: "Staking",
     childrent: [
       {
         type: "Item",
