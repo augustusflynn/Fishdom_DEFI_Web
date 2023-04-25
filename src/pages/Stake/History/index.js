@@ -20,11 +20,11 @@ function History() {
 	const [loading, setLoading] = useState(true);
 	const [listHistoryHavestData, setListHistoryHavestData] = useState({
 		data: null,
-		count: 0,
+		total: 0,
 	});
 	const [listHistoryStakingData, setListHistoryStakingData] = useState({
 		data: null,
-		count: 0,
+		total: 0,
 	});
 
 	const userData = useSelector(user$)
@@ -115,23 +115,23 @@ function History() {
 						skip > 0 && setSkip(0);
 					}}
 				>
-					<TabPane tab="Staked" key="1">
+					<TabPane tab="Staking" key="1">
 						<HistoryStaking
 							loading={loading}
 							setLoading={setLoading}
 							data={listHistoryStakingData.data}
-							count={listHistoryStakingData.count}
+							total={listHistoryStakingData.total}
 							handleFetchData={handleFetchStakedData}
 							setSkip={setSkip}
 							currentPage={currentPage}
 							setCurrentPage={setCurrentPage}
 						/>
 					</TabPane>
-					<TabPane tab="Havest" key="2">
+					<TabPane tab="Harvest" key="2">
 						<HistoryHavest
 							{...{ loading, setLoading }}
 							data={listHistoryHavestData.data}
-							count={listHistoryHavestData.count}
+							total={listHistoryHavestData.total}
 							handleFetchData={handleFetchHavestData}
 							setSkip={setSkip}
 							currentPage={currentPage}

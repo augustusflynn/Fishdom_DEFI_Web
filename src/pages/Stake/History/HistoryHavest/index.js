@@ -8,7 +8,7 @@ function HistoryHavest({
 	handleFetchData,
 	setSkip,
 	data,
-	count,
+	total,
 	currentPage,
 	setCurrentPage,
 	loading,
@@ -17,7 +17,7 @@ function HistoryHavest({
 	let renderHistoryHavestStaking;
 
 	renderHistoryHavestStaking =
-		count > 0 ?
+		total > 0 ?
 			data.map((item, index) => (
 				<Item item={item} key={index} />
 			)) : (<></>);
@@ -38,7 +38,7 @@ function HistoryHavest({
 					<Pagination
 						defaultCurrent={currentPage}
 						pageSize={LIMIT_DISPLAY_ITEM}
-						total={count}
+						total={total}
 						onChange={(pageNum) => {
 							const nextSkip = (pageNum - 1) * LIMIT_DISPLAY_ITEM;
 							handleFetchData("HavestStaking", nextSkip);

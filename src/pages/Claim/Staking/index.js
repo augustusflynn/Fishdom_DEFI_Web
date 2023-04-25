@@ -18,7 +18,7 @@ const Staking = () => {
 	async function getData(skip = 0) {
 		setLoadData(true)
 		await axios.post(
-			process.env.REACT_APP_API_URL + '/api/stakings/get',
+			process.env.REACT_APP_API_URL + '/Staking/getStaking',
 			{
 				skip: skip,
 				limit: pageSize

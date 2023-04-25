@@ -36,11 +36,11 @@ const StakingItem = (props) => {
 					StakingContract.abi,
 					await library.getSigner(account)
 				);
-				const earned = await stakeContract.getEarned(item?.stakeId);
+				const earned = await stakeContract.getEarned(item?.stakingId);
 				const parsedEarned = parseFloat(ethers.utils.formatEther(earned.toString())).toFixed(7)
 				setEarnNow(parsedEarned);
 				if (item?.duration !== 0) {
-					localStorage.setItem(`Staking_${item.stakeId}`, parsedEarned)
+					localStorage.setItem(`Staking_${item.stakingId}`, parsedEarned)
 				}
 			}
 		})();

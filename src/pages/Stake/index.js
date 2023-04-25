@@ -181,7 +181,11 @@ function Staking() {
 					);
 				})
 				.catch((error) => {
-					message.error(error?.data?.message || error?.message);
+					if (error.code == 4001) {
+						message.error("Transaction cancelled");
+					} else {
+						message.error("Something went wrong. Please try again");
+					}
 					setIsLoading(false)
 					setDisbale(false);
 				});
