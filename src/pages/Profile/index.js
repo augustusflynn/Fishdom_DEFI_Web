@@ -36,6 +36,11 @@ function Profile() {
 
   const RIGHT_CONTENT = [
     {
+      name: 'walletAddress',
+      label: 'Wallet',
+      value: userData.walletAddress
+    },
+    {
       name: 'pointBalance',
       label: 'Point Balance',
       value: userData.balance
