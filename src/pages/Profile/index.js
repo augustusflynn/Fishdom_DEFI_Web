@@ -68,8 +68,10 @@ function Profile() {
         inputEle.value = balance
       }
     }
-    getUserFDT()
-  }, [])
+    if (library) {
+      getUserFDT()
+    }
+  }, [library])
 
   const onUpdateUserData = (values) => {
     const newData = {

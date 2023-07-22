@@ -1,12 +1,12 @@
 import { message, Modal } from "antd";
 import React, { useState } from "react";
 import MetaMaskSelect from "./MetaMaskSelect.js";
-import WalletConnect from "./WalletConnect";
+// import WalletConnect from "./WalletConnect";
 import { connectorsByName } from '../../connector';
 import { useWeb3React, UnsupportedChainIdError } from '@web3-react/core';
-import {
-	URI_AVAILABLE
-} from '@web3-react/walletconnect-connector';
+// import {
+// 	URI_AVAILABLE
+// } from '@web3-react/walletconnect-connector';
 import { useEagerConnect, useInactiveListener } from '../../hooks';
 import * as MetaMaskFunctions from '../../metamask';
 import chains from '../../chains';
@@ -74,17 +74,17 @@ function ModalWallet(props) {
 	// handle logic to connect in reaction to certain events on the injected ethereum provider, if it exists
 	useInactiveListener(!triedEager || !!activatingConnector);
 
-	React.useEffect(() => {
-		console.log('running');
-		const logURI = uri => {
-			console.log('WalletConnect URI', uri);
-		};
-		connectorsByName.WalletConnect.on(URI_AVAILABLE, logURI);
+	// React.useEffect(() => {
+	// 	console.log('running');
+	// 	const logURI = uri => {
+	// 		console.log('WalletConnect URI', uri);
+	// 	};
+	// 	connectorsByName.WalletConnect.on(URI_AVAILABLE, logURI);
 
-		return () => {
-			connectorsByName.WalletConnect.off(URI_AVAILABLE, logURI);
-		};
-	}, []);
+	// 	return () => {
+	// 		connectorsByName.WalletConnect.off(URI_AVAILABLE, logURI);
+	// 	};
+	// }, []);
 
 	const onDeactivate = () => {
 		deactivate()
@@ -157,7 +157,7 @@ function ModalWallet(props) {
 						}}
 						isActive={isLoggedIn && active && selectedWallet === "Injected"}
 					/>
-					<WalletConnect
+					{/* <WalletConnect
 						onClick={() => {
 							if (isLoggedIn && active && selectedWallet === "WalletConnect") {
 								onDeactivate()
@@ -166,7 +166,7 @@ function ModalWallet(props) {
 							}
 						}}
 						isActive={isLoggedIn && active && selectedWallet === "WalletConnect"}
-					/>
+					/> */}
 				</div>
 			</div>
 		</Modal>

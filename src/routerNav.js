@@ -53,12 +53,12 @@ export const navigations = [
         title: "Team",
         path: "/about-team",
       },
-      {
-        type: "Item",
-        title: "Partners & Investors",
-        path: "about-team",
-        hash: "section-partner",
-      }
+      // {
+      //   type: "Item",
+      //   title: "Partners & Investors",
+      //   path: "about-team",
+      //   hash: "section-partner",
+      // }
     ]
   },
 ];

@@ -67,7 +67,7 @@ function Team() {
                 style={{ maxWidth: "500px" }}
               >
                 Experienced research and developer, has contributed in many medium-large projects.
-                Over 1 years of experience in Software and Blockchain Development, has knowledge in other technologies: Machine Learning, AI, Game Development ...
+                Over 2 years of experience in Software and Blockchain Development, has knowledge in other technologies: Machine Learning, AI, Game Development ...
               </div>
             </div>
           </div>
@@ -119,7 +119,7 @@ function Team() {
           </div>
         // </Container> */}
       </section>
-      <section id="section-partner" className="section">
+      {/* <section id="section-partner" className="section">
         <FadeAnimationOdd />
 
         <Container>
@@ -151,7 +151,7 @@ function Team() {
             </div>
           </div>
         </Container>
-      </section>
+      </section> */}
     </Fragment>
   );
 }

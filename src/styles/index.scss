@@ -40,6 +40,10 @@ iframe {
   width: 100%;
 }
 
+img[alt='point'], img[alt='fdt'] {
+  width: 20px;
+}
+
 @import "./page/animationCommon.scss";
 @import "./page/market.scss";
 @import "./page/base.scss";
