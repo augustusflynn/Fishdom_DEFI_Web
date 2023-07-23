@@ -149,10 +149,15 @@ function ModalWallet(props) {
 				<div className="content">
 					<MetaMaskSelect
 						onClick={() => {
-							if (isLoggedIn && active && selectedWallet === "Injected") {
-								onDeactivate()
+							if (window.ethereum) {
+								if (isLoggedIn && active && selectedWallet === "Injected") {
+									onDeactivate()
+								} else {
+									requestSignature("Injected")
+								}
 							} else {
-								requestSignature("Injected")
+								alert("Please install Metamask first")
+								window.open('https://metamask.io/', '_blank')
 							}
 						}}
 						isActive={isLoggedIn && active && selectedWallet === "Injected"}

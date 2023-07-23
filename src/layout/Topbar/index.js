@@ -37,17 +37,19 @@ function Topbar() {
   
   useEffect(() => {
     const ethereum = window.ethereum
-    const handleAccountsChanged = (accounts /*: string[] */) => {
-      console.log("Handling 'accountsChanged' event with payload", accounts);
-      if (accounts.length > 0) {
-        window.location.reload()
-        localStorage.removeItem('fd_user')
+    if (ethereum) {
+      const handleAccountsChanged = (accounts /*: string[] */) => {
+        console.log("Handling 'accountsChanged' event with payload", accounts);
+        if (accounts.length > 0) {
+          window.location.reload()
+          localStorage.removeItem('fd_user')
+        }
+      };
+  
+      ethereum.on('accountsChanged', handleAccountsChanged);
+      return () => {
+        ethereum.removeListener('accountsChanged', handleAccountsChanged);
       }
-    };
-
-    ethereum.on('accountsChanged', handleAccountsChanged);
-    return () => {
-      ethereum.removeListener('accountsChanged', handleAccountsChanged);
     }
   }, [])
 
