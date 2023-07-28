@@ -3,7 +3,6 @@ import { ethers } from "ethers";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
 import StakingContract from "../../../../constants/contracts/FishdomStaking.sol/FishdomStaking.json";
-import BaseHelper from "src/utils/BaseHelper";
 import { useWeb3React } from "@web3-react/core";
 import axios from "axios";
 import { useSelector } from "react-redux";
@@ -38,7 +37,7 @@ const StakingItem = (props) => {
 					await library.getSigner(account)
 				);
 				const earned = await stakeContract.getEarned(item?.stakingId);
-				const parsedEarned = parseFloat(ethers.utils.formatEther(earned.toString())).toFixed(7)
+				const parsedEarned = Number(ethers.utils.formatEther(earned.toString())).toLocaleString()
 				setEarnNow(parsedEarned);
 				if (item?.duration !== 0) {
 					localStorage.setItem(`Staking_${item.stakingId}`, parsedEarned)
@@ -152,9 +151,9 @@ const StakingItem = (props) => {
 				<Space direction="vertical" size={16}>
 					<Space direction="vertical" size={4}>
 						<h2 className="module-title custom-no-margin">
-							<span className="custom-color-green">{`${BaseHelper.numberToCurrencyStyle(
-								ethers.utils.formatEther(item?.amount)
-							)}`}</span>{" "}
+							<span className="custom-color-green">{`${
+								Number(ethers.utils.formatEther(item?.amount)).toLocaleString()
+							}`}</span>{" "}
 							FDT has been staked
 						</h2>
 						<p className="module-blur custom-no-margin flex wrap">
@@ -210,9 +209,7 @@ const StakingItem = (props) => {
 										type="number"
 										min={1}
 										disabled
-										placeholder={BaseHelper.numberToCurrencyStyle(
-											ethers.utils.formatEther(item?.amount)
-										)}
+										placeholder={Number(ethers.utils.formatEther(item?.amount)).toLocaleString()}
 									/>
 								</div>
 							</div>
@@ -225,8 +222,8 @@ const StakingItem = (props) => {
 										type="number"
 										min={1}
 										disabled
-										value={earnNow ? BaseHelper.numberToCurrencyStyle(earnNow) : "..."}
-										placeholder={`${BaseHelper.numberToCurrencyStyle(earnNow)}`}
+										value={earnNow ? earnNow : "..."}
+										placeholder={`${earnNow}`}
 									/>
 								</div>
 							</div>

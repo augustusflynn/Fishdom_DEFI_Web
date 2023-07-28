@@ -1,4 +1,4 @@
-import { Button, message, Space } from "antd";
+import { Button, Space } from "antd";
 import React from "react";
 
 function MarketItem({
@@ -6,7 +6,8 @@ function MarketItem({
 	title,
 	onClick,
 	isLoading,
-	currentTabKey
+	currentTabKey,
+	disabled
 }) {
 
 	if (infoItem) {
@@ -42,7 +43,7 @@ function MarketItem({
 				</Space>
 				<Button
 					className="button custom-no-margin"
-					disabled={isLoading}
+					disabled={isLoading || disabled}
 					onClick={() => {
 						onClick(infoItem);
 					}}

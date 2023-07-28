@@ -2,7 +2,6 @@ import { Button, Col, Input, message, Row, Select, Spin } from "antd";
 import { ethers } from "ethers";
 import React, { Fragment, useEffect, useState } from "react";
 
-import BaseHelper from "./../../utils/BaseHelper";
 import FadeAnimationOdd from "../../layout/fadeAnimation/FadeAnimationOdd";
 import Container from "../../layout/grid/Container";
 import History from "./History";
@@ -50,9 +49,7 @@ function Staking() {
 		)
 		let totalStaked = await tokenContract.balanceOf(StakingContract.networks[process.env.REACT_APP_NETWORK_ID].address)
 		setTotalStaked(
-			BaseHelper.numberToCurrencyStyle(
-				ethers.utils.formatEther(totalStaked.toString())
-			)
+			Number(ethers.utils.formatEther(totalStaked.toString())).toLocaleString()
 		);
 	}
 
@@ -206,7 +203,7 @@ function Staking() {
 							<Fragment>
 								<div className="border-round">
 									<div className="text-title-default item-round text-center">
-										Balance of Contract:&nbsp;{parseFloat(totalStaked).toFixed(7)}&nbsp;FDT
+										Balance of Contract:&nbsp;{totalStaked}&nbsp;FDT
 									</div>
 								</div>
 								<Row justify="center">

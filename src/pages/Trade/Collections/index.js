@@ -12,12 +12,11 @@ import MarketItem from "./MarketItem";
 import ModalConfirm from "./ModalConfirm";
 import axios from "axios";
 import { useWeb3React } from "@web3-react/core";
-import { MARKET_ERROR } from "src/constants/errorCode";
 import { catchErrorWallet } from "src/metamask";
 
 const Collection = () => {
 	const userData = useSelector(user$)
-	const { library, account, active } = useWeb3React()
+	const { library, account } = useWeb3React()
 	const [listMarket, setListMarket] = useState({
 		data: [],
 		total: 0,
@@ -314,6 +313,7 @@ const Collection = () => {
 															<MarketItem
 																infoItem={item}
 																title="Sell"
+																disabled={item?.nftId === userData?.selectedNFT}
 																currentTabKey={currentTabKey}
 																onClick={(data) => {
 																	setIsShowModal(true);
